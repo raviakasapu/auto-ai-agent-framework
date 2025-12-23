@@ -1,44 +1,68 @@
-/* Fix sidebar - make it sticky */
+/* ===== FIXED SIDEBAR ===== */
+
+/* Make the sidebar container fixed */
 .wy-nav-side {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    overflow-y: auto;
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 300px !important;
+    overflow-y: auto !important;
+    z-index: 200;
 }
 
+/* Sidebar scroll container */
 .wy-side-scroll {
-    position: relative;
-    overflow-y: auto;
-    height: 100%;
+    width: 300px !important;
+    overflow: visible !important;
+    position: relative !important;
 }
 
-/* Ensure content area doesn't overlap */
+/* Main content wrapper - offset for fixed sidebar */
 .wy-nav-content-wrap {
-    margin-left: 300px;
+    margin-left: 300px !important;
+    position: relative !important;
 }
 
-/* Keep sidebar TOC in view */
+/* Content area */
+.wy-nav-content {
+    max-width: none !important;
+}
+
+/* Menu styling */
 .wy-menu-vertical {
     width: 100%;
 }
 
-/* Smooth scrolling for the sidebar */
-.wy-side-nav-search, .wy-menu-vertical {
-    scroll-behavior: smooth;
-}
-
-/* Highlight current section in sidebar */
+/* Highlight active menu item */
 .wy-menu-vertical li.current > a {
     background: #2980b9;
     color: #fff;
-}
-
-.wy-menu-vertical li.current li a {
-    background: transparent;
+    border-right: 3px solid #1abc9c;
 }
 
 .wy-menu-vertical li.current li a:hover {
-    background: #d6d6d6;
+    background: #e3e3e3;
 }
 
+/* Smooth scroll for content only, not sidebar */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Prevent sidebar from scrolling when clicking links */
+.wy-side-nav-search {
+    position: relative;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+    .wy-nav-side {
+        position: absolute !important;
+        width: 300px !important;
+    }
+    
+    .wy-nav-content-wrap {
+        margin-left: 0 !important;
+    }
+}
