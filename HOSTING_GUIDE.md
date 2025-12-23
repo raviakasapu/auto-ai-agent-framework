@@ -18,7 +18,7 @@ This guide shows how to host your agent framework for private distribution using
 Reorganize the repo to this structure:
 
 ```
-agentic-framework/
+autoAI-agent-framework/
 ├── .github/workflows/docs.yml   # Auto-build & deploy docs
 ├── src/agent_framework/         # Package source
 ├── docs/                        # Built HTML (GitHub Pages serves this)
@@ -103,7 +103,7 @@ pip install git+https://github.com/raviakasapu/agent_framework.git@<commit-sha>
 ### With Optional Dependencies
 
 ```bash
-pip install "agentic-framework[all] @ git+https://github.com/raviakasapu/agent_framework.git"
+pip install "autoAI-agent-framework[all] @ git+https://github.com/raviakasapu/agent_framework.git"
 ```
 
 ---
@@ -114,13 +114,13 @@ pip install "agentic-framework[all] @ git+https://github.com/raviakasapu/agent_f
 # requirements.txt for dependent projects
 
 # Public repo
-agentic-framework @ git+https://github.com/raviakasapu/agent_framework.git@v0.1.0
+autoAI-agent-framework @ git+https://github.com/raviakasapu/agent_framework.git@v0.1.0
 
 # Private repo (SSH) - recommended for CI/CD
-agentic-framework @ git+ssh://git@github.com/raviakasapu/agent_framework.git@main
+autoAI-agent-framework @ git+ssh://git@github.com/raviakasapu/agent_framework.git@main
 
 # With extras
-agentic-framework[observability] @ git+https://github.com/raviakasapu/agent_framework.git
+autoAI-agent-framework[observability] @ git+https://github.com/raviakasapu/agent_framework.git
 ```
 
 ---
