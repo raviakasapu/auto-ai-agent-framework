@@ -1,0 +1,72 @@
+apiVersion: agent.framework/v2
+kind: ManagerAgent
+
+metadata:
+  name: SampleOrchestrator
+  description: Orchestrator that routes tasks to specialized workers (research or task management).
+  version: 1.0.0
+
+resources:
+  inference_gateways:
+    - name: openai-orchestrator
+      type: OpenAIGateway
+      config:
+        model: ${OPENAI_STRATEGIC_MODEL:-gpt-4o}
+        api_key: ${OPENAI_API_KEY}
+        temperature: 0.2
+
+  subscribers:
+    - name: logging
+      type: LoggingSubscriber
+      config:
+        level: INFO
+        include_data: true
+        max_payload_chars: 3000
+
+spec:
+  policies:
+    $preset: simple
+    termination:
+      type: DefaultTerminationPolicy
+      config:
+        max_iterations: 5
+        check_completion: true
+        on_max_iterations: error
+
+  planner:
+    type: WorkerRouterPlanner
+    config:
+      inference_gateway: openai-orchestrator
+      worker_keys: [research-worker, task-worker]
+      default_worker: research-worker
+      system_prompt: |
+        You are an orchestrator that routes user requests to specialized workers.
+
+        Available workers:
+        - research-worker: For web searches, research tasks, taking notes, and calculations
+        - task-worker: For creating, listing, and completing tasks, also weather lookups
+
+        Analyze the user's request and choose the most appropriate worker.
+        Return JSON: {"worker": "<worker_key>", "reason": "..."}
+
+        Examples:
+        - "Search for Python tutorials" -> research-worker
+        - "Create a task to buy groceries" -> task-worker
+        - "What's the weather in London?" -> task-worker
+        - "Take notes on machine learning" -> research-worker
+        - "List my pending tasks" -> task-worker
+        - "Calculate 25 * 4" -> research-worker
+
+  memory:
+    type: SharedInMemoryMemory
+    config:
+      namespace: ${JOB_ID:-default}
+      agent_key: orchestrator
+
+  workers:
+    - name: research-worker
+      config_path: configs/agents/research_worker.yaml
+    - name: task-worker
+      config_path: configs/agents/task_worker.yaml
+
+  subscribers: [logging]

@@ -1,0 +1,84 @@
+apiVersion: agent.framework/v2
+kind: Agent
+
+metadata:
+  name: TaskWorker
+  description: Task management assistant that can create, list, and complete tasks.
+  version: 1.0.0
+
+resources:
+  inference_gateways:
+    - name: openai-worker
+      type: OpenAIGateway
+      config:
+        model: ${OPENAI_MODEL:-gpt-4o-mini}
+        api_key: ${OPENAI_API_KEY}
+        temperature: 0.1
+        use_function_calling: true
+
+  tools:
+    - name: create_task
+      type: TaskManagerTool
+      config: {}
+    - name: list_tasks
+      type: ListTasksTool
+      config: {}
+    - name: complete_task
+      type: CompleteTaskTool
+      config: {}
+    - name: weather_lookup
+      type: WeatherLookupTool
+      config: {}
+
+  subscribers:
+    - name: logging
+      type: LoggingSubscriber
+      config:
+        level: INFO
+        include_data: true
+        max_payload_chars: 2000
+
+spec:
+  policies:
+    $preset: simple
+    termination:
+      type: DefaultTerminationPolicy
+      config:
+        max_iterations: 8
+        check_completion: true
+        terminal_tools: []
+        on_max_iterations: error
+
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai-worker
+      use_function_calling: true
+      max_iterations: 8
+      system_prompt: |
+        You are a task management assistant. Your job is to help users:
+        1. Create new tasks with titles, descriptions, and priorities
+        2. List existing tasks (optionally filtered by status or priority)
+        3. Mark tasks as completed
+        4. Check weather (for planning outdoor tasks)
+
+        When creating tasks:
+        - Ask for clarification if the task description is unclear
+        - Suggest appropriate priority levels based on urgency
+        - Confirm task creation with the user
+
+        When listing tasks:
+        - Group by priority or status if there are many tasks
+        - Highlight overdue or high-priority tasks
+
+        Be helpful and organized.
+
+  memory:
+    type: SharedInMemoryMemory
+    config:
+      namespace: ${JOB_ID:-default}
+      agent_key: task_worker
+
+  tools: [create_task, list_tasks, complete_task, weather_lookup]
+
+  subscribers: [logging]

@@ -33,20 +33,30 @@ configs/            # YAML configurations
 ## Quickstart
 
 ```bash
-# Create venv and install
-python3 -m venv .venv && source .venv/bin/activate
-
 # Install the framework
-pip install -e ./agent-framework-pypi
-
-# (Production) Install from PyPI
 pip install agentic-framework
 
-# Install dependencies
-pip install -r requirements.txt
+# Create a sample project with CLI
+agent-framework init my_agent_project
 
-# Run an agent
-python main.py
+# Navigate and setup
+cd my_agent_project
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY
+
+# Run the sample app
+python run.py                    # Interactive mode
+python run.py "Search for Python" # Single task
+python run.py --test             # Run test scenarios
+```
+
+### CLI Commands
+
+```bash
+agent-framework --help           # Show help
+agent-framework init             # Create project (default: agent_project)
+agent-framework init my_project  # Create project with custom name
+agent-framework --version        # Show version
 ```
 
 ## Using as a Library
@@ -95,4 +105,5 @@ uvicorn docs_server.main:app --reload
 | `docs/sphinx/` | Sphinx documentation |
 | `docs_server/` | Manifest + docs server |
 | `tests/` | Test suite |
-| `examples/` | Example implementations |
+
+**Note:** Use `agent-framework init` to scaffold a sample project with examples.

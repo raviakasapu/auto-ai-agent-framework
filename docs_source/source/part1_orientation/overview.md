@@ -93,6 +93,48 @@ pip install agentic-framework
 pip install -e ./agent-framework-pypi
 ```
 
+## Getting Started with a Sample Project
+
+The fastest way to get started is using the CLI to scaffold a complete sample application:
+
+```bash
+# Create a new project
+agent-framework init my_agent_project
+
+# Navigate to the project
+cd my_agent_project
+
+# Setup environment
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY
+
+# Run the sample app
+python run.py                    # Interactive mode
+python run.py "Search for Python tutorials"  # Single task
+python run.py --test             # Run all test scenarios
+```
+
+### Sample Project Features
+
+The scaffolded project demonstrates:
+
+| Feature | Description |
+|---------|-------------|
+| **Research Worker** | Web search, note-taking, calculations (ReActPlanner) |
+| **Task Worker** | Task CRUD, weather lookup (ReActPlanner) |
+| **Orchestrator** | Routes to workers (WorkerRouterPlanner) |
+| **YAML Config** | Full v2 agent schema with environment variables |
+| **Custom Tools** | 6 example tools showing the BaseTool pattern |
+
+### CLI Commands
+
+```bash
+agent-framework --help           # Show help
+agent-framework init             # Create project (default: agent_project)
+agent-framework init my_project  # Create with custom name
+agent-framework --version        # Show version
+```
+
 ## Quick Example
 
 ```python

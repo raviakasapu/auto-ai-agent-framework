@@ -73,12 +73,16 @@ Documentation = "https://agentic-framework.readthedocs.io"
 Repository = "https://github.com/akasa-ai/agentic-framework"
 Changelog = "https://github.com/akasa-ai/agentic-framework/blob/main/CHANGELOG.md"
 
+[project.scripts]
+agent-framework = "agent_framework.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["agent_framework*"]
 
 [tool.setuptools.package-data]
-"*" = ["*.yaml", "*.txt", "py.typed"]
+"*" = ["*.yaml", "*.txt", "*.md", "*.example", "py.typed"]
+"agent_framework.templates" = ["**/*"]
 
 [tool.black]
 line-length = 100

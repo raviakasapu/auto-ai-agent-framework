@@ -156,11 +156,85 @@ result = manager.run("Research AI trends and write a summary")
 └─────────┘         └─────────┘
 ```
 
+## Getting Started with a Sample Project
+
+The package includes a CLI to scaffold a complete sample application:
+
+```bash
+# Create a new project
+agent-framework init my_agent_project
+
+# Navigate to the project
+cd my_agent_project
+
+# Setup environment
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY
+
+# Run interactive mode
+python run.py
+
+# Run a single task
+python run.py "Search for Python tutorials"
+
+# Run all test scenarios
+python run.py --test
+```
+
+### Sample Project Features
+
+The scaffolded project demonstrates all framework features:
+
+| Feature | Description |
+|---------|-------------|
+| **Research Worker** | Web search, note-taking, calculations (ReActPlanner) |
+| **Task Worker** | Task CRUD operations, weather lookup (ReActPlanner) |
+| **Orchestrator** | Routes requests to appropriate workers (WorkerRouterPlanner) |
+| **YAML Configuration** | Full v2 agent schema with environment variable support |
+| **Custom Tools** | 6 example tools showing the BaseTool pattern |
+| **Context Management** | Truncation, history limits, ENV overrides |
+
+### Project Structure
+
+```
+my_agent_project/
+├── configs/
+│   ├── agents/           # Agent YAML definitions
+│   ├── tools/            # Tool registrations
+│   ├── planners/         # Planner registrations
+│   ├── gateways/         # Inference gateway registrations
+│   └── ...               # Memory, policies, subscribers
+├── deployment/
+│   ├── factory.py        # AgentFactory for YAML-based creation
+│   └── registry.py       # Component discovery
+├── tools/                # Custom tool implementations
+├── run.py               # Main entry point
+├── .env.example         # Environment template
+└── README.md            # Detailed documentation
+```
+
+### CLI Commands
+
+```bash
+# Show help
+agent-framework --help
+
+# Create new project (default name: agent_project)
+agent-framework init
+
+# Create project with custom name
+agent-framework init my_custom_project
+
+# Show version
+agent-framework --version
+```
+
 ## Documentation
 
-- [Full Documentation](https://agentic-framework.readthedocs.io)
-- [API Reference](https://agentic-framework.readthedocs.io/api)
-- [Examples](https://github.com/akasa-ai/agentic-framework/tree/main/examples)
+- [Full Documentation](https://raviakasapu.github.io/agent_framework/)
+- [API Reference](https://raviakasapu.github.io/agent_framework/api)
+- [Examples](https://github.com/raviakasapu/agent_framework/tree/main/examples)
+- [Environment Variables](https://raviakasapu.github.io/agent_framework/guides/environment_variables)
 
 ## License
 
