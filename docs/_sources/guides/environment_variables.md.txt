@@ -204,6 +204,98 @@ Environment flags for WorkerRouterPlanner:
   - Purpose: Maximum number of conversation messages to include.
   - Default: `20`
 
+## Context Configuration
+
+The framework uses a YAML-based context configuration system (`configs/context_config.yaml`) that controls:
+- Truncation limits for various context types
+- History inclusion settings (conversation, traces, global updates)
+- Per-planner customization
+
+**Configuration File**: `src/agent_framework/configs/context_config.yaml`
+
+Environment variables take precedence over YAML config values.
+
+### Global Truncation Limits
+
+These ENV variables set truncation limits for all planners:
+
+- **AGENT_STRATEGIC_PLAN_TRUNCATE_LEN**
+  - Purpose: Maximum characters for strategic plan context.
+  - Default: `2000`
+
+- **AGENT_DIRECTOR_CONTEXT_TRUNCATE_LEN**
+  - Purpose: Maximum characters for director context.
+  - Default: `4000`
+
+- **AGENT_DATA_MODEL_CONTEXT_TRUNCATE_LEN**
+  - Purpose: Maximum characters for data model context.
+  - Default: `6000`
+
+- **AGENT_OBSERVATION_TRUNCATE_LEN**
+  - Purpose: Maximum characters for observation content.
+  - Default: `1500`
+
+- **AGENT_TOOL_ARGS_TRUNCATE_LEN**
+  - Purpose: Maximum characters for tool arguments display.
+  - Default: `500`
+
+- **AGENT_PREVIOUS_OUTPUT_TRUNCATE_LEN**
+  - Purpose: Maximum characters for previous output content.
+  - Default: `5000`
+
+- **AGENT_MANIFEST_TRUNCATE_LEN**
+  - Purpose: Maximum characters for manifest content.
+  - Default: `6000`
+
+### Global History Settings
+
+- **AGENT_MAX_CONVERSATION_TURNS**
+  - Purpose: Maximum number of conversation turns to include.
+  - Default: `10`
+
+- **AGENT_MAX_EXECUTION_TRACES**
+  - Purpose: Maximum number of execution traces to include.
+  - Default: `20`
+
+- **AGENT_INCLUDE_CONVERSATION**
+  - Purpose: Include conversation history in prompts.
+  - Values: `true`|`false`
+  - Default: `true`
+
+- **AGENT_INCLUDE_TRACES**
+  - Purpose: Include execution traces in prompts.
+  - Values: `true`|`false`
+  - Default: `true`
+
+- **AGENT_INCLUDE_GLOBAL_UPDATES**
+  - Purpose: Include global updates in prompts.
+  - Values: `true`|`false`
+  - Default: `true`
+
+### Truncation Logging
+
+- **AGENT_LOG_TRUNCATION**
+  - Purpose: Log truncation events for debugging context sizes.
+  - Values: `true`|`false`
+  - Default: `true`
+
+### Per-Planner Overrides (Strategic)
+
+- **AGENT_ORCHESTRATOR_MAX_HISTORY_TURNS**
+  - Purpose: Maximum conversation turns for strategic/orchestrator planner.
+  - Default: `8`
+
+- **STRATEGIC_INCLUDE_HISTORY_WITH_DIRECTOR**
+  - Purpose: Include conversation history when director context is present.
+  - Values: `true`|`false`
+  - Default: `false`
+
+### Per-Planner Overrides (Router)
+
+- **AGENT_ROUTER_STRATEGIC_PLAN_TRUNCATE_LEN**
+  - Purpose: Strategic plan truncation for router planner.
+  - Default: `1000`
+
 ## HITL – Human-in-the-Loop
 
 Require human approval before executing tools. Disabled by default.
@@ -286,6 +378,15 @@ GOOGLE_STRATEGIC_MODEL=models/gemini-1.5-pro
 - **Phoenix**: Defaults to `localhost:6006`
 - **OpenAI**: Defaults to `gpt-4o-mini` / `gpt-4o`
 - **Google**: Defaults to `models/gemini-1.5-flash` / `models/gemini-1.5-pro`
+- **Context Configuration**: Uses `configs/context_config.yaml` with ENV overrides
+  - Strategic plan: 2000 chars
+  - Director context: 4000 chars
+  - Data model context: 6000 chars
+  - Observations: 1500 chars
+  - Tool args: 500 chars
+  - Previous outputs: 5000 chars
+  - Manifest: 6000 chars
+  - Truncation logging: enabled
 
 ## Framework vs Implementation Variables
 

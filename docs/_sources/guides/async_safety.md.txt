@@ -254,6 +254,77 @@ result = await loop.run_in_executor(None, tool.execute, **args)  # ❌ No contex
 
 The framework handles executor context propagation automatically.
 
+## Async-Safe Memory System
+
+The framework's memory system uses `asyncio.Lock()` for proper async context isolation, preventing race conditions when multiple coroutines access memory concurrently.
+
+### Why `asyncio.Lock()` Instead of `threading.RLock()`?
+
+```python
+# ❌ BROKEN with asyncio:
+class SharedStateStore:
+    def __init__(self):
+        self._lock = threading.RLock()  # Thread lock - doesn't work with async!
+
+    def append_msg(self, namespace, msg):
+        with self._lock:
+            self._feeds[namespace].append(msg)
+```
+
+**Why it fails:**
+- `threading.RLock()` protects against concurrent **thread** access
+- In asyncio, multiple coroutines run in the **same thread**
+- Multiple coroutines can interleave **within** the lock section
+
+```python
+# ✅ FIXED with asyncio.Lock():
+class SharedStateStore:
+    def __init__(self):
+        self._lock = asyncio.Lock()  # Async-safe lock
+
+    async def append_msg(self, namespace, msg):
+        async with self._lock:
+            self._feeds[namespace].append(msg)
+```
+
+### Memory Methods Are Now Async
+
+All `BaseMemory` methods are now async:
+
+```python
+class BaseMemory(ABC):
+    @abstractmethod
+    async def add(self, message: Dict[str, Any]) -> None:
+        """Add a message to history (async)."""
+        pass
+
+    @abstractmethod
+    async def get_history(self) -> List[Dict[str, Any]]:
+        """Retrieve all history (async)."""
+        pass
+```
+
+### Usage
+
+```python
+# All memory operations must be awaited
+await memory.add({"type": "task", "content": "..."})
+history = await memory.get_history()
+```
+
+### Concurrent Request Safety
+
+With `asyncio.Lock()`, concurrent memory operations are properly serialized:
+
+```
+Time 0: Request A starts append_msg()
+Time 1: Request A acquires lock
+Time 2: Request B starts append_msg()
+Time 3: Request B waits for lock (blocked) ✅
+Time 4: Request A completes, releases lock
+Time 5: Request B acquires lock, proceeds safely ✅
+```
+
 ## Summary
 
 The framework ensures async-safety by:
@@ -263,6 +334,11 @@ The framework ensures async-safety by:
 - ✅ Explicitly propagating context to `ThreadPoolExecutor` threads
 - ✅ Providing `request_context` service for easy access
 - ✅ Supporting YAML variable expansion from request context
+- ✅ Using `asyncio.Lock()` in `SharedStateStore` for memory operations
+- ✅ Making all `BaseMemory` methods async
 
-**Key Takeaway:** Always use `contextvars` (not `threading.local()`) for request-scoped data in async Python applications.
+**Key Takeaways:**
+- Always use `contextvars` (not `threading.local()`) for request-scoped data
+- Always use `asyncio.Lock()` (not `threading.RLock()`) for async-safe locking
+- Always `await` memory operations (`add()`, `get_history()`)
 

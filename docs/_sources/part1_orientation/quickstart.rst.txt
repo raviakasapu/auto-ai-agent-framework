@@ -29,8 +29,43 @@ Set your API key::
 
    export OPENAI_API_KEY="sk-..."
 
-Your First Agent
-----------------
+Scaffold a Sample Project (Recommended)
+---------------------------------------
+
+The fastest way to get started is using the CLI to create a complete sample project::
+
+   # Create a new project
+   agent-framework init my_agent_project
+
+   # Navigate to the project
+   cd my_agent_project
+
+   # Setup environment
+   cp .env.example .env
+   # Edit .env and add your OPENAI_API_KEY
+
+   # Run the sample app
+   python run.py                           # Interactive mode
+   python run.py "Search for Python"       # Single task
+   python run.py --test                    # Run test scenarios
+
+The sample project includes:
+
+- **Research Worker**: Web search, note-taking, calculations (ReActPlanner)
+- **Task Worker**: Task CRUD, weather lookup (ReActPlanner)
+- **Orchestrator**: Routes requests to workers (WorkerRouterPlanner)
+- **YAML Configuration**: Full v2 agent schema with environment variables
+- **Custom Tools**: 6 example tools demonstrating the BaseTool pattern
+
+CLI Commands::
+
+   agent-framework --help           # Show help
+   agent-framework init             # Create project (default: agent_project)
+   agent-framework init my_project  # Create with custom name
+   agent-framework --version        # Show version
+
+Your First Agent (From Scratch)
+-------------------------------
 
 Create a file ``my_first_agent.py``:
 

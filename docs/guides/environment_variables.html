@@ -9,7 +9,7 @@
   <title>Environment Variables &mdash; AI Agent Framework 2.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=5647065f" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9dad161f" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -52,6 +52,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/overview.html#architecture-at-a-glance">Architecture at a Glance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/overview.html#public-api">Public API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/overview.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../part1_orientation/overview.html#getting-started-with-a-sample-project">Getting Started with a Sample Project</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../part1_orientation/overview.html#sample-project-features">Sample Project Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../part1_orientation/overview.html#cli-commands">CLI Commands</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/overview.html#quick-example">Quick Example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/overview.html#what-s-next">What’s Next?</a></li>
 </ul>
@@ -59,7 +64,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../part1_orientation/quickstart.html">Quickstart (5 minutes)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/quickstart.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/quickstart.html#installation">Installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../part1_orientation/quickstart.html#your-first-agent">Your First Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../part1_orientation/quickstart.html#scaffold-a-sample-project-recommended">Scaffold a Sample Project (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../part1_orientation/quickstart.html#your-first-agent-from-scratch">Your First Agent (From Scratch)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/quickstart.html#using-yaml-configuration">Using YAML Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/quickstart.html#running-the-test-suite">Running the Test Suite</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part1_orientation/quickstart.html#project-structure">Project Structure</a></li>
@@ -126,14 +132,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../part2_runtime/memory.html">Memory &amp; Message Stores</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../part2_runtime/memory.html#async-safe-memory">Async-Safe Memory</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part2_runtime/memory.html#basememory-interface">BaseMemory Interface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part2_runtime/memory.html#memory-implementations">Memory Implementations</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../part2_runtime/memory.html#simplememory">SimpleMemory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../part2_runtime/memory.html#inmemorymemory">InMemoryMemory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../part2_runtime/memory.html#sharedinmemorymemory">SharedInMemoryMemory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../part2_runtime/memory.html#messagestorememory">MessageStoreMemory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../part2_runtime/memory.html#hierarchicalmessagestorememory">HierarchicalMessageStoreMemory</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../part2_runtime/memory.html#async-safe-sharedstatestore">Async-Safe SharedStateStore</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part2_runtime/memory.html#message-format">Message Format</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../part2_runtime/memory.html#conversation-types">Conversation Types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../part2_runtime/memory.html#execution-trace-types">Execution Trace Types</a></li>
@@ -148,6 +156,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../part2_runtime/memory.html#history-filtering">History Filtering</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../part2_runtime/memory.html#migration-guide">Migration Guide</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part2_runtime/memory.html#best-practices">Best Practices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../part2_runtime/memory.html#complete-example">Complete Example</a></li>
 </ul>
@@ -792,19 +801,119 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/index.html#framework-generic-library">Framework (Generic Library)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#core-classes">Core Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#decorators">Decorators</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#planners">Planners</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#memory">Memory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#message-store-memory">Message Store Memory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#gateways">Gateways</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#policies">Policies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#services">Services</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#observability">Observability</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#progress-filters">Progress Filters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#prompt-managers">Prompt Managers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.base">Core Classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.Action"><code class="docutils literal notranslate"><span class="pre">Action</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BaseEventSubscriber"><code class="docutils literal notranslate"><span class="pre">BaseEventSubscriber</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BaseInferenceGateway"><code class="docutils literal notranslate"><span class="pre">BaseInferenceGateway</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BaseJobStore"><code class="docutils literal notranslate"><span class="pre">BaseJobStore</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BaseMemory"><code class="docutils literal notranslate"><span class="pre">BaseMemory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BaseMessageStore"><code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BasePlanner"><code class="docutils literal notranslate"><span class="pre">BasePlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BaseProgressHandler"><code class="docutils literal notranslate"><span class="pre">BaseProgressHandler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BasePromptManager"><code class="docutils literal notranslate"><span class="pre">BasePromptManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.BaseTool"><code class="docutils literal notranslate"><span class="pre">BaseTool</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.base.FinalResponse"><code class="docutils literal notranslate"><span class="pre">FinalResponse</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.core.agent.Agent"><code class="docutils literal notranslate"><span class="pre">Agent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.core.manager_v2.ManagerAgent"><code class="docutils literal notranslate"><span class="pre">ManagerAgent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.core.events.EventBus"><code class="docutils literal notranslate"><span class="pre">EventBus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.core.events.LoggingSubscriber"><code class="docutils literal notranslate"><span class="pre">LoggingSubscriber</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.decorators">Decorators</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.decorators.FunctionalTool"><code class="docutils literal notranslate"><span class="pre">FunctionalTool</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.decorators.tool"><code class="docutils literal notranslate"><span class="pre">tool()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.components.planners">Planners</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.ChatPlanner"><code class="docutils literal notranslate"><span class="pre">ChatPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.LLMRouterPlanner"><code class="docutils literal notranslate"><span class="pre">LLMRouterPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.ManagerScriptPlanner"><code class="docutils literal notranslate"><span class="pre">ManagerScriptPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.MathPlanner"><code class="docutils literal notranslate"><span class="pre">MathPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.ReActPlanner"><code class="docutils literal notranslate"><span class="pre">ReActPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.SingleActionPlanner"><code class="docutils literal notranslate"><span class="pre">SingleActionPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.StaticPlanner"><code class="docutils literal notranslate"><span class="pre">StaticPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.StrategicDecomposerPlanner"><code class="docutils literal notranslate"><span class="pre">StrategicDecomposerPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.StrategicPlanner"><code class="docutils literal notranslate"><span class="pre">StrategicPlanner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.planners.WorkerRouterPlanner"><code class="docutils literal notranslate"><span class="pre">WorkerRouterPlanner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.components.memory">Memory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.memory.HierarchicalSharedMemory"><code class="docutils literal notranslate"><span class="pre">HierarchicalSharedMemory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.memory.InMemoryMemory"><code class="docutils literal notranslate"><span class="pre">InMemoryMemory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.memory.SharedInMemoryMemory"><code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.memory.SharedStateStore"><code class="docutils literal notranslate"><span class="pre">SharedStateStore</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.components.message_store_memory">Message Store Memory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.message_store_memory.HierarchicalMessageStoreMemory"><code class="docutils literal notranslate"><span class="pre">HierarchicalMessageStoreMemory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.components.message_store_memory.MessageStoreMemory"><code class="docutils literal notranslate"><span class="pre">MessageStoreMemory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.gateways.inference">Gateways</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.gateways.inference.GoogleAIGateway"><code class="docutils literal notranslate"><span class="pre">GoogleAIGateway</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.gateways.inference.MockInferenceGateway"><code class="docutils literal notranslate"><span class="pre">MockInferenceGateway</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.gateways.inference.OpenAIGateway"><code class="docutils literal notranslate"><span class="pre">OpenAIGateway</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.policies.base">Policies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.base.CheckpointPolicy"><code class="docutils literal notranslate"><span class="pre">CheckpointPolicy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.base.CompletionDetector"><code class="docutils literal notranslate"><span class="pre">CompletionDetector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.base.FollowUpPolicy"><code class="docutils literal notranslate"><span class="pre">FollowUpPolicy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.base.HITLPolicy"><code class="docutils literal notranslate"><span class="pre">HITLPolicy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.base.HistoryFilter"><code class="docutils literal notranslate"><span class="pre">HistoryFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.base.LoopPreventionPolicy"><code class="docutils literal notranslate"><span class="pre">LoopPreventionPolicy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.base.TerminationPolicy"><code class="docutils literal notranslate"><span class="pre">TerminationPolicy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.presets.get_preset"><code class="docutils literal notranslate"><span class="pre">get_preset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.policies.presets.list_presets"><code class="docutils literal notranslate"><span class="pre">list_presets()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.services.request_context">Services</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.services.request_context.clear_request_context"><code class="docutils literal notranslate"><span class="pre">clear_request_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.services.request_context.get_from_context"><code class="docutils literal notranslate"><span class="pre">get_from_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.services.request_context.get_request_context"><code class="docutils literal notranslate"><span class="pre">get_request_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.services.request_context.set_request_context"><code class="docutils literal notranslate"><span class="pre">set_request_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.services.request_context.update_request_context"><code class="docutils literal notranslate"><span class="pre">update_request_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.services.context_builder.ContextBuilder"><code class="docutils literal notranslate"><span class="pre">ContextBuilder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.services.context_builder.register_datamodel_service"><code class="docutils literal notranslate"><span class="pre">register_datamodel_service()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.observability.subscribers">Observability</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.observability.subscribers.LangfuseSubscriber"><code class="docutils literal notranslate"><span class="pre">LangfuseSubscriber</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.observability.subscribers.PhoenixSubscriber"><code class="docutils literal notranslate"><span class="pre">PhoenixSubscriber</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.logging.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.logging.set_level"><code class="docutils literal notranslate"><span class="pre">set_level()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.progress_filters">Progress Filters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.progress_filters.normalize_event_names"><code class="docutils literal notranslate"><span class="pre">normalize_event_names()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.progress_filters.resolve_frontend_allowlist"><code class="docutils literal notranslate"><span class="pre">resolve_frontend_allowlist()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.prompt_managers.managers">Prompt Managers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.prompt_managers.managers.StaticPromptManager"><code class="docutils literal notranslate"><span class="pre">StaticPromptManager</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../api/index.html#flows">Flows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/index.html#utilities">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/index.html#module-agent_framework.utils.manifest_generator">Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.manifest_generator.generate_manifest"><code class="docutils literal notranslate"><span class="pre">generate_manifest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.manifest_generator.save_manifest"><code class="docutils literal notranslate"><span class="pre">save_manifest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#expected-message-format">Expected Message Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_action_entry"><code class="docutils literal notranslate"><span class="pre">create_action_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_assistant_message"><code class="docutils literal notranslate"><span class="pre">create_assistant_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_delegation_entry"><code class="docutils literal notranslate"><span class="pre">create_delegation_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_director_context_entry"><code class="docutils literal notranslate"><span class="pre">create_director_context_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_error_entry"><code class="docutils literal notranslate"><span class="pre">create_error_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_final_entry"><code class="docutils literal notranslate"><span class="pre">create_final_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_global_observation_entry"><code class="docutils literal notranslate"><span class="pre">create_global_observation_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_observation_entry"><code class="docutils literal notranslate"><span class="pre">create_observation_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_strategic_plan_entry"><code class="docutils literal notranslate"><span class="pre">create_strategic_plan_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_synthesis_entry"><code class="docutils literal notranslate"><span class="pre">create_synthesis_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_task_entry"><code class="docutils literal notranslate"><span class="pre">create_task_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.create_user_message"><code class="docutils literal notranslate"><span class="pre">create_user_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.get_message_type_info"><code class="docutils literal notranslate"><span class="pre">get_message_type_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html#agent_framework.utils.message_builder.prepare_history_from_job_data"><code class="docutils literal notranslate"><span class="pre">prepare_history_from_job_data()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/index.html#deployment-layer">Deployment Layer</a></li>
@@ -1127,6 +1236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="async_safety.html#yaml-variable-expansion">YAML Variable Expansion</a></li>
 <li class="toctree-l4"><a class="reference internal" href="async_safety.html#concurrent-request-isolation">Concurrent Request Isolation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="async_safety.html#common-pitfalls">Common Pitfalls</a></li>
+<li class="toctree-l4"><a class="reference internal" href="async_safety.html#async-safe-memory-system">Async-Safe Memory System</a></li>
 <li class="toctree-l4"><a class="reference internal" href="async_safety.html#summary">Summary</a></li>
 </ul>
 </li>
@@ -1257,6 +1367,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#logging-observability">Logging &amp; Observability</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#react-prompt-controls">ReAct Prompt Controls</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#router-prompt-controls">Router Prompt Controls</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#context-configuration">Context Configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#hitl-human-in-the-loop">HITL – Human-in-the-Loop</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quick-recipes">Quick Recipes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#defaults-summary">Defaults Summary</a></li>
@@ -1591,6 +1702,144 @@
 </li>
 </ul>
 </section>
+<section id="context-configuration">
+<h2>Context Configuration<a class="headerlink" href="#context-configuration" title="Link to this heading"></a></h2>
+<p>The framework uses a YAML-based context configuration system (<code class="docutils literal notranslate"><span class="pre">configs/context_config.yaml</span></code>) that controls:</p>
+<ul class="simple">
+<li><p>Truncation limits for various context types</p></li>
+<li><p>History inclusion settings (conversation, traces, global updates)</p></li>
+<li><p>Per-planner customization</p></li>
+</ul>
+<p><strong>Configuration File</strong>: <code class="docutils literal notranslate"><span class="pre">src/agent_framework/configs/context_config.yaml</span></code></p>
+<p>Environment variables take precedence over YAML config values.</p>
+<section id="global-truncation-limits">
+<h3>Global Truncation Limits<a class="headerlink" href="#global-truncation-limits" title="Link to this heading"></a></h3>
+<p>These ENV variables set truncation limits for all planners:</p>
+<ul class="simple">
+<li><p><strong>AGENT_STRATEGIC_PLAN_TRUNCATE_LEN</strong></p>
+<ul>
+<li><p>Purpose: Maximum characters for strategic plan context.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">2000</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_DIRECTOR_CONTEXT_TRUNCATE_LEN</strong></p>
+<ul>
+<li><p>Purpose: Maximum characters for director context.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">4000</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_DATA_MODEL_CONTEXT_TRUNCATE_LEN</strong></p>
+<ul>
+<li><p>Purpose: Maximum characters for data model context.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">6000</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_OBSERVATION_TRUNCATE_LEN</strong></p>
+<ul>
+<li><p>Purpose: Maximum characters for observation content.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">1500</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_TOOL_ARGS_TRUNCATE_LEN</strong></p>
+<ul>
+<li><p>Purpose: Maximum characters for tool arguments display.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">500</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_PREVIOUS_OUTPUT_TRUNCATE_LEN</strong></p>
+<ul>
+<li><p>Purpose: Maximum characters for previous output content.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">5000</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_MANIFEST_TRUNCATE_LEN</strong></p>
+<ul>
+<li><p>Purpose: Maximum characters for manifest content.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">6000</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="global-history-settings">
+<h3>Global History Settings<a class="headerlink" href="#global-history-settings" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>AGENT_MAX_CONVERSATION_TURNS</strong></p>
+<ul>
+<li><p>Purpose: Maximum number of conversation turns to include.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_MAX_EXECUTION_TRACES</strong></p>
+<ul>
+<li><p>Purpose: Maximum number of execution traces to include.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">20</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_INCLUDE_CONVERSATION</strong></p>
+<ul>
+<li><p>Purpose: Include conversation history in prompts.</p></li>
+<li><p>Values: <code class="docutils literal notranslate"><span class="pre">true</span></code>|<code class="docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_INCLUDE_TRACES</strong></p>
+<ul>
+<li><p>Purpose: Include execution traces in prompts.</p></li>
+<li><p>Values: <code class="docutils literal notranslate"><span class="pre">true</span></code>|<code class="docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>AGENT_INCLUDE_GLOBAL_UPDATES</strong></p>
+<ul>
+<li><p>Purpose: Include global updates in prompts.</p></li>
+<li><p>Values: <code class="docutils literal notranslate"><span class="pre">true</span></code>|<code class="docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="truncation-logging">
+<h3>Truncation Logging<a class="headerlink" href="#truncation-logging" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>AGENT_LOG_TRUNCATION</strong></p>
+<ul>
+<li><p>Purpose: Log truncation events for debugging context sizes.</p></li>
+<li><p>Values: <code class="docutils literal notranslate"><span class="pre">true</span></code>|<code class="docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="per-planner-overrides-strategic">
+<h3>Per-Planner Overrides (Strategic)<a class="headerlink" href="#per-planner-overrides-strategic" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>AGENT_ORCHESTRATOR_MAX_HISTORY_TURNS</strong></p>
+<ul>
+<li><p>Purpose: Maximum conversation turns for strategic/orchestrator planner.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">8</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>STRATEGIC_INCLUDE_HISTORY_WITH_DIRECTOR</strong></p>
+<ul>
+<li><p>Purpose: Include conversation history when director context is present.</p></li>
+<li><p>Values: <code class="docutils literal notranslate"><span class="pre">true</span></code>|<code class="docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">false</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="per-planner-overrides-router">
+<h3>Per-Planner Overrides (Router)<a class="headerlink" href="#per-planner-overrides-router" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>AGENT_ROUTER_STRATEGIC_PLAN_TRUNCATE_LEN</strong></p>
+<ul>
+<li><p>Purpose: Strategic plan truncation for router planner.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">1000</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
 <section id="hitl-human-in-the-loop">
 <h2>HITL – Human-in-the-Loop<a class="headerlink" href="#hitl-human-in-the-loop" title="Link to this heading"></a></h2>
 <p>Require human approval before executing tools. Disabled by default.</p>
@@ -1691,6 +1940,18 @@
 <li><p><strong>Phoenix</strong>: Defaults to <code class="docutils literal notranslate"><span class="pre">localhost:6006</span></code></p></li>
 <li><p><strong>OpenAI</strong>: Defaults to <code class="docutils literal notranslate"><span class="pre">gpt-4o-mini</span></code> / <code class="docutils literal notranslate"><span class="pre">gpt-4o</span></code></p></li>
 <li><p><strong>Google</strong>: Defaults to <code class="docutils literal notranslate"><span class="pre">models/gemini-1.5-flash</span></code> / <code class="docutils literal notranslate"><span class="pre">models/gemini-1.5-pro</span></code></p></li>
+<li><p><strong>Context Configuration</strong>: Uses <code class="docutils literal notranslate"><span class="pre">configs/context_config.yaml</span></code> with ENV overrides</p>
+<ul>
+<li><p>Strategic plan: 2000 chars</p></li>
+<li><p>Director context: 4000 chars</p></li>
+<li><p>Data model context: 6000 chars</p></li>
+<li><p>Observations: 1500 chars</p></li>
+<li><p>Tool args: 500 chars</p></li>
+<li><p>Previous outputs: 5000 chars</p></li>
+<li><p>Manifest: 6000 chars</p></li>
+<li><p>Truncation logging: enabled</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="framework-vs-implementation-variables">
