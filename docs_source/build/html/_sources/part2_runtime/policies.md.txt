@@ -197,7 +197,7 @@ policy = DefaultFollowUpPolicy(
 
 ## Policy Presets
 
-Use presets for common configurations:
+Use presets for common configurations (see :doc:`policy-presets` for full reference):
 
 ```python
 from agent_framework import get_preset
@@ -340,7 +340,7 @@ Or use a preset:
 
 ```yaml
 policies:
-  preset: simple
+  $preset: simple
 ```
 
 ## Custom Policy Example
@@ -386,4 +386,3 @@ register_policy("DomainCompletionDetector", DomainCompletionDetector)
 4. **Configure checkpoints** for long-running tasks
 5. **Tune loop prevention** based on task complexity
 6. **Log policy decisions** for debugging
-

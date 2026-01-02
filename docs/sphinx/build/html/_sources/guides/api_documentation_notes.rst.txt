@@ -1,8 +1,0 @@
-API Documentation (Legacy Notes)
-================================
-
-This note replaces ``docs/API_DOCUMENTATION.md`` with a concise pointer:
-
-- Prefer the live docs server endpoints described in :doc:`api_overview`.
-- For code-level documentation, use the Sphinx Reference at :doc:`../api/index`.
-

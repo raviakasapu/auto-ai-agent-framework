@@ -1,10 +1,27 @@
-# Planners & Gateways
+# Planners Guide
 
-This chapter covers planner implementations and LLM gateways.
+Planners are the reasoning engine of agents. They analyze tasks, decide on actions, and coordinate tool usage.
+
+## Overview
+
+The planner is configured in the `spec.planner` section:
+
+```yaml
+spec:
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai
+      use_function_calling: true
+      system_prompt: |
+        You are a helpful assistant.
+```
+
+---
 
 ## BasePlanner Interface
 
-All planners implement the `BasePlanner` interface:
+All planners implement the same interface so agents can swap implementations freely:
 
 ```python
 from agent_framework import BasePlanner, Action, FinalResponse
@@ -12,41 +29,259 @@ from agent_framework import BasePlanner, Action, FinalResponse
 class BasePlanner(ABC):
     @abstractmethod
     def plan(
-        self, 
-        task_description: str, 
-        history: List[Dict[str, Any]]
+        self,
+        task_description: str,
+        history: List[Dict[str, Any]],
     ) -> Union[Action, List[Action], FinalResponse]:
         """Plan the next step(s) for the agent."""
-        pass
+        raise NotImplementedError
 ```
 
-### Return Types
+Return values:
 
 | Return Type | Meaning |
 |-------------|---------|
 | `Action` | Execute one tool, then re-plan |
-| `List[Action]` | Execute multiple tools in parallel, then re-plan |
-| `FinalResponse` | Task complete, stop execution |
+| `List[Action]` | Run multiple tools in parallel |
+| `FinalResponse` | Task complete; return to caller |
 
-## Planner Implementations
+---
 
-### StaticPlanner
+## Available Planners
 
-Always returns the same action based on keyword matching:
+| Planner | Use Case | Agent Type |
+|---------|----------|------------|
+| `ReActPlanner` | Tool-using agents with reasoning loops | Agent |
+| `LLMRouterPlanner` | Lightweight tool routing without full ReAct | Agent |
+| `ChatPlanner` | Conversational agents without tools | Agent |
+| `StaticPlanner` | Deterministic single-tool responses | Agent |
+| `SingleActionPlanner` | Always call the same action once | Agent |
+| `WorkerRouterPlanner` | Delegate to worker agents | ManagerAgent |
+| `StrategicPlanner` | Create high-level orchestrator plans | ManagerAgent |
+| `StrategicDecomposerPlanner` | Break orchestrator phases into steps | ManagerAgent |
+| `ManagerScriptPlanner` | Generate scripted execution plans | ManagerAgent |
+
+---
+
+## ReActPlanner
+
+Implements the ReAct (Reasoning + Acting) pattern for tool-using agents.
+
+### Configuration
+
+```yaml
+spec:
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai
+      use_function_calling: true
+      max_iterations: 10
+      system_prompt: |
+        You are a helpful research assistant.
+        Use the available tools to complete tasks.
+        Always verify your findings before responding.
+```
+
+### Config Options
+
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `inference_gateway` | string | Yes | - | Reference to gateway in resources |
+| `use_function_calling` | bool | No | false | Use OpenAI function calling |
+| `max_iterations` | int | No | 10 | Maximum reasoning iterations |
+| `system_prompt` | string | Yes | - | System instructions for the LLM |
+
+### How It Works
+
+1. **Observe**: Receives task and current context
+2. **Think**: Reasons about what action to take
+3. **Act**: Selects and calls a tool
+4. **Observe**: Receives tool result
+5. **Repeat**: Until task is complete or max iterations
+
+### Function Calling Mode
+
+When `use_function_calling: true`:
+- Uses OpenAI's native function calling
+- Tools are passed as function definitions
+- More reliable tool parameter extraction
+
+When `use_function_calling: false`:
+- Uses text-based tool selection
+- Parses tool calls from LLM output
+- Works with any LLM provider
+
+### Example
+
+```yaml
+apiVersion: agent.framework/v2
+kind: Agent
+
+metadata:
+  name: ResearchAgent
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: gpt-4o-mini
+        api_key: ${OPENAI_API_KEY}
+        use_function_calling: true
+
+  tools:
+    - name: web_search
+      type: MockSearchTool
+      config: {}
+
+spec:
+  policies:
+    $preset: simple
+
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai
+      use_function_calling: true
+      max_iterations: 10
+      system_prompt: |
+        You are a research assistant.
+        1. Search for information using web_search
+        2. Analyze and summarize findings
+        3. Provide clear, factual responses
+
+  memory:
+    $preset: worker
+
+  tools: [web_search]
+```
+
+---
+
+## WorkerRouterPlanner
+
+Routes tasks to appropriate worker agents in a ManagerAgent.
+
+### Configuration
+
+```yaml
+spec:
+  planner:
+    type: WorkerRouterPlanner
+    config:
+      inference_gateway: openai-orchestrator
+      worker_keys: [research-worker, task-worker]
+      default_worker: research-worker
+      system_prompt: |
+        You are a task router. Analyze requests and route them:
+
+        Available workers:
+        - research-worker: Information search and research
+        - task-worker: Task creation and management
+
+        Return JSON: {"worker": "<key>", "reason": "..."}
+```
+
+### Config Options
+
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `inference_gateway` | string | Yes | - | Reference to gateway |
+| `worker_keys` | list | Yes | - | List of available worker names |
+| `default_worker` | string | Yes | - | Fallback worker |
+| `system_prompt` | string | Yes | - | Routing instructions |
+
+### How It Works
+
+1. **Analyze**: Reviews the incoming task
+2. **Route**: Selects the best worker for the task
+3. **Delegate**: Passes task to selected worker
+4. **Collect**: Gathers worker response
+5. **Follow-up**: May initiate additional phases
+
+### Routing Response Format
+
+The planner should return JSON:
+
+```json
+{
+  "worker": "research-worker",
+  "reason": "Task requires information lookup"
+}
+```
+
+### Example
+
+```yaml
+apiVersion: agent.framework/v2
+kind: ManagerAgent
+
+metadata:
+  name: Orchestrator
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: gpt-4o
+        api_key: ${OPENAI_API_KEY}
+
+spec:
+  policies:
+    $preset: manager_with_followups
+
+  planner:
+    type: WorkerRouterPlanner
+    config:
+      inference_gateway: openai
+      worker_keys: [research, tasks, weather]
+      default_worker: research
+      system_prompt: |
+        You route requests to specialized workers:
+
+        Workers:
+        - research: Web search, information gathering, note-taking
+        - tasks: Create tasks, list tasks, mark complete
+        - weather: Weather lookups for any location
+
+        Analyze the user request and select the best worker.
+        If unclear, use the default (research).
+
+        Response format: {"worker": "<key>", "reason": "..."}
+
+  memory:
+    $preset: manager
+
+  workers:
+    - name: research
+      config_path: configs/agents/research_worker.yaml
+    - name: tasks
+      config_path: configs/agents/task_worker.yaml
+    - name: weather
+      config_path: configs/agents/weather_worker.yaml
+```
+
+---
+
+## StaticPlanner
+
+Returns deterministic actions based on keyword matching. Helpful for testing and deterministic flows.
 
 ```python
 from agent_framework.components.planners import StaticPlanner
 
 planner = StaticPlanner(keywords=["search", "find"])
-# If task contains "search" or "find" → Action(tool_name="mock_search")
+# If task contains keywords → Action(tool_name="mock_search")
 # Otherwise → FinalResponse
 ```
 
-**Use case**: Testing, deterministic workflows.
+---
 
-### SingleActionPlanner
+## SingleActionPlanner
 
-Always returns a specific configured action:
+Always executes a predefined tool (optionally terminating afterward).
 
 ```python
 from agent_framework.components.planners import SingleActionPlanner
@@ -54,15 +289,15 @@ from agent_framework.components.planners import SingleActionPlanner
 planner = SingleActionPlanner(
     tool_name="list_tables",
     tool_args={"schema": "public"},
-    terminal=True,  # Stop after execution
+    terminal=True,  # Stop after the action
 )
 ```
 
-**Use case**: Single-tool agents, terminal actions.
+---
 
-### LLMRouterPlanner
+## LLMRouterPlanner
 
-Routes tasks to tools using LLM:
+Lightweight router that asks an LLM which tool to run without a full ReAct loop.
 
 ```python
 from agent_framework.components.planners import LLMRouterPlanner
@@ -78,41 +313,11 @@ planner = LLMRouterPlanner(
 )
 ```
 
-**Use case**: Simple tool selection without ReAct loop.
+---
 
-### ReActPlanner
+## ChatPlanner
 
-Full Reasoning + Acting loop with LLM:
-
-```python
-from agent_framework.components.planners import ReActPlanner
-from agent_framework.gateways.inference import OpenAIGateway
-from agent_framework.decorators import tool
-
-@tool
-def calculator(expression: str) -> str:
-    return str(eval(expression))
-
-planner = ReActPlanner(
-    inference_gateway=OpenAIGateway(model="gpt-4o"),
-    tools=[calculator],
-    system_prompt="You are a helpful assistant with access to tools.",
-    include_history=True,
-    max_history_messages=20,
-)
-```
-
-**Features**:
-- OpenAI function calling format
-- History filtering for context
-- Automatic schema generation from tools
-- Supports parallel tool calls
-
-**Use case**: Worker agents that need reasoning.
-
-### ChatPlanner
-
-Conversational responses without tools:
+Ideal for conversational agents that do not call tools.
 
 ```python
 from agent_framework.components.planners import ChatPlanner
@@ -121,14 +326,15 @@ planner = ChatPlanner(
     inference_gateway=OpenAIGateway(model="gpt-4o-mini"),
     system_prompt="You are a helpful chat assistant.",
 )
-# Always returns FinalResponse with chat message
 ```
 
-**Use case**: Chat-only agents, off-topic handling.
+Always returns a `FinalResponse` message.
 
-### StrategicPlanner
+---
 
-Creates multi-phase strategic plans for orchestrators:
+## StrategicPlanner
+
+Creates multi-phase plans for orchestrator agents.
 
 ```python
 from agent_framework.components.planners import StrategicPlanner
@@ -140,25 +346,11 @@ planner = StrategicPlanner(
 )
 ```
 
-**Output format**:
-```json
-{
-  "plan": {
-    "phases": [
-      {"name": "Analyze", "worker": "analysis_manager", "goals": "..."},
-      {"name": "Design", "worker": "design_manager", "goals": "..."}
-    ],
-    "primary_worker": "analysis_manager",
-    "rationale": "..."
-  }
-}
-```
+---
 
-**Use case**: Top-level orchestrators.
+## StrategicDecomposerPlanner
 
-### StrategicDecomposerPlanner
-
-Breaks orchestrator phases into actionable steps:
+Used by domain managers to break orchestrator phases into actionable steps.
 
 ```python
 from agent_framework.components.planners import StrategicDecomposerPlanner
@@ -166,30 +358,15 @@ from agent_framework.components.planners import StrategicDecomposerPlanner
 planner = StrategicDecomposerPlanner(
     worker_keys=["reader", "analyzer", "validator"],
     inference_gateway=OpenAIGateway(model="gpt-4o-mini"),
-    manager_worker_key="analysis_manager",  # Identifies this manager
+    manager_worker_key="analysis_manager",
 )
 ```
 
-**Use case**: Domain managers.
+---
 
-### WorkerRouterPlanner
+## ManagerScriptPlanner
 
-Routes to workers with explicit delegation:
-
-```python
-from agent_framework.components.planners import WorkerRouterPlanner
-
-planner = WorkerRouterPlanner(
-    worker_keys=["reader", "writer"],
-    inference_gateway=OpenAIGateway(model="gpt-4o-mini"),
-)
-```
-
-**Use case**: Simple manager delegation.
-
-### ManagerScriptPlanner
-
-Creates detailed script plans for workers:
+Generates detailed scripts for workers to follow.
 
 ```python
 from agent_framework.components.planners import ManagerScriptPlanner
@@ -200,19 +377,11 @@ planner = ManagerScriptPlanner(
 )
 ```
 
-**Use case**: Script-based worker execution.
-
-## History Filtering
-
-Planners use history filters to select relevant context:
-
-| Planner | Filter | Purpose |
-|---------|--------|---------|
-| `StrategicPlanner` | `OrchestratorHistoryFilter` | Conversation only |
-| `StrategicDecomposerPlanner` | `ManagerHistoryFilter` | Previous phase synthesis |
-| `ReActPlanner` | `WorkerHistoryFilter` | Current turn traces |
+---
 
 ## Inference Gateways
+
+Planners require an inference gateway for LLM access.
 
 ### BaseInferenceGateway
 
@@ -222,140 +391,329 @@ from agent_framework import BaseInferenceGateway
 class BaseInferenceGateway(ABC):
     @abstractmethod
     def invoke(self, prompt: Union[str, List[Dict[str, Any]]]) -> str:
-        """Send prompt to LLM and return response."""
-        pass
+        """Send prompt to the LLM and return the response."""
+        raise NotImplementedError
 ```
 
 ### OpenAIGateway
 
-```python
-from agent_framework.gateways.inference import OpenAIGateway
-
-gateway = OpenAIGateway(
-    model="gpt-4o",
-    temperature=0.7,
-    max_tokens=4096,
-    api_key="sk-...",  # Or use OPENAI_API_KEY env var
-)
-
-# Simple invocation
-response = gateway.invoke("What is 2+2?")
-
-# With messages list
-response = gateway.invoke([
-    {"role": "system", "content": "You are helpful."},
-    {"role": "user", "content": "Hello!"},
-])
+```yaml
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        api_key: ${OPENAI_API_KEY}
+        model: gpt-4o-mini
+        temperature: 0.1
+        max_tokens: 4096
+        use_function_calling: true
+        timeout: 30
 ```
 
-**Features**:
-- Automatic retry with backoff
-- Cost tracking per call
-- Token usage metrics
-- OpenTelemetry tracing integration
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `api_key` | string | Required | OpenAI API key |
+| `model` | string | Required | Model name |
+| `temperature` | float | 0.7 | Sampling temperature |
+| `max_tokens` | int | 4096 | Maximum response tokens |
+| `use_function_calling` | bool | false | Enable function calling |
+| `timeout` | int | 30 | Request timeout (seconds) |
 
-### GoogleAIGateway
+### AnthropicGateway
 
-```python
-from agent_framework.gateways.inference import GoogleAIGateway
-
-gateway = GoogleAIGateway(
-    model="gemini-1.5-pro",
-    api_key="...",  # Or use GOOGLE_API_KEY env var
-)
+```yaml
+resources:
+  inference_gateways:
+    - name: anthropic
+      type: AnthropicGateway
+      config:
+        api_key: ${ANTHROPIC_API_KEY}
+        model: claude-3-opus-20240229
+        temperature: 0.1
+        max_tokens: 4096
 ```
 
 ### MockGateway
 
-```python
-from agent_framework.gateways.inference import MockGateway
-
-gateway = MockGateway(
-    responses=["Response 1", "Response 2"],
-    # Cycles through responses
-)
-```
-
-**Use case**: Testing without API calls.
-
-## YAML Configuration
+For testing without API calls:
 
 ```yaml
-spec:
-  planner:
-    type: ReActPlanner
-    config:
-      inference_gateway: openai-main
-      system_prompt: "You are a helpful assistant."
-      include_history: true
-      max_history_messages: 20
-
-# Gateway defined in resources
 resources:
-  gateways:
-    - name: openai-main
+  inference_gateways:
+    - name: mock
+      type: MockGateway
+      config: {}
+```
+
+---
+
+## History Filtering
+
+Planners apply role-specific filters so prompts stay focused:
+
+| Planner | Filter | Purpose |
+|---------|--------|---------|
+| `StrategicPlanner` | `OrchestratorHistoryFilter` | Keep only recent conversation context |
+| `StrategicDecomposerPlanner` | `ManagerHistoryFilter` | Include previous phase summaries |
+| `ReActPlanner` | `WorkerHistoryFilter` | Restrict to the current turn's traces |
+
+---
+
+## System Prompts
+
+### Best Practices
+
+1. **Be specific** about the agent's role and capabilities
+2. **List available tools** and when to use them
+3. **Define output format** expectations
+4. **Include constraints** and guardrails
+
+### ReActPlanner Prompt Template
+
+```yaml
+system_prompt: |
+  You are a [ROLE] assistant.
+
+  Your capabilities:
+  - [Tool 1]: [When to use]
+  - [Tool 2]: [When to use]
+
+  Guidelines:
+  1. [Important instruction]
+  2. [Another instruction]
+
+  When complete, provide a clear summary of your findings.
+```
+
+### WorkerRouterPlanner Prompt Template
+
+```yaml
+system_prompt: |
+  You are a task router for a multi-agent system.
+
+  Available workers:
+  - [worker-1]: [Capabilities and use cases]
+  - [worker-2]: [Capabilities and use cases]
+
+  Routing rules:
+  1. [Rule for selecting worker-1]
+  2. [Rule for selecting worker-2]
+  3. Default to [default-worker] if unclear
+
+  Response format: {"worker": "<key>", "reason": "..."}
+```
+
+---
+
+## Advanced Patterns
+
+### Chain of Thought
+
+Encourage step-by-step reasoning:
+
+```yaml
+system_prompt: |
+  Think step by step:
+  1. Understand the task
+  2. Plan your approach
+  3. Execute using tools
+  4. Verify results
+  5. Summarize findings
+```
+
+### Few-Shot Examples
+
+Include examples in the prompt:
+
+```yaml
+system_prompt: |
+  You are a calculator assistant.
+
+  Example:
+  User: What is 15% of 200?
+  Assistant: I'll use the calculator.
+  [Uses calculator: 200 * 0.15 = 30]
+  The answer is 30.
+
+  Now help with the user's request.
+```
+
+### Safety Guardrails
+
+Add constraints:
+
+```yaml
+system_prompt: |
+  Guidelines:
+  - Never reveal sensitive information
+  - Verify data before reporting
+  - Ask for clarification if the request is ambiguous
+  - Refuse harmful or unethical requests
+```
+
+---
+
+## Complete Examples
+
+### Research Agent with ReActPlanner
+
+```yaml
+apiVersion: agent.framework/v2
+kind: Agent
+
+metadata:
+  name: ThoroughResearcher
+
+resources:
+  inference_gateways:
+    - name: openai
       type: OpenAIGateway
       config:
         model: gpt-4o
-        temperature: 0.7
+        api_key: ${OPENAI_API_KEY}
+        temperature: 0.1
+        use_function_calling: true
+
+  tools:
+    - name: web_search
+      type: MockSearchTool
+      config: {}
+    - name: note_taker
+      type: NoteTakerTool
+      config:
+        storage_path: /tmp/research_notes.json
+
+spec:
+  policies:
+    $preset: simple
+    termination:
+      type: DefaultTerminationPolicy
+      config:
+        max_iterations: 15
+
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai
+      use_function_calling: true
+      max_iterations: 15
+      system_prompt: |
+        You are a thorough research assistant.
+
+        Available tools:
+        - web_search: Search for information on any topic
+        - note_taker: Save important findings with title and content
+
+        Research process:
+        1. Search for information on the topic
+        2. Take notes on key findings
+        3. Search for additional details if needed
+        4. Synthesize your notes into a comprehensive summary
+
+        Always cite your sources and distinguish facts from opinions.
+
+  memory:
+    $preset: worker
+
+  tools: [web_search, note_taker]
 ```
 
-## Environment Variables
+### Multi-Domain Manager
 
-| Variable | Purpose |
-|----------|---------|
-| `OPENAI_API_KEY` | OpenAI API key |
-| `OPENAI_MODEL` | Default model name |
-| `GOOGLE_API_KEY` | Google AI API key |
-| `AGENT_REACT_INCLUDE_HISTORY` | Enable history in ReAct prompts |
-| `AGENT_REACT_MAX_HISTORY_MESSAGES` | Max messages in ReAct history |
-| `AGENT_LOG_ROUTER_DETAILS` | Log router planner details |
+```yaml
+apiVersion: agent.framework/v2
+kind: ManagerAgent
+
+metadata:
+  name: UniversalAssistant
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: gpt-4o
+        api_key: ${OPENAI_API_KEY}
+
+spec:
+  policies:
+    $preset: manager_with_followups
+
+  planner:
+    type: WorkerRouterPlanner
+    config:
+      inference_gateway: openai
+      worker_keys: [research, tasks, calculator]
+      default_worker: research
+      system_prompt: |
+        You are a universal assistant router.
+
+        Workers and their specialties:
+        - research: Web search, information gathering, note-taking
+          Use for: "search for", "find information about", "research"
+        - tasks: Task management, scheduling, to-do lists
+          Use for: "create a task", "list my tasks", "mark as done"
+        - calculator: Mathematical calculations
+          Use for: Numbers, math, calculations, percentages
+
+        Analyze the user's intent and route to the best worker.
+        If the request spans multiple domains, route to the primary domain.
+
+        Response: {"worker": "<key>", "reason": "brief explanation"}
+
+  memory:
+    $preset: manager
+
+  workers:
+    - name: research
+      config_path: configs/agents/research_worker.yaml
+    - name: tasks
+      config_path: configs/agents/task_worker.yaml
+    - name: calculator
+      config_path: configs/agents/calculator_worker.yaml
+```
+
+---
 
 ## Custom Planner Example
 
+When you need deterministic routing logic, create a custom planner:
+
 ```python
-from agent_framework import BasePlanner, Action, FinalResponse
+from agent_framework import BasePlanner, Action
 
 class PriorityPlanner(BasePlanner):
     """Routes to tools based on task priority keywords."""
-    
+
     def __init__(self, high_priority_tool: str, default_tool: str):
         self.high_priority_tool = high_priority_tool
         self.default_tool = default_tool
-    
+
     def plan(self, task_description: str, history: list) -> Action:
         task_lower = task_description.lower()
-        
         if any(kw in task_lower for kw in ["urgent", "critical", "asap"]):
             return Action(
                 tool_name=self.high_priority_tool,
-                tool_args={"task": task_description, "priority": "high"}
+                tool_args={"task": task_description, "priority": "high"},
             )
-        
         return Action(
             tool_name=self.default_tool,
-            tool_args={"task": task_description}
+            tool_args={"task": task_description},
         )
 
-# Register for YAML use
 from deployment.registry import register_planner
 register_planner("PriorityPlanner", PriorityPlanner)
 ```
 
+---
+
 ## Best Practices
 
-1. **Match planner to agent role**:
-   - Orchestrator → `StrategicPlanner`
-   - Manager → `StrategicDecomposerPlanner`
-   - Worker → `ReActPlanner`
-
-2. **Configure appropriate models**:
-   - Strategic planning → `gpt-4o` (powerful)
-   - Tactical execution → `gpt-4o-mini` (efficient)
-
-3. **Use history filtering** to keep prompts focused
-
-4. **Enable tracing** for debugging with Phoenix
-
-5. **Test with MockGateway** before using real LLMs
-
+1. **Match planner to agent type** - ReActPlanner for Agent, WorkerRouterPlanner for ManagerAgent
+2. **Use function calling** when available for more reliable tool use
+3. **Write clear system prompts** that guide the LLM effectively
+4. **Set appropriate max_iterations** based on task complexity
+5. **Use lower temperatures** (0.1-0.3) for more deterministic behavior
+6. **Test prompts thoroughly** before production deployment
+7. **Include examples** in prompts for complex tasks

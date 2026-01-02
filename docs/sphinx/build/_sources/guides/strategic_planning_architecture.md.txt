@@ -1,8 +1,0 @@
----
-title: Strategic Planning Architecture
----
-
-```{include} ../../../STRATEGIC_PLANNING_ARCHITECTURE.md
-:relative-images:
-```
-

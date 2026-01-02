@@ -1,8 +1,0 @@
----
-title: Central Data Model Flow
----
-
-```{include} ../../../CENTRAL_DATAMODEL_FLOW.md
-:relative-images:
-```
-

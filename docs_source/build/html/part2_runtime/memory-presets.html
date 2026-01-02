@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Presets Guide &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tools Guide" href="tools.html" />
+    <link rel="prev" title="Memory &amp; Message Stores" href="memory.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 2: Runtime Building Blocks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agents.html">Agent Types Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">Memory &amp; Message Stores</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Memory Presets Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-presets">Available Presets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standalone-preset">Standalone Preset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#worker-preset">Worker Preset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manager-preset">Manager Preset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auto-derivation-rules">Auto-Derivation Rules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#namespace">Namespace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#agent-key">Agent Key</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subordinates-manager-only">Subordinates (Manager only)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#override-preset-defaults">Override Preset Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-type-reference">Memory Type Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#inmemorymemory-standalone">InMemoryMemory (standalone)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sharedinmemorymemory-worker">SharedInMemoryMemory (worker)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchicalsharedmemory-manager">HierarchicalSharedMemory (manager)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#standalone-agent">Standalone Agent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#worker-in-team">Worker in Team</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#manager-with-workers">Manager with Workers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#programmatic-usage">Programmatic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tools.html">Tools Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planners.html">Planners Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policies.html">Policies &amp; Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policy-presets.html">Policy Presets Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context_services.html">Context &amp; Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="observability.html">Observability &amp; Streaming</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 2: Runtime Building Blocks</a></li>
+      <li class="breadcrumb-item active">Memory Presets Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part2_runtime/memory-presets.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memory-presets-guide">
+<h1>Memory Presets Guide<a class="headerlink" href="#memory-presets-guide" title="Link to this heading"></a></h1>
+<p>Memory presets simplify agent memory configuration by providing pre-configured options that automatically derive values from the agent context.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Instead of explicitly configuring memory type and parameters:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Legacy explicit configuration</span>
+<span class="nt">memory</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SharedInMemoryMemory</span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${JOB_ID:-default}</span>
+<span class="w">    </span><span class="nt">agent_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research_worker</span>
+</pre></div>
+</div>
+<p>You can use presets:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Preset-based configuration</span>
+<span class="nt">memory</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+<span class="w">  </span><span class="c1"># namespace and agent_key auto-derived</span>
+</pre></div>
+</div>
+</section>
+<section id="available-presets">
+<h2>Available Presets<a class="headerlink" href="#available-presets" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Preset</p></th>
+<th class="head"><p>Memory Type</p></th>
+<th class="head"><p>Use Case</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">standalone</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">InMemoryMemory</span></code></p></td>
+<td><p>Isolated single agents</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">worker</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code></p></td>
+<td><p>Worker agents in a team</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">manager</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">HierarchicalSharedMemory</span></code></p></td>
+<td><p>Orchestrator agents</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="standalone-preset">
+<h2>Standalone Preset<a class="headerlink" href="#standalone-preset" title="Link to this heading"></a></h2>
+<p>Use for agents that don’t need to share state with other agents.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">standalone</span>
+</pre></div>
+</div>
+<p><strong>Creates:</strong> <code class="docutils literal notranslate"><span class="pre">InMemoryMemory</span></code></p>
+<p><strong>Behavior:</strong></p>
+<ul class="simple">
+<li><p>Private message history</p></li>
+<li><p>No access to other agents’ data</p></li>
+<li><p>Isolated state per agent instance</p></li>
+</ul>
+<p><strong>Auto-derived values:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_key</span></code>: From <code class="docutils literal notranslate"><span class="pre">metadata.name</span></code> (normalized to lowercase with underscores)</p></li>
+</ul>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Single-purpose utility agents</p></li>
+<li><p>Agents that run independently</p></li>
+<li><p>Testing and development</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="worker-preset">
+<h2>Worker Preset<a class="headerlink" href="#worker-preset" title="Link to this heading"></a></h2>
+<p>Use for worker agents that participate in multi-agent systems.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+</pre></div>
+</div>
+<p><strong>Creates:</strong> <code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code></p>
+<p><strong>Behavior:</strong></p>
+<ul class="simple">
+<li><p>Shared namespace with other workers</p></li>
+<li><p>Sees own messages + global updates</p></li>
+<li><p>Can read shared state set by other agents</p></li>
+</ul>
+<p><strong>Auto-derived values:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">namespace</span></code>: From <code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code> environment variable (defaults to “default”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_key</span></code>: From <code class="docutils literal notranslate"><span class="pre">metadata.name</span></code> (normalized)</p></li>
+</ul>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Worker agents under a manager</p></li>
+<li><p>Agents that need to share context</p></li>
+<li><p>Parallel task execution</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="manager-preset">
+<h2>Manager Preset<a class="headerlink" href="#manager-preset" title="Link to this heading"></a></h2>
+<p>Use for orchestrator agents that manage worker agents.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+</pre></div>
+</div>
+<p><strong>Creates:</strong> <code class="docutils literal notranslate"><span class="pre">HierarchicalSharedMemory</span></code></p>
+<p><strong>Behavior:</strong></p>
+<ul class="simple">
+<li><p>Full visibility into subordinate agent state</p></li>
+<li><p>Sees own messages + subordinate messages + global updates</p></li>
+<li><p>Can coordinate based on worker progress</p></li>
+</ul>
+<p><strong>Auto-derived values:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">namespace</span></code>: From <code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code> environment variable</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_key</span></code>: From <code class="docutils literal notranslate"><span class="pre">metadata.name</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">subordinates</span></code>: From <code class="docutils literal notranslate"><span class="pre">workers</span></code> list in spec</p></li>
+</ul>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Orchestrator/manager agents</p></li>
+<li><p>Agents that route to workers</p></li>
+<li><p>Coordination and aggregation tasks</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="auto-derivation-rules">
+<h2>Auto-Derivation Rules<a class="headerlink" href="#auto-derivation-rules" title="Link to this heading"></a></h2>
+<section id="namespace">
+<h3>Namespace<a class="headerlink" href="#namespace" title="Link to this heading"></a></h3>
+<p>Priority order:</p>
+<ol class="arabic simple">
+<li><p>Explicit <code class="docutils literal notranslate"><span class="pre">namespace</span></code> in memory config</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code> from context</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code> environment variable</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">&quot;default&quot;</span></code></p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uses JOB_ID from environment</span>
+<span class="nt">memory</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="c1"># Override with explicit namespace</span>
+<span class="nt">memory</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-custom-namespace</span>
+</pre></div>
+</div>
+</section>
+<section id="agent-key">
+<h3>Agent Key<a class="headerlink" href="#agent-key" title="Link to this heading"></a></h3>
+<p>Derived from <code class="docutils literal notranslate"><span class="pre">metadata.name</span></code> with normalization:</p>
+<ul class="simple">
+<li><p>Converted to lowercase</p></li>
+<li><p>Hyphens replaced with underscores</p></li>
+<li><p>Spaces replaced with underscores</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Research-Worker</span><span class="w">  </span><span class="c1"># -&gt; agent_key: &quot;research_worker&quot;</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TaskManager</span><span class="w">      </span><span class="c1"># -&gt; agent_key: &quot;taskmanager&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="subordinates-manager-only">
+<h3>Subordinates (Manager only)<a class="headerlink" href="#subordinates-manager-only" title="Link to this heading"></a></h3>
+<p>Auto-derived from the <code class="docutils literal notranslate"><span class="pre">workers</span></code> list:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research-worker</span><span class="w">    </span><span class="c1"># -&gt; subordinate: &quot;research_worker&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">task-worker</span><span class="w">        </span><span class="c1"># -&gt; subordinate: &quot;task_worker&quot;</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+<span class="w">    </span><span class="c1"># subordinates: [&quot;research_worker&quot;, &quot;task_worker&quot;] (auto-derived)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="override-preset-defaults">
+<h2>Override Preset Defaults<a class="headerlink" href="#override-preset-defaults" title="Link to this heading"></a></h2>
+<p>You can override any auto-derived value:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-job-123</span><span class="w">     </span><span class="c1"># Override auto-derived namespace</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="memory-type-reference">
+<h2>Memory Type Reference<a class="headerlink" href="#memory-type-reference" title="Link to this heading"></a></h2>
+<section id="inmemorymemory-standalone">
+<h3>InMemoryMemory (standalone)<a class="headerlink" href="#inmemorymemory-standalone" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">InMemoryMemory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Isolated in-memory storage.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="sharedinmemorymemory-worker">
+<h3>SharedInMemoryMemory (worker)<a class="headerlink" href="#sharedinmemorymemory-worker" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SharedInMemoryMemory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shared memory for worker agents.&quot;&quot;&quot;</span>
+
+    <span class="c1"># All InMemoryMemory methods plus:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_shared_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_shared_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="hierarchicalsharedmemory-manager">
+<h3>HierarchicalSharedMemory (manager)<a class="headerlink" href="#hierarchicalsharedmemory-manager" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">HierarchicalSharedMemory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hierarchical memory that sees subordinate state.&quot;&quot;&quot;</span>
+
+    <span class="c1"># All SharedInMemoryMemory methods plus:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_subordinate_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subordinate</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_subordinate_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]]:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="complete-examples">
+<h2>Complete Examples<a class="headerlink" href="#complete-examples" title="Link to this heading"></a></h2>
+<section id="standalone-agent">
+<h3>Standalone Agent<a class="headerlink" href="#standalone-agent" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CalculatorBot</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">You are a calculator.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">standalone</span><span class="w">  </span><span class="c1"># Isolated, no sharing</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">calculator</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="worker-in-team">
+<h3>Worker in Team<a class="headerlink" href="#worker-in-team" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ResearchWorker</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">You are a research assistant.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span><span class="w">  </span><span class="c1"># Shares with team via JOB_ID namespace</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">web_search</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">note_taker</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="manager-with-workers">
+<h3>Manager with Workers<a class="headerlink" href="#manager-with-workers" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Orchestrator</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WorkerRouterPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">research-worker</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">task-worker</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">default_worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research-worker</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span><span class="w">  </span><span class="c1"># Sees all subordinate state</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research-worker</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/research_worker.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">task-worker</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/task_worker.yaml</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="programmatic-usage">
+<h2>Programmatic Usage<a class="headerlink" href="#programmatic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.memory_presets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_memory_preset</span><span class="p">,</span>
+    <span class="n">list_memory_presets</span><span class="p">,</span>
+    <span class="n">describe_preset</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># List available presets</span>
+<span class="n">presets</span> <span class="o">=</span> <span class="n">list_memory_presets</span><span class="p">()</span>
+<span class="c1"># [&#39;standalone&#39;, &#39;worker&#39;, &#39;manager&#39;]</span>
+
+<span class="c1"># Get preset description</span>
+<span class="n">desc</span> <span class="o">=</span> <span class="n">describe_preset</span><span class="p">(</span><span class="s2">&quot;worker&quot;</span><span class="p">)</span>
+<span class="c1"># &quot;Shared memory for worker agents. Sees own messages + global updates.&quot;</span>
+
+<span class="c1"># Create memory from preset</span>
+<span class="n">memory</span> <span class="o">=</span> <span class="n">get_memory_preset</span><span class="p">(</span><span class="s2">&quot;worker&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;agent_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ResearchWorker&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;namespace&quot;</span><span class="p">:</span> <span class="s2">&quot;my-job-123&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+
+<span class="c1"># For manager preset</span>
+<span class="n">memory</span> <span class="o">=</span> <span class="n">get_memory_preset</span><span class="p">(</span><span class="s2">&quot;manager&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;agent_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Orchestrator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;subordinates&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;research-worker&quot;</span><span class="p">,</span> <span class="s2">&quot;task-worker&quot;</span><span class="p">],</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Use presets</strong> instead of explicit configuration for cleaner configs</p></li>
+<li><p><strong>Set JOB_ID</strong> environment variable for multi-agent job isolation</p></li>
+<li><p><strong>Let agent_key auto-derive</strong> from metadata.name for consistency</p></li>
+<li><p><strong>Use manager preset</strong> only for ManagerAgent kinds</p></li>
+<li><p><strong>Use worker preset</strong> for all agents in a multi-agent team</p></li>
+<li><p><strong>Use standalone preset</strong> for isolated utility agents</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="memory.html" class="btn btn-neutral float-left" title="Memory &amp; Message Stores" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="Tools Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

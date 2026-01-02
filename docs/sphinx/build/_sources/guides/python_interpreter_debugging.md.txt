@@ -1,8 +1,0 @@
----
-title: Python Interpreter Debugging
----
-
-```{include} ../../../PYTHON_INTERPRETER_DEBUGGING.md
-:relative-images:
-```
-

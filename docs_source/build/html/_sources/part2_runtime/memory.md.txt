@@ -2,6 +2,10 @@
 
 This chapter covers memory implementations and the message store pattern.
 
+```{note}
+Looking for preset-based configuration? See :doc:`memory-presets` for details on `$preset: standalone|worker|manager`.
+```
+
 ## Async-Safe Memory
 
 All memory implementations use **async methods** with `asyncio.Lock()` for proper async context isolation. This prevents race conditions when multiple coroutines access memory concurrently.

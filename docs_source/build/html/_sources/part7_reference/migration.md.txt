@@ -164,7 +164,7 @@ manager = ManagerAgent(
 
 ### New Features
 
-- Pip-installable package (`agentic-framework`)
+- Pip-installable package (`auto-ai-agent-framework`)
 - Policy presets (`get_preset`)
 - Enhanced observability
 - Async-safe context (`contextvars`)
@@ -173,7 +173,7 @@ manager = ManagerAgent(
 
 1. **Install from PyPI**
    ```bash
-   pip install agentic-framework
+   pip install auto-ai-agent-framework
    ```
 
 2. **Use presets**
@@ -192,7 +192,7 @@ manager = ManagerAgent(
 
 ### v2.2 Highlights
 
-- **Pip-installable library**: Install with `pip install agentic-framework` or `pip install -e ./agent-framework-pypi`
+- **Pip-installable library**: Install with `pip install auto-ai-agent-framework` or `pip install -e ./agent-framework-pypi`
 - **@tool decorator**: Author tools with regular Python functions, schemas inferred from type hints
 - **Policy presets**: `get_preset(...)` for easy policy configuration
 - **Message store integrations**: `MessageStoreMemory` and `HierarchicalMessageStoreMemory`
