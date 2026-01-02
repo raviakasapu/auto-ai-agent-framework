@@ -186,6 +186,10 @@ The main agent behavior configuration.
 
 Control agent behavior with presets or custom policies.
 
+```{note}
+For detailed information on available presets and their configurations, see :doc:`../part2_runtime/policy-presets`.
+```
+
 #### Using Presets (Recommended)
 
 ```yaml
@@ -312,6 +316,10 @@ spec:
 ### `memory`
 
 Configure agent memory and state sharing.
+
+```{note}
+For detailed information on memory presets, see :doc:`../part2_runtime/memory-presets`.
+```
 
 #### Using Presets (Recommended)
 

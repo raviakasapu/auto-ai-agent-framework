@@ -7,7 +7,7 @@ All authoritative guides live in the root ``docs_source/`` Sphinx project.
 Quick link
 ----------
 
-- Hosted Sphinx site: https://akasa-ai.github.io/agentic-framework/
+- Hosted Sphinx site: https://auto-ai-agent-framework.vercel.app
 
 Local build instructions
 ------------------------
