@@ -2,7 +2,7 @@
 
 > A reusable Python library for building hierarchical agentic AI workflows with declarative YAML configuration.
 
-[![PyPI version](https://badge.fury.io/py/agentic-framework.svg)](https://badge.fury.io/py/agentic-framework)
+[![PyPI version](https://badge.fury.io/py/auto-ai-agent-framework.svg)](https://badge.fury.io/py/auto-ai-agent-framework)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -18,20 +18,20 @@
 ## Installation
 
 ```bash
-pip install agentic-framework
+pip install auto-ai-agent-framework
 ```
 
 With optional dependencies:
 
 ```bash
 # Google AI (Gemini) support
-pip install agentic-framework[google]
+pip install auto-ai-agent-framework[google]
 
 # Observability (OpenTelemetry)
-pip install agentic-framework[observability]
+pip install auto-ai-agent-framework[observability]
 
 # All extras
-pip install agentic-framework[all]
+pip install auto-ai-agent-framework[all]
 ```
 
 ## Quick Start

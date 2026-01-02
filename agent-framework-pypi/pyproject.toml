@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agentic-framework"
+name = "auto-ai-agent-framework"
 version = "0.2.0"
 description = "A reusable Python library for building hierarchical agentic AI workflows"
 readme = "README.md"
@@ -69,7 +69,7 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/akasa-ai/agentic-framework"
-Documentation = "https://agentic-framework.readthedocs.io"
+Documentation = "https://auto-ai-agent-framework.vercel.app"
 Repository = "https://github.com/akasa-ai/agentic-framework"
 Changelog = "https://github.com/akasa-ai/agentic-framework/blob/main/CHANGELOG.md"
 
