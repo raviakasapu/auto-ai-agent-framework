@@ -1,4 +1,4 @@
-# Agentic Framework
+# Auto AI Agent Framework
 
 > A reusable Python library for building hierarchical agentic AI workflows with declarative YAML configuration.
 
