@@ -1,0 +1,357 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Message Format Specification" href="message_format.html" />
+    <link rel="prev" title="Part 7: Reference &amp; Appendices" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 7: Reference &amp; Appendices</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#public-api-summary">Public API Summary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#core-agents">Core Agents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#base-classes">Base Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-classes">Data Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#decorators">Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memory-implementations">Memory Implementations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#policies">Policies</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#import-example">Import Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="message_format.html">Message Format Specification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="env_variables.html">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 7: Reference &amp; Appendices</a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part7_reference/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<p>For complete API documentation, see the auto-generated reference:</p>
+<p><a class="reference internal" href="../api/index.html"><span class="doc">API Reference</span></a></p>
+<section id="public-api-summary">
+<h2>Public API Summary<a class="headerlink" href="#public-api-summary" title="Link to this heading"></a></h2>
+<p>The following classes and functions are exported from <code class="docutils literal notranslate"><span class="pre">agent_framework</span></code>:</p>
+<section id="core-agents">
+<h3>Core Agents<a class="headerlink" href="#core-agents" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Class</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Agent</span></code></p></td>
+<td><p>Policy-driven worker agent</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ManagerAgent</span></code></p></td>
+<td><p>Orchestrator/manager with delegation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EventBus</span></code></p></td>
+<td><p>Event publishing system</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="base-classes">
+<h3>Base Classes<a class="headerlink" href="#base-classes" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Class</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BaseTool</span></code></p></td>
+<td><p>Abstract tool interface</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BasePlanner</span></code></p></td>
+<td><p>Abstract planner interface</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BaseMemory</span></code></p></td>
+<td><p>Abstract memory interface</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BaseInferenceGateway</span></code></p></td>
+<td><p>Abstract LLM gateway interface</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BaseEventSubscriber</span></code></p></td>
+<td><p>Sync event subscriber</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BaseProgressHandler</span></code></p></td>
+<td><p>Async progress handler</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code></p></td>
+<td><p>Abstract message store interface</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BaseJobStore</span></code></p></td>
+<td><p>Abstract job persistence interface</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-classes">
+<h3>Data Classes<a class="headerlink" href="#data-classes" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Class</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Action</span></code></p></td>
+<td><p>Tool invocation request</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">FinalResponse</span></code></p></td>
+<td><p>Structured completion response</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="decorators">
+<h3>Decorators<a class="headerlink" href="#decorators" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Decorator</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code></p></td>
+<td><p>Convert function to tool</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">FunctionalTool</span></code></p></td>
+<td><p>Wrapper for decorated functions</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="memory-implementations">
+<h3>Memory Implementations<a class="headerlink" href="#memory-implementations" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Class</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MessageStoreMemory</span></code></p></td>
+<td><p>Reads from BaseMessageStore</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HierarchicalMessageStoreMemory</span></code></p></td>
+<td><p>Manager memory with subordinate visibility</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="policies">
+<h3>Policies<a class="headerlink" href="#policies" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">get_preset(name)</span></code></p></td>
+<td><p>Get policy preset by name</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="import-example">
+<h2>Import Example<a class="headerlink" href="#import-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="c1"># Core</span>
+    <span class="n">Agent</span><span class="p">,</span>
+    <span class="n">ManagerAgent</span><span class="p">,</span>
+    <span class="n">EventBus</span><span class="p">,</span>
+
+    <span class="c1"># Base Classes</span>
+    <span class="n">BaseTool</span><span class="p">,</span>
+    <span class="n">BasePlanner</span><span class="p">,</span>
+    <span class="n">BaseMemory</span><span class="p">,</span>
+    <span class="n">BaseInferenceGateway</span><span class="p">,</span>
+    <span class="n">BaseEventSubscriber</span><span class="p">,</span>
+    <span class="n">BaseProgressHandler</span><span class="p">,</span>
+    <span class="n">BaseMessageStore</span><span class="p">,</span>
+    <span class="n">BaseJobStore</span><span class="p">,</span>
+
+    <span class="c1"># Data Classes</span>
+    <span class="n">Action</span><span class="p">,</span>
+    <span class="n">FinalResponse</span><span class="p">,</span>
+
+    <span class="c1"># Decorators</span>
+    <span class="n">tool</span><span class="p">,</span>
+    <span class="n">FunctionalTool</span><span class="p">,</span>
+
+    <span class="c1"># Memory</span>
+    <span class="n">MessageStoreMemory</span><span class="p">,</span>
+    <span class="n">HierarchicalMessageStoreMemory</span><span class="p">,</span>
+
+    <span class="c1"># Policies</span>
+    <span class="n">get_preset</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Part 7: Reference &amp; Appendices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="message_format.html" class="btn btn-neutral float-right" title="Message Format Specification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

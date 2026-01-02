@@ -1,0 +1,16 @@
+SDK Analysis
+============
+
+This page collects the most important internal references for understanding the
+framework end‑to‑end. It supersedes legacy external Markdown notes.
+
+Start with these sections:
+
+- :doc:`concepts` — Core ideas and mental model
+- :doc:`execution_framework` — Runtime architecture and APIs
+- :doc:`deployment_layer` — Declarative YAML + factory
+- :doc:`v2_features` — What’s new in v2.0
+- :doc:`structured_final_response` — Returning machine‑readable results
+- :doc:`runtime_loop_stagnation` — Loop control, termination, and stagnation
+
+For API details, see :doc:`../api/index`.

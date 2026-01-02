@@ -1,0 +1,84 @@
+# Deployment Layer
+
+The Deployment & Configuration Layer translates declarative YAML (v1) into live Agent objects.
+
+Key file: `deployment/factory.py`
+
+Responsibilities
+- Read YAML and expand environment variables `${VAR}`
+- Instantiate resources by name using registries from `deployment/registry.py`
+- Assemble `Agent` or `ManagerAgent` based on `kind`
+- Allow extension without modifying core via `AgentFactory.register_component` and `AgentFactory.register_agent_builder`
+
+Registries
+- `deployment/registry.py` maps type strings to classes (planners, memory, tools, gateways, subscribers, prompt managers)
+- Registry entries are loaded from YAML under `configs/{planners|memory|tools|gateways|subscribers|prompt_managers}/`
+- You can override or add entries at runtime with `AgentFactory.register_component("Name", Class)`
+
+Builders by kind
+- `Agent` → planner + memory + tools
+- `ManagerAgent` → planner + memory + workers (recursively created from child YAMLs)
+
+Flows
+- Flow definitions live under `flows/` (or any path you choose) and are loaded with `FlowFactory.create_from_yaml`.
+- A flow lists named agents (each referencing an agent config), selects an orchestrator, and defines reusable steps with `task` or `task_template` strings.
+- Example:
+  ```yaml
+  apiVersion: agent.framework/v1
+  kind: Flow
+  spec:
+    agents:
+      router:
+        config: configs/agents/schema_editor_router.yaml
+    orchestrator: router
+    steps:
+      - name: list_tables
+        agent: router
+        task: "List the tables in the model"
+  ```
+
+Event subscribers
+- Declare reusable subscribers under `resources.subscribers` (e.g. Langfuse, Phoenix, or Logging).
+- Reference those names from `spec.subscribers` to auto-subscribe them to the agent’s `EventBus`.
+- Example:
+  ```yaml
+  resources:
+    subscribers:
+      - name: langfuse-observer
+        type: LangfuseSubscriber
+        config:
+          host: https://us.cloud.langfuse.com
+      - name: verbose-logger
+        type: LoggingSubscriber
+        config:
+          level: DEBUG
+          include_data: true
+          max_payload_chars: 4000
+  spec:
+    subscribers:
+      - langfuse-observer
+      - verbose-logger
+  ```
+
+Environment variables
+- Before YAML is parsed, the file text is passed through `os.path.expandvars`
+- Example: `${OPENAI_API_KEY}` resolves to the current environment variable value
+
+Typical usage
+```python
+from deployment.factory import AgentFactory
+
+agent = AgentFactory.create_from_yaml("configs/agents/research_assistant.yaml")
+result = await agent.run("Use the search tool...")
+```
+
+Extending with custom components
+```python
+from deployment.factory import AgentFactory
+
+class MyPlanner(...):
+    ...
+
+AgentFactory.register_component("MyPlanner", MyPlanner)
+agent = AgentFactory.create_from_yaml("path/to/config.yaml")  # YAML uses type: MyPlanner
+```

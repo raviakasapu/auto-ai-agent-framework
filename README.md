@@ -1,7 +1,8 @@
-# AutoAI Agent Framework
+# Agentic Framework
 
 > A reusable Python library for building hierarchical agentic AI workflows with declarative YAML configuration.
 
+[![PyPI version](https://badge.fury.io/py/agentic-framework.svg)](https://badge.fury.io/py/agentic-framework)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -17,21 +18,20 @@
 ## Installation
 
 ```bash
-# Install from GitHub
-pip install git+https://github.com/raviakasapu/agent_framework.git
+pip install agentic-framework
 ```
 
 With optional dependencies:
 
 ```bash
 # Google AI (Gemini) support
-pip install "autoAI-agent-framework[google] @ git+https://github.com/raviakasapu/agent_framework.git"
+pip install agentic-framework[google]
 
 # Observability (OpenTelemetry)
-pip install "autoAI-agent-framework[observability] @ git+https://github.com/raviakasapu/agent_framework.git"
+pip install agentic-framework[observability]
 
 # All extras
-pip install "autoAI-agent-framework[all] @ git+https://github.com/raviakasapu/agent_framework.git"
+pip install agentic-framework[all]
 ```
 
 ## Quick Start
@@ -156,47 +156,11 @@ result = manager.run("Research AI trends and write a summary")
 └─────────┘         └─────────┘
 ```
 
-## Getting Started with a Sample Project
-
-After installing the package, use the CLI to scaffold a complete sample application:
-
-```bash
-# Create a new project
-agent-framework init my_agent_project
-
-# Navigate to the project
-cd my_agent_project
-
-# Setup environment
-cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
-
-# Run interactive mode
-python run.py
-
-# Run a single task
-python run.py "Search for Python tutorials"
-
-# Run all test scenarios
-python run.py --test
-```
-
-### Sample Project Features
-
-| Feature | Description |
-|---------|-------------|
-| **Research Worker** | Web search, note-taking, calculations (ReActPlanner) |
-| **Task Worker** | Task CRUD, weather lookup (ReActPlanner) |
-| **Orchestrator** | Routes to workers (WorkerRouterPlanner) |
-| **YAML Config** | Full v2 agent schema examples |
-| **Custom Tools** | 6 domain-specific tools |
-| **Context Config** | Truncation, history, ENV overrides |
-
 ## Documentation
 
-- [Full Documentation](https://raviakasapu.github.io/agent_framework/)
-- [Environment Variables Guide](docs_source/source/guides/environment_variables.md)
-- [Hosting Guide](HOSTING_GUIDE.md)
+- [Full Documentation](https://agentic-framework.readthedocs.io)
+- [API Reference](https://agentic-framework.readthedocs.io/api)
+- [Examples](https://github.com/akasa-ai/agentic-framework/tree/main/examples)
 
 ## License
 

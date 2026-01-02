@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Async Safety with Context Variables &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Strategic Planning Architecture" href="strategic_planning_architecture.html" />
+    <link rel="prev" title="Event System" href="event_system.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Legacy Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#content-mapping">Content Mapping</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#additional-topics">Additional Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hierarchical_filtering.html">Hierarchical History Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture_workflow.html">Framework Architecture &amp; Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="phoenix_tracing.html">Phoenix Tracing (Arize)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="event_system.html">Event System</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Async Safety with Context Variables</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#why-context-variables">Why Context Variables?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#framework-implementation">Framework Implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#context-propagation">Context Propagation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#yaml-variable-expansion">YAML Variable Expansion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#concurrent-request-isolation">Concurrent Request Isolation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-pitfalls">Common Pitfalls</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="strategic_planning_architecture.html">Strategic Planning Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_optimization_strategy.html">Model Optimization Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tool_choice_mechanism.html">Tool Choice Mechanism: How Agents Select Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestrator_vs_manager.html">Orchestrator vs Manager: Key Differences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utility_tools.html">Framework Utility Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="environment_variables.html">Environment Variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Legacy Guides</a></li>
+      <li class="breadcrumb-item active">Async Safety with Context Variables</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/async_safety.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="async-safety-with-context-variables">
+<h1>Async Safety with Context Variables<a class="headerlink" href="#async-safety-with-context-variables" title="Link to this heading"></a></h1>
+<p>The framework uses <code class="docutils literal notranslate"><span class="pre">contextvars</span></code> for async-safe request-scoped data storage, ensuring proper isolation for concurrent async requests.</p>
+<section id="why-context-variables">
+<h2>Why Context Variables?<a class="headerlink" href="#why-context-variables" title="Link to this heading"></a></h2>
+<section id="the-problem-with-threading-local">
+<h3>The Problem with <code class="docutils literal notranslate"><span class="pre">threading.local()</span></code><a class="headerlink" href="#the-problem-with-threading-local" title="Link to this heading"></a></h3>
+<p>In async Python (FastAPI, asyncio), <code class="docutils literal notranslate"><span class="pre">threading.local()</span></code> doesn’t work correctly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># BROKEN with asyncio:</span>
+<span class="n">_thread_locals</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">local</span><span class="p">()</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_request_A</span><span class="p">():</span>
+    <span class="n">_thread_locals</span><span class="o">.</span><span class="n">job_id</span> <span class="o">=</span> <span class="s2">&quot;job_A&quot;</span>  <span class="c1"># Set in thread-local</span>
+    <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>  <span class="c1"># Suspends, yields control</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_request_B</span><span class="p">():</span>
+    <span class="n">_thread_locals</span><span class="o">.</span><span class="n">job_id</span> <span class="o">=</span> <span class="s2">&quot;job_B&quot;</span>  <span class="c1"># OVERWRITES job_A!</span>
+    <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>  <span class="c1"># Both requests see &quot;job_B&quot; ❌</span>
+</pre></div>
+</div>
+<p><strong>Why it fails:</strong></p>
+<ul class="simple">
+<li><p>FastAPI runs multiple async requests in the <strong>same thread</strong> (event loop)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">threading.local()</span></code> is per-thread, <strong>not</strong> per-async-task</p></li>
+<li><p>When one task suspends (await), another task can overwrite the same thread-local data</p></li>
+</ul>
+</section>
+<section id="the-solution-contextvars">
+<h3>The Solution: <code class="docutils literal notranslate"><span class="pre">contextvars</span></code><a class="headerlink" href="#the-solution-contextvars" title="Link to this heading"></a></h3>
+<p>The framework uses <code class="docutils literal notranslate"><span class="pre">contextvars.ContextVar</span></code> for async-safe isolation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># FIXED with contextvars:</span>
+<span class="n">_current_job_id</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span><span class="s1">&#39;_current_job_id&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_request_A</span><span class="p">():</span>
+    <span class="n">_current_job_id</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;job_A&quot;</span><span class="p">)</span>  <span class="c1"># Isolated to this async context</span>
+    <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>  <span class="c1"># Still sees &quot;job_A&quot; ✅</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_request_B</span><span class="p">():</span>
+    <span class="n">_current_job_id</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;job_B&quot;</span><span class="p">)</span>  <span class="c1"># Isolated to this async context</span>
+    <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>  <span class="c1"># Still sees &quot;job_B&quot; ✅</span>
+</pre></div>
+</div>
+<p><strong>Why it works:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">contextvars</span></code> maintains separate storage <strong>per async context</strong></p></li>
+<li><p>Each async task gets its own isolated copy</p></li>
+<li><p>Context is automatically propagated through <code class="docutils literal notranslate"><span class="pre">await</span></code> boundaries</p></li>
+</ul>
+</section>
+</section>
+<section id="framework-implementation">
+<h2>Framework Implementation<a class="headerlink" href="#framework-implementation" title="Link to this heading"></a></h2>
+<section id="request-context-service">
+<h3>Request Context Service<a class="headerlink" href="#request-context-service" title="Link to this heading"></a></h3>
+<p>The framework provides <code class="docutils literal notranslate"><span class="pre">request_context.py</span></code> for async-safe request-scoped data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.services.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">set_request_context</span><span class="p">,</span>
+    <span class="n">get_from_context</span><span class="p">,</span>
+    <span class="n">update_request_context</span><span class="p">,</span>
+    <span class="n">clear_request_context</span>
+<span class="p">)</span>
+
+<span class="c1"># Set at request start</span>
+<span class="n">set_request_context</span><span class="p">({</span>
+    <span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="s2">&quot;req_12345&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;JOB_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;req_12345&quot;</span><span class="p">,</span>  <span class="c1"># For YAML expansion</span>
+    <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;user_789&quot;</span>
+<span class="p">})</span>
+
+<span class="c1"># Access from anywhere</span>
+<span class="n">job_id</span> <span class="o">=</span> <span class="n">get_from_context</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">)</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">get_from_context</span><span class="p">(</span><span class="s2">&quot;strategic_plan&quot;</span><span class="p">)</span>
+
+<span class="c1"># Update during execution</span>
+<span class="n">update_request_context</span><span class="p">(</span><span class="n">strategic_plan</span><span class="o">=</span><span class="n">plan</span><span class="p">)</span>
+
+<span class="c1"># Clear at request end</span>
+<span class="n">clear_request_context</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="implementation-details">
+<h3>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading"></a></h3>
+<p>The framework uses <code class="docutils literal notranslate"><span class="pre">contextvars.ContextVar</span></code> internally:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># agent_framework/services/request_context.py</span>
+<span class="n">_request_context</span><span class="p">:</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span>
+    <span class="s1">&#39;_request_context&#39;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">{}</span>
+<span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">set_request_context</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the context for the current request (async-safe).&quot;&quot;&quot;</span>
+    <span class="n">_request_context</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_from_context</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a specific value from the current request context (async-safe).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_request_context</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="context-propagation">
+<h2>Context Propagation<a class="headerlink" href="#context-propagation" title="Link to this heading"></a></h2>
+<section id="through-async-boundaries">
+<h3>Through Async Boundaries<a class="headerlink" href="#through-async-boundaries" title="Link to this heading"></a></h3>
+<p>Context variables are automatically propagated through <code class="docutils literal notranslate"><span class="pre">await</span></code> boundaries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_request</span><span class="p">():</span>
+    <span class="n">set_request_context</span><span class="p">({</span><span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="s2">&quot;req_123&quot;</span><span class="p">})</span>
+    
+    <span class="c1"># Context propagates through await</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>  <span class="c1"># Can access job_id ✅</span>
+    <span class="k">await</span> <span class="n">save_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># Can still access job_id ✅</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">save_result</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">get_from_context</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">)</span>  <span class="c1"># ✅ Available</span>
+    <span class="c1"># Save to database...</span>
+</pre></div>
+</div>
+</section>
+<section id="to-thread-pool-executors">
+<h3>To Thread Pool Executors<a class="headerlink" href="#to-thread-pool-executors" title="Link to this heading"></a></h3>
+<p>When using <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code> for synchronous tool execution, context must be explicitly propagated:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">contextvars</span>
+
+<span class="c1"># Copy context before executor</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">copy_context</span><span class="p">()</span>
+
+<span class="c1"># Run in executor with context</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">tool</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The framework handles this automatically in <code class="docutils literal notranslate"><span class="pre">Agent._execute_actions()</span></code>.</p>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="always-use-contextvars-in-async-code">
+<h3>1. Always Use <code class="docutils literal notranslate"><span class="pre">contextvars</span></code> in Async Code<a class="headerlink" href="#always-use-contextvars-in-async-code" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ❌ DON&#39;T use threading.local() in async code</span>
+<span class="n">_thread_locals</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">local</span><span class="p">()</span>
+
+<span class="c1"># ✅ DO use contextvars</span>
+<span class="n">_request_context</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span><span class="s1">&#39;_request_context&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">{})</span>
+</pre></div>
+</div>
+</section>
+<section id="set-context-early">
+<h3>2. Set Context Early<a class="headerlink" href="#set-context-early" title="Link to this heading"></a></h3>
+<p>Set request context before any async operations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ✅ GOOD: Set context before agent operations</span>
+<span class="n">set_request_context</span><span class="p">({</span><span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">})</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+<span class="c1"># ❌ BAD: Set context after operations start</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+<span class="n">set_request_context</span><span class="p">({</span><span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">})</span>  <span class="c1"># Too late!</span>
+</pre></div>
+</div>
+</section>
+<section id="capture-variables-in-async-loops">
+<h3>3. Capture Variables in Async Loops<a class="headerlink" href="#capture-variables-in-async-loops" title="Link to this heading"></a></h3>
+<p>When iterating in async loops, capture loop variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ❌ BAD: Variable can change mid-execution</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_message</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">process</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>  <span class="c1"># job_id can change!</span>
+
+<span class="c1"># ✅ GOOD: Capture in local scope</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_message</span><span class="p">()</span>
+    <span class="n">current_job_id</span> <span class="o">=</span> <span class="n">job_id</span>  <span class="c1"># Capture</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">process</span><span class="p">(</span><span class="n">current_job_id</span><span class="p">)</span>  <span class="c1"># Safe!</span>
+</pre></div>
+</div>
+</section>
+<section id="keep-operations-in-context-scope">
+<h3>4. Keep Operations in Context Scope<a class="headerlink" href="#keep-operations-in-context-scope" title="Link to this heading"></a></h3>
+<p>Keep related operations within the same context scope:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ✅ GOOD: All operations in context</span>
+<span class="k">with</span> <span class="n">datamodel_context</span><span class="p">(</span><span class="n">job_id</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+    <span class="c1"># Send response here ← job_id guaranteed correct</span>
+
+<span class="c1"># ❌ BAD: Operations outside context</span>
+<span class="k">with</span> <span class="n">datamodel_context</span><span class="p">(</span><span class="n">job_id</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+<span class="c1"># Send response here ← job_id might be wrong!</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="yaml-variable-expansion">
+<h2>YAML Variable Expansion<a class="headerlink" href="#yaml-variable-expansion" title="Link to this heading"></a></h2>
+<p>The framework’s YAML expansion uses request context for dynamic values:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MessageStoreMemory</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${JOB_ID}</span><span class="w">  </span><span class="c1"># Expands from request context</span>
+</pre></div>
+</div>
+<p><strong>Resolution Order:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Request context</strong> (contextvars) - for per-request vars like <code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code></p></li>
+<li><p><strong>Environment variables</strong> - for global config like <code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code></p></li>
+</ol>
+<p>This ensures each async request gets its own namespace without interference.</p>
+</section>
+<section id="concurrent-request-isolation">
+<h2>Concurrent Request Isolation<a class="headerlink" href="#concurrent-request-isolation" title="Link to this heading"></a></h2>
+<p>With <code class="docutils literal notranslate"><span class="pre">contextvars</span></code>, concurrent requests are properly isolated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Time 0: Request A (job_id: req_123) starts
+Time 1: Request A sets context → &quot;req_123&quot;
+Time 2: Request B (job_id: req_456) starts
+Time 3: Request B sets context → &quot;req_456&quot;
+Time 4: Request A tool executes → uses &quot;req_123&quot; ✅
+Time 5: Request B tool executes → uses &quot;req_456&quot; ✅
+Time 6: Request A completes → logs to &quot;req_123&quot; ✅
+Time 7: Request B completes → logs to &quot;req_456&quot; ✅
+</pre></div>
+</div>
+<p>Each request maintains its own isolated context throughout execution.</p>
+</section>
+<section id="common-pitfalls">
+<h2>Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Link to this heading"></a></h2>
+<section id="using-threading-local-in-async-code">
+<h3>❌ Using <code class="docutils literal notranslate"><span class="pre">threading.local()</span></code> in Async Code<a class="headerlink" href="#using-threading-local-in-async-code" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This will cause cross-contamination in async environments</span>
+<span class="n">_thread_locals</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">local</span><span class="p">()</span>
+<span class="n">_thread_locals</span><span class="o">.</span><span class="n">job_id</span> <span class="o">=</span> <span class="s2">&quot;req_123&quot;</span>  <span class="c1"># ❌ Not async-safe</span>
+</pre></div>
+</div>
+</section>
+<section id="setting-context-after-operations-start">
+<h3>❌ Setting Context After Operations Start<a class="headerlink" href="#setting-context-after-operations-start" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Context set too late</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+<span class="n">set_request_context</span><span class="p">({</span><span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">})</span>  <span class="c1"># ❌ Agent already ran</span>
+</pre></div>
+</div>
+</section>
+<section id="not-propagating-context-to-executors">
+<h3>❌ Not Propagating Context to Executors<a class="headerlink" href="#not-propagating-context-to-executors" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Context lost in thread pool</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">tool</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># ❌ No context</span>
+</pre></div>
+</div>
+<p>The framework handles executor context propagation automatically.</p>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>The framework ensures async-safety by:</p>
+<ul class="simple">
+<li><p>✅ Using <code class="docutils literal notranslate"><span class="pre">contextvars.ContextVar</span></code> for request-scoped data</p></li>
+<li><p>✅ Automatically propagating context through <code class="docutils literal notranslate"><span class="pre">await</span></code> boundaries</p></li>
+<li><p>✅ Explicitly propagating context to <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code> threads</p></li>
+<li><p>✅ Providing <code class="docutils literal notranslate"><span class="pre">request_context</span></code> service for easy access</p></li>
+<li><p>✅ Supporting YAML variable expansion from request context</p></li>
+</ul>
+<p><strong>Key Takeaway:</strong> Always use <code class="docutils literal notranslate"><span class="pre">contextvars</span></code> (not <code class="docutils literal notranslate"><span class="pre">threading.local()</span></code>) for request-scoped data in async Python applications.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="event_system.html" class="btn btn-neutral float-left" title="Event System" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="strategic_planning_architecture.html" class="btn btn-neutral float-right" title="Strategic Planning Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

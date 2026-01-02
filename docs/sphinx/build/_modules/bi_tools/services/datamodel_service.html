@@ -1,0 +1,1074 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bi_tools.services.datamodel_service &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/index.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">bi_tools.services.datamodel_service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bi_tools.services.datamodel_service</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Central Data Model Service - Internal API</span>
+
+<span class="sd">Simple service for reading/writing to the central data model JSON.</span>
+<span class="sd">This is the single source of truth for all model operations.</span>
+
+<span class="sd">Usage::</span>
+
+<span class="sd">    from bi_tools.services.datamodel_service import DataModelService</span>
+
+<span class="sd">    service = DataModelService()</span>
+
+<span class="sd">    # Read operations</span>
+<span class="sd">    model = service.get_model(&quot;my_model_id&quot;)</span>
+<span class="sd">    tables = service.get_tables(&quot;my_model_id&quot;)</span>
+<span class="sd">    table = service.get_table(&quot;my_model_id&quot;, &quot;ORDER_DETAIL&quot;)</span>
+
+<span class="sd">    # Write operations</span>
+<span class="sd">    service.add_column(&quot;my_model_id&quot;, &quot;ORDER_DETAIL&quot;, {</span>
+<span class="sd">        &quot;name&quot;: &quot;NewColumn&quot;,</span>
+<span class="sd">        &quot;dataType&quot;: &quot;string&quot;</span>
+<span class="sd">    })</span>
+<span class="sd">    service.add_measure(&quot;my_model_id&quot;, &quot;ORDER_DETAIL&quot;, {</span>
+<span class="sd">        &quot;name&quot;: &quot;TotalSales&quot;,</span>
+<span class="sd">        &quot;expression&quot;: &quot;SUM(...)&quot;</span>
+<span class="sd">    })</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextvars</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">RLock</span>  <span class="c1"># Use RLock instead of Lock for re-entrant locking</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Async-Safe Context Storage for Request-Scoped job_id (using contextvars)</span>
+<span class="c1"># ============================================================================</span>
+
+<span class="c1"># IMPORTANT: Use contextvars instead of threading.local() for async/await compatibility</span>
+<span class="c1"># This ensures proper isolation across concurrent async tasks (WebSocket connections, etc.)</span>
+<span class="n">_current_job_id</span><span class="p">:</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span>
+    <span class="s1">&#39;_current_job_id&#39;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_current_job_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the job_id from context-local storage (async-safe)&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_current_job_id</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_current_job_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the job_id in context-local storage (async-safe)&quot;&quot;&quot;</span>
+    <span class="n">_current_job_id</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_clear_current_job_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear the job_id from context-local storage (async-safe)&quot;&quot;&quot;</span>
+    <span class="n">_current_job_id</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="datamodel_context">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.datamodel_context">[docs]</a>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">datamodel_context</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Context manager for request-scoped data model operations.</span>
+<span class="sd">    </span>
+<span class="sd">    This ensures each request (user/job) gets isolated access to their data model,</span>
+<span class="sd">    even when multiple requests are processed concurrently.</span>
+<span class="sd">    </span>
+<span class="sd">    Usage::</span>
+
+<span class="sd">        with datamodel_context(job_id=&quot;abc123&quot;):</span>
+<span class="sd">            service = get_datamodel_service()  # Automatically uses job_id=&quot;abc123&quot;</span>
+<span class="sd">            agent.run(task)  # All tools use the correct model</span>
+<span class="sd">    </span>
+<span class="sd">    Async-Safety:</span>
+<span class="sd">        Uses contextvars (not threading.local!) for proper isolation across</span>
+<span class="sd">        concurrent async tasks in the same thread (e.g., multiple WebSocket connections).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">previous_job_id</span> <span class="o">=</span> <span class="n">_get_current_job_id</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_set_current_job_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entered datamodel context for job_id: </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">previous_job_id</span><span class="p">:</span>
+            <span class="n">_set_current_job_id</span><span class="p">(</span><span class="n">previous_job_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_clear_current_job_id</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exited datamodel context for job_id: </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DataModelService">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataModelService</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal API for central data model operations.</span>
+<span class="sd">    </span>
+<span class="sd">    All agents and tools should use this service instead of direct file access.</span>
+<span class="sd">    </span>
+<span class="sd">    Storage Structure:</span>
+<span class="sd">        central_data_models/{job_id}/datamodel.json</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Class-level type annotations (set in __init__)</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">datamodel_path</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="n">_lock</span><span class="p">:</span> <span class="n">RLock</span>
+    <span class="n">_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="n">_is_nested_format</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">_wrapper_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    
+<div class="viewcode-block" id="DataModelService.__init__">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;central_data_models&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize DataModelService.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            job_id: Job ID for this data model (optional - will use MODEL_ID from env)</span>
+<span class="sd">            base_dir: Base directory for data models</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get job_id from parameter or environment</span>
+        <span class="n">resolved_job_id</span> <span class="o">=</span> <span class="n">job_id</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved_job_id</span><span class="p">:</span>
+            <span class="c1"># Fallback: look for any existing job directories</span>
+            <span class="n">base_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">base_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">base_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">job_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">base_path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="s2">&quot;datamodel.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+                <span class="k">if</span> <span class="n">job_dirs</span><span class="p">:</span>
+                    <span class="n">resolved_job_id</span> <span class="o">=</span> <span class="n">job_dirs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Check legacy format</span>
+                    <span class="n">legacy_path</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">/</span> <span class="s2">&quot;datamodel.json&quot;</span>
+                    <span class="k">if</span> <span class="n">legacy_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                        <span class="c1"># Use legacy single-file format</span>
+                        <span class="n">resolved_job_id</span> <span class="o">=</span> <span class="s2">&quot;legacy&quot;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span> <span class="o">=</span> <span class="n">resolved_job_id</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span> <span class="o">=</span> <span class="n">legacy_path</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">RLock</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_is_nested_format</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_data</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_load_datamodel</span><span class="p">()</span>
+                        <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved_job_id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;No job_id available. Set MODEL_ID or JOB_ID environment variable.&quot;</span>
+            <span class="p">)</span>
+        
+        <span class="c1"># Set job_id after validation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span> <span class="o">=</span> <span class="n">resolved_job_id</span>
+        
+        <span class="c1"># NEW structure: central_data_models/{job_id}/datamodel.json</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">base_dir</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span> <span class="o">/</span> <span class="s2">&quot;datamodel.json&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">RLock</span><span class="p">()</span>  <span class="c1"># Re-entrant lock for nested operations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_nested_format</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Track if loaded from nested format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_datamodel</span><span class="p">()</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_datamodel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load data model from disk into memory&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data model not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># Initialize empty model structure</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;meta&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;jobId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="p">},</span>
+                    <span class="s2">&quot;tables&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="s2">&quot;relationships&quot;</span><span class="p">:</span> <span class="p">[]</span>
+                <span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_is_nested_format</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_data</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">return</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                
+                <span class="c1"># Handle two formats:</span>
+                <span class="c1"># 1. Flat format: { &quot;meta&quot;: {...}, &quot;tables&quot;: [...], &quot;relationships&quot;: [...] }</span>
+                <span class="c1"># 2. Nested format: { &quot;model&quot;: { &quot;meta&quot;: {...}, &quot;tables&quot;: [...], ... } }</span>
+                <span class="k">if</span> <span class="s2">&quot;model&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="c1"># Nested format - extract the model object</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected nested model format, extracting model data&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_is_nested_format</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
+                    <span class="c1"># Store the wrapper data for preservation</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;model&quot;</span><span class="p">}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Flat format</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_is_nested_format</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">data</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_data</span> <span class="o">=</span> <span class="p">{}</span>
+                
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded data model for job </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load data model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;meta&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;jobId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="p">},</span>
+                    <span class="s2">&quot;tables&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="s2">&quot;relationships&quot;</span><span class="p">:</span> <span class="p">[]</span>
+                <span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_is_nested_format</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_data</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_datamodel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save data model from memory to disk&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Create job-specific directory</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                
+                <span class="c1"># Ensure metadata</span>
+                <span class="k">if</span> <span class="s2">&quot;meta&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;jobId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;lastUpdated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+                
+                <span class="c1"># Preserve original format when saving</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_nested_format</span><span class="p">:</span>
+                    <span class="c1"># Wrap in nested format</span>
+                    <span class="n">save_data</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">,</span>
+                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_data</span>  <span class="c1"># Preserve model_source, model_version, etc.</span>
+                    <span class="p">}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Flat format</span>
+                    <span class="n">save_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span>
+                
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">save_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved data model for job </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">datamodel_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to save data model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span>
+    
+    <span class="c1"># ========== READ OPERATIONS ==========</span>
+    
+<div class="viewcode-block" id="DataModelService.get_all_models">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_all_models">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_models</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of all model IDs (returns current job_id)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="p">]</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_model">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_model">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get complete model data for current job&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_tables">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_tables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all tables in current model&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="p">[])</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_table">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a specific table by name&quot;&quot;&quot;</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">table_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">table</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_columns">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all columns in a table&quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="p">[])</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_column">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_column">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a specific column&quot;&quot;&quot;</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">column_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">column</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_measures">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_measures">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_measures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all measures (optionally filtered by table)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">table_name</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;measures&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        
+        <span class="c1"># Get measures from all tables</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">all_measures</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
+            <span class="n">measures</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;measures&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">measure</span> <span class="ow">in</span> <span class="n">measures</span><span class="p">:</span>
+                <span class="n">measure</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            <span class="n">all_measures</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">measures</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">all_measures</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_relationships">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_relationships">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_relationships</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all relationships in current model&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;relationships&quot;</span><span class="p">,</span> <span class="p">[])</span></div>
+
+
+    <span class="c1"># Public save method for tools that directly mutate cached model structures</span>
+<div class="viewcode-block" id="DataModelService.save_model">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.save_model">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Persist the current in-memory model to disk.</span>
+
+<span class="sd">        Returns True on success, raises on failure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span></div>
+
+    
+    <span class="c1"># ========== WRITE OPERATIONS ==========</span>
+    <span class="c1"># Note: No model_id needed - service is already scoped to current job</span>
+    
+<div class="viewcode-block" id="DataModelService.add_table">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.add_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new table to the current model&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="c1"># Check if table already exists</span>
+            <span class="n">table_name</span> <span class="o">=</span> <span class="n">table_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">table_name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Table data must include a &#39;name&#39; field&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table already exists: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="c1"># Ensure required fields</span>
+            <span class="k">if</span> <span class="s2">&quot;columns&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table_data</span><span class="p">:</span>
+                <span class="n">table_data</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="s2">&quot;measures&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table_data</span><span class="p">:</span>
+                <span class="n">table_data</span><span class="p">[</span><span class="s2">&quot;measures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="k">if</span> <span class="s2">&quot;tables&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added table: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.add_column">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.add_column">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a column to a table&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table not found: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="n">column_name</span> <span class="o">=</span> <span class="n">column_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">column_name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Column data must include a &#39;name&#39; field&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="c1"># Check if column already exists</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">column_name</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column already exists: </span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="c1"># Ensure required fields</span>
+            <span class="k">if</span> <span class="s2">&quot;dataType&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">column_data</span><span class="p">:</span>
+                <span class="n">column_data</span><span class="p">[</span><span class="s2">&quot;dataType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;string&quot;</span>
+            
+            <span class="n">table</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added column: </span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2"> to table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.update_column">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.update_column">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update column properties&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">columns</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table not found: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">column_name</span><span class="p">:</span>
+                    <span class="n">column</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updated column: </span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2"> in table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column not found: </span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.rename_column">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.rename_column">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rename_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rename a column&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_column</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">old_name</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">new_name</span><span class="p">})</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.delete_column">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.delete_column">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a column from a table&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table not found: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="n">columns</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">original_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+            <span class="n">table</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">columns</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">column_name</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">original_count</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column not found: </span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleted column: </span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2"> from table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.add_measure">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.add_measure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">measure_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a measure to a table&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table not found: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="n">measure_name</span> <span class="o">=</span> <span class="n">measure_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Check if measure already exists</span>
+            <span class="n">measures</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;measures&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">measure</span> <span class="ow">in</span> <span class="n">measures</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">measure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">measure_name</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measure already exists: </span><span class="si">{</span><span class="n">measure_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="c1"># Ensure required fields</span>
+            <span class="k">if</span> <span class="s2">&quot;expression&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">measure_data</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Measure must have an expression&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="k">if</span> <span class="s2">&quot;measures&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">table</span><span class="p">[</span><span class="s2">&quot;measures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="n">table</span><span class="p">[</span><span class="s2">&quot;measures&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">measure_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added measure: </span><span class="si">{</span><span class="n">measure_name</span><span class="si">}</span><span class="s2"> to table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.update_measure">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.update_measure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">measure_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update measure properties&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table not found: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="n">measures</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;measures&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">measure</span> <span class="ow">in</span> <span class="n">measures</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">measure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">measure_name</span><span class="p">:</span>
+                    <span class="n">measure</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updated measure: </span><span class="si">{</span><span class="n">measure_name</span><span class="si">}</span><span class="s2"> in table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measure not found: </span><span class="si">{</span><span class="n">measure_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.delete_measure">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.delete_measure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">measure_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a measure from a table&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table not found: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="n">measures</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;measures&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">original_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">)</span>
+            <span class="n">table</span><span class="p">[</span><span class="s2">&quot;measures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measures</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">measure_name</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;measures&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">original_count</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measure not found: </span><span class="si">{</span><span class="n">measure_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleted measure: </span><span class="si">{</span><span class="n">measure_name</span><span class="si">}</span><span class="s2"> from table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.add_relationship">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.add_relationship">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_relationship</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relationship_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a relationship to the current model&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;relationships&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;relationships&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;relationships&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">relationship_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added relationship&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.update_relationship">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.update_relationship">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_relationship</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relationship_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a relationship&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">relationships</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;relationships&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            
+            <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">relationships</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">relationship_id</span><span class="p">:</span>
+                    <span class="n">rel</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updated relationship: </span><span class="si">{</span><span class="n">relationship_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Relationship not found: </span><span class="si">{</span><span class="n">relationship_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.delete_relationship">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.delete_relationship">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_relationship</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relationship_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a relationship&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">relationships</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;relationships&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">original_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">relationships</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;relationships&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">relationships</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">relationship_id</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;relationships&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">original_count</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Relationship not found: </span><span class="si">{</span><span class="n">relationship_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_datamodel</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleted relationship: </span><span class="si">{</span><span class="n">relationship_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+    
+    <span class="c1"># ========== UTILITY METHODS ==========</span>
+    
+<div class="viewcode-block" id="DataModelService.reload">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.reload">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reload data model from disk&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_datamodel</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_model_summary">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_model_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_model_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get summary statistics for current model&quot;&quot;&quot;</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">relationships</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;relationships&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        
+        <span class="n">total_columns</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="p">[]))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">)</span>
+        <span class="n">total_measures</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;measures&quot;</span><span class="p">,</span> <span class="p">[]))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;modelId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
+            <span class="s2">&quot;tableCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">tables</span><span class="p">),</span>
+            <span class="s2">&quot;columnCount&quot;</span><span class="p">:</span> <span class="n">total_columns</span><span class="p">,</span>
+            <span class="s2">&quot;measureCount&quot;</span><span class="p">:</span> <span class="n">total_measures</span><span class="p">,</span>
+            <span class="s2">&quot;relationshipCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">relationships</span><span class="p">),</span>
+            <span class="s2">&quot;tables&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">]</span>
+        <span class="p">}</span></div>
+
+    
+<div class="viewcode-block" id="DataModelService.get_rich_context">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.DataModelService.get_rich_context">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_rich_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_tables</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">max_columns_per_table</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">max_measures_per_table</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a rich, structured context for orchestrator/manager planning.</span>
+<span class="sd">        </span>
+<span class="sd">        This provides a comprehensive but compact view of the data model that enables</span>
+<span class="sd">        better decision-making without requiring multiple tool calls.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            max_tables: Maximum number of tables to include (default 100)</span>
+<span class="sd">            max_columns_per_table: Maximum columns per table to show (default 20, shows key columns first)</span>
+<span class="sd">            max_measures_per_table: Maximum measures per table to show (default 10)</span>
+<span class="sd">            format: Output format - &quot;json&quot; (nested structure) or &quot;graph&quot; (knowledge graph format)</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary with structured model information:</span>
+<span class="sd">            - If format=&quot;json&quot;: nested structure with summary, tables, relationships, dimensions, facts</span>
+<span class="sd">            - If format=&quot;graph&quot;: knowledge graph format with nodes and edges</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">relationships</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;relationships&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        
+        <span class="c1"># Build relationship index for quick lookup</span>
+        <span class="n">rel_index</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">relationships</span><span class="p">:</span>
+            <span class="n">from_table</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromTable&#39;</span><span class="p">)</span>
+            <span class="n">from_col</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromColumn&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromColumnName&#39;</span><span class="p">)</span>
+            <span class="n">to_table</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toTable&#39;</span><span class="p">)</span>
+            <span class="n">to_col</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toColumn&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toColumnName&#39;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">from_table</span> <span class="ow">and</span> <span class="n">to_table</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">from_table</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">from_col</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rel_index</span><span class="p">:</span>
+                    <span class="n">rel_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">rel_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">to_table</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">to_col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;isActive&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                    <span class="s2">&quot;cardinality&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fromCardinality&quot;</span><span class="p">,</span> <span class="s2">&quot;many&quot;</span><span class="p">)</span>
+                <span class="p">})</span>
+        
+        <span class="c1"># Identify key columns (those used in relationships)</span>
+        <span class="n">key_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">relationships</span><span class="p">:</span>
+            <span class="n">from_col</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromColumn&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromColumnName&#39;</span><span class="p">)</span>
+            <span class="n">to_col</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toColumn&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toColumnName&#39;</span><span class="p">)</span>
+            <span class="n">from_table</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromTable&#39;</span><span class="p">)</span>
+            <span class="n">to_table</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toTable&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">from_table</span> <span class="ow">and</span> <span class="n">from_col</span><span class="p">:</span>
+                <span class="n">key_columns</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">from_table</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">from_col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">to_table</span> <span class="ow">and</span> <span class="n">to_col</span><span class="p">:</span>
+                <span class="n">key_columns</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">to_table</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">to_col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Classify tables as fact or dimension</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">is_dimension</span><span class="p">(</span><span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">name_lower</span> <span class="o">=</span> <span class="n">table_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">name_lower</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;dim&#39;</span><span class="p">)</span> <span class="ow">or</span> 
+                    <span class="n">name_lower</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;lu_&#39;</span><span class="p">)</span> <span class="ow">or</span> 
+                    <span class="s1">&#39;lookup&#39;</span> <span class="ow">in</span> <span class="n">name_lower</span> <span class="ow">or</span> 
+                    <span class="n">name_lower</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">})</span>
+        
+        <span class="c1"># Build table summaries</span>
+        <span class="n">table_summaries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">[:</span><span class="n">max_tables</span><span class="p">]:</span>
+            <span class="n">table_name</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">measures</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;measures&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            
+            <span class="c1"># Prioritize key columns (those used in relationships)</span>
+            <span class="n">key_cols</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">other_cols</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+                <span class="n">col_name</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">col_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">col_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">col_key</span> <span class="ow">in</span> <span class="n">key_columns</span><span class="p">:</span>
+                    <span class="n">key_cols</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">col_name</span><span class="p">,</span>
+                        <span class="s2">&quot;dataType&quot;</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataType&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;isKey&quot;</span><span class="p">:</span> <span class="kc">True</span>
+                    <span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">other_cols</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">col_name</span><span class="p">,</span>
+                        <span class="s2">&quot;dataType&quot;</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataType&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+                    <span class="p">})</span>
+            
+            <span class="c1"># Combine: key columns first, then others (limited)</span>
+            <span class="n">all_cols</span> <span class="o">=</span> <span class="n">key_cols</span> <span class="o">+</span> <span class="n">other_cols</span><span class="p">[:</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_columns_per_table</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_cols</span><span class="p">))]</span>
+            
+            <span class="c1"># Measure summaries</span>
+            <span class="n">measure_summaries</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                    <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="n">table_name</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measures</span><span class="p">[:</span><span class="n">max_measures_per_table</span><span class="p">]</span>
+            <span class="p">]</span>
+            
+            <span class="n">table_summaries</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">table_name</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;dimension&quot;</span> <span class="k">if</span> <span class="n">is_dimension</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;fact&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;columnCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">),</span>
+                <span class="s2">&quot;measureCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">),</span>
+                <span class="s2">&quot;keyColumns&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">key_cols</span><span class="p">],</span>
+                <span class="s2">&quot;columns&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">all_cols</span><span class="p">],</span>  <span class="c1"># All shown columns</span>
+                <span class="s2">&quot;measures&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measure_summaries</span><span class="p">],</span>
+                <span class="s2">&quot;hasMoreColumns&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_cols</span><span class="p">),</span>
+                <span class="s2">&quot;hasMoreMeasures&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">measure_summaries</span><span class="p">)</span>
+            <span class="p">})</span>
+        
+        <span class="c1"># Build relationship graph (compact format)</span>
+        <span class="n">rel_graph</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">relationships</span><span class="p">[:</span><span class="mi">200</span><span class="p">]:</span>  <span class="c1"># Cap at 200 relationships</span>
+            <span class="n">from_table</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromTable&#39;</span><span class="p">)</span>
+            <span class="n">from_col</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromColumn&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fromColumnName&#39;</span><span class="p">)</span>
+            <span class="n">to_table</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toTable&#39;</span><span class="p">)</span>
+            <span class="n">to_col</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toColumn&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toColumnName&#39;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">from_table</span> <span class="ow">and</span> <span class="n">to_table</span> <span class="ow">and</span> <span class="n">from_col</span> <span class="ow">and</span> <span class="n">to_col</span><span class="p">:</span>
+                <span class="n">rel_graph</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">from_table</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">from_col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">to_table</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">to_col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;isActive&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                    <span class="s2">&quot;cardinality&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fromCardinality&quot;</span><span class="p">,</span> <span class="s2">&quot;many&quot;</span><span class="p">)</span>
+                <span class="p">})</span>
+        
+        <span class="c1"># Separate dimensions and facts</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">table_summaries</span> <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;dimension&quot;</span><span class="p">]</span>
+        <span class="n">facts</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">table_summaries</span> <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;fact&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;graph&quot;</span><span class="p">:</span>
+            <span class="c1"># Knowledge graph representation - more compact and easier for LLMs to reason about</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_knowledge_graph</span><span class="p">(</span><span class="n">table_summaries</span><span class="p">,</span> <span class="n">rel_graph</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">facts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tables</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">relationships</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Traditional JSON nested structure</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;tableCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">tables</span><span class="p">),</span>
+                    <span class="s2">&quot;relationshipCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">relationships</span><span class="p">),</span>
+                    <span class="s2">&quot;dimensionCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),</span>
+                    <span class="s2">&quot;factCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">facts</span><span class="p">),</span>
+                    <span class="s2">&quot;totalColumns&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;columnCount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">table_summaries</span><span class="p">),</span>
+                    <span class="s2">&quot;totalMeasures&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;measureCount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">table_summaries</span><span class="p">)</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;tables&quot;</span><span class="p">:</span> <span class="n">table_summaries</span><span class="p">,</span>
+                <span class="s2">&quot;relationships&quot;</span><span class="p">:</span> <span class="n">rel_graph</span><span class="p">,</span>
+                <span class="s2">&quot;dimensions&quot;</span><span class="p">:</span> <span class="n">dimensions</span><span class="p">,</span>
+                <span class="s2">&quot;facts&quot;</span><span class="p">:</span> <span class="n">facts</span>
+            <span class="p">}</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_knowledge_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_summaries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">rel_graph</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> 
+                               <span class="n">dimensions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">facts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> 
+                               <span class="n">total_tables</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">total_relationships</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a knowledge graph representation of the data model.</span>
+<span class="sd">        </span>
+<span class="sd">        Format:</span>
+<span class="sd">        {</span>
+<span class="sd">            &quot;summary&quot;: {...},</span>
+<span class="sd">            &quot;nodes&quot;: [</span>
+<span class="sd">                {&quot;id&quot;: &quot;TableName&quot;, &quot;type&quot;: &quot;table|column|measure&quot;, &quot;properties&quot;: {...}},</span>
+<span class="sd">                ...</span>
+<span class="sd">            ],</span>
+<span class="sd">            &quot;edges&quot;: [</span>
+<span class="sd">                {&quot;from&quot;: &quot;Table1.Column1&quot;, &quot;to&quot;: &quot;Table2.Column2&quot;, &quot;type&quot;: &quot;relationship&quot;, &quot;properties&quot;: {...}},</span>
+<span class="sd">                {&quot;from&quot;: &quot;Table1&quot;, &quot;to&quot;: &quot;Table1.Column1&quot;, &quot;type&quot;: &quot;has_column&quot;},</span>
+<span class="sd">                {&quot;from&quot;: &quot;Table1&quot;, &quot;to&quot;: &quot;Table1.Measure1&quot;, &quot;type&quot;: &quot;has_measure&quot;},</span>
+<span class="sd">                ...</span>
+<span class="sd">            ]</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Add table nodes</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">table_summaries</span><span class="p">:</span>
+            <span class="n">table_name</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">table_name</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;table&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>  <span class="c1"># dimension or fact</span>
+                    <span class="s2">&quot;columnCount&quot;</span><span class="p">:</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;columnCount&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;measureCount&quot;</span><span class="p">:</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;measureCount&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;keyColumns&quot;</span><span class="p">:</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;keyColumns&quot;</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">})</span>
+            
+            <span class="c1"># Add column nodes and edges (only key columns + sample others)</span>
+            <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]:</span>
+                <span class="n">col_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">col_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">is_key</span> <span class="o">=</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;keyColumns&quot;</span><span class="p">]</span>
+                
+                <span class="c1"># Add column node (only if key column to reduce size)</span>
+                <span class="k">if</span> <span class="n">is_key</span><span class="p">:</span>
+                    <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">col_id</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;column&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="n">table_name</span><span class="p">,</span>
+                            <span class="s2">&quot;isKey&quot;</span><span class="p">:</span> <span class="kc">True</span>
+                        <span class="p">}</span>
+                    <span class="p">})</span>
+                    <span class="c1"># Edge: table has column</span>
+                    <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="n">table_name</span><span class="p">,</span>
+                        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">col_id</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;has_column&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;isKey&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+                    <span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># For non-key columns, just add edge without node (more compact)</span>
+                    <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="n">table_name</span><span class="p">,</span>
+                        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">col_id</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;has_column&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;isKey&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">col_name</span><span class="p">}</span>
+                    <span class="p">})</span>
+            
+            <span class="c1"># Add measure nodes and edges</span>
+            <span class="k">for</span> <span class="n">measure_name</span> <span class="ow">in</span> <span class="n">table</span><span class="p">[</span><span class="s2">&quot;measures&quot;</span><span class="p">]:</span>
+                <span class="n">measure_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">measure_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">measure_id</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;measure&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="n">table_name</span>
+                    <span class="p">}</span>
+                <span class="p">})</span>
+                <span class="c1"># Edge: table has measure</span>
+                <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="n">table_name</span><span class="p">,</span>
+                    <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">measure_id</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;has_measure&quot;</span>
+                <span class="p">})</span>
+        
+        <span class="c1"># Add relationship edges</span>
+        <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">rel_graph</span><span class="p">:</span>
+            <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="p">[</span><span class="s2">&quot;from&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="p">[</span><span class="s2">&quot;to&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;relationship&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;cardinality&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cardinality&quot;</span><span class="p">,</span> <span class="s2">&quot;many&quot;</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">})</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;knowledge_graph&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;tableCount&quot;</span><span class="p">:</span> <span class="n">total_tables</span><span class="p">,</span>
+                <span class="s2">&quot;relationshipCount&quot;</span><span class="p">:</span> <span class="n">total_relationships</span><span class="p">,</span>
+                <span class="s2">&quot;dimensionCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),</span>
+                <span class="s2">&quot;factCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">facts</span><span class="p">),</span>
+                <span class="s2">&quot;nodeCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">),</span>
+                <span class="s2">&quot;edgeCount&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="n">nodes</span><span class="p">,</span>
+            <span class="s2">&quot;edges&quot;</span><span class="p">:</span> <span class="n">edges</span><span class="p">,</span>
+            <span class="s2">&quot;dimensions&quot;</span><span class="p">:</span> <span class="n">dimensions</span><span class="p">,</span>
+            <span class="s2">&quot;facts&quot;</span><span class="p">:</span> <span class="n">facts</span>
+        <span class="p">}</span></div>
+
+
+
+<span class="c1"># Singleton instance per job_id (thread-safe)</span>
+<span class="n">_service_instances</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_service_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="get_datamodel_service">
+<a class="viewcode-back" href="../../../api/index.html#bi_tools.services.datamodel_service.get_datamodel_service">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_datamodel_service</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get or create the service instance for a specific job_id.</span>
+<span class="sd">    </span>
+<span class="sd">    Priority for job_id resolution:</span>
+<span class="sd">    1. Explicit parameter</span>
+<span class="sd">    2. Context-local storage (set by datamodel_context)</span>
+<span class="sd">    3. Environment variables (MODEL_ID, JOB_ID)</span>
+<span class="sd">    4. First available job directory</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        job_id: Job ID (optional - will use context-local or environment)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        KGDataModelService instance for the job</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If no job_id can be determined</span>
+<span class="sd">        KGConnectionError: If KG service is unreachable (propagated from service methods)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_service_instances</span>
+    
+    <span class="c1"># Determine job_id with priority</span>
+    <span class="n">actual_job_id</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">job_id</span> <span class="ow">or</span>                          <span class="c1"># 1. Explicit parameter</span>
+        <span class="n">_get_current_job_id</span><span class="p">()</span> <span class="ow">or</span>          <span class="c1"># 2. Context-local (from context manager)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL_ID&quot;</span><span class="p">)</span> <span class="ow">or</span>          <span class="c1"># 3. Environment variable</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">)</span>               <span class="c1"># 4. Alternative env var</span>
+    <span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">actual_job_id</span><span class="p">:</span>
+        <span class="c1"># Fallback: try to find existing job</span>
+        <span class="n">base_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;central_data_models&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">base_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">job_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">base_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="s2">&quot;datamodel.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+            <span class="k">if</span> <span class="n">job_dirs</span><span class="p">:</span>
+                <span class="n">actual_job_id</span> <span class="o">=</span> <span class="n">job_dirs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No job_id in context, using first found: </span><span class="si">{</span><span class="n">actual_job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">actual_job_id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;No job_id available. Use datamodel_context(job_id) or set MODEL_ID/JOB_ID.&quot;</span>
+            <span class="p">)</span>
+    
+    <span class="c1"># Thread-safe singleton creation</span>
+    <span class="k">if</span> <span class="n">actual_job_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_service_instances</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_service_lock</span><span class="p">:</span>
+            <span class="c1"># Double-check after acquiring lock</span>
+            <span class="k">if</span> <span class="n">actual_job_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_service_instances</span><span class="p">:</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">.kg_datamodel_service</span><span class="w"> </span><span class="kn">import</span> <span class="n">KGDataModelService</span>
+                <span class="n">_service_instances</span><span class="p">[</span><span class="n">actual_job_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">KGDataModelService</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">actual_job_id</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">_service_instances</span><span class="p">[</span><span class="n">actual_job_id</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

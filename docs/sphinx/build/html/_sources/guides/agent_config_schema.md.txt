@@ -1,0 +1,81 @@
+# Agent Config Schema (v1)
+
+The Deployment Layer uses a declarative YAML schema to define agents.
+
+Top-level keys
+- `apiVersion`: `agent.framework/v1`
+- `kind`: `Agent` or `ManagerAgent`
+- `metadata`: name, description, version
+- `resources`: reusable components instantiated once and referenced by name
+- `spec`: how to assemble the agent from resources
+
+Resources
+- Categories are flexible; typical groups: `inference_gateways`, `tools`, `memories`.
+- Each resource entry:
+  - `name`: unique string key used for references
+  - `type`: class name registered in the component registries
+  - `config`: dict of constructor kwargs (env vars expanded via `${VAR}`)
+
+Spec for kind: Agent
+- `planner`: `{ type, config }` — strings in `config` that match a resource name are replaced by that resource instance
+- `memory`: `{ type, config }`
+- `tools`: list of resource names (tools) to include
+
+Spec for kind: ManagerAgent
+- `planner`, `memory` — same as Agent
+- `workers`: list of nested agent YAMLs to load recursively
+  - `agent_config_path`: string path to another v1 YAML
+
+Example: Agent
+```yaml
+apiVersion: agent.framework/v1
+kind: Agent
+metadata:
+  name: ResearchAgent
+  description: An agent demonstrating the mock search tool.
+  version: 1.0.0
+resources:
+  inference_gateways:
+    - name: mock-llm
+      type: MockInferenceGateway
+      config: {}
+  tools:
+    - name: mock_search
+      type: MockSearchTool
+      config: {}
+spec:
+  planner:
+    type: StaticPlanner
+    config: {}
+  memory:
+    type: InMemoryMemory
+    config: {}
+  tools:
+    - mock_search
+```
+
+Example: ManagerAgent
+```yaml
+apiVersion: agent.framework/v1
+kind: ManagerAgent
+metadata:
+  name: ProjectManager
+  description: Delegates to worker agents.
+  version: 1.0.0
+resources: {}
+spec:
+  planner:
+    type: StaticPlanner
+    config: {}
+  memory:
+    type: InMemoryMemory
+    config: {}
+  workers:
+    - agent_config_path: configs/agents/research_assistant.yaml
+    - agent_config_path: configs/agents/research_assistant.yaml
+```
+
+Notes
+- Registry mapping is defined in `deployment/registry.py`.
+- You can add new components without changing the factory by calling `AgentFactory.register_component("Name", Class)` before loading YAML.
+- Environment variables are expanded before parsing using `os.path.expandvars`.

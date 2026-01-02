@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Interpreter Tool - Debugging &amp; Logging Guide &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Strategic Planning Architecture" href="strategic_planning_architecture.html" />
+    <link rel="prev" title="Model Optimization Strategy" href="model_optimization_strategy.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#start-here">Start Here</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#howto">How‑To</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#architecture">Architecture</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#additional-guides">Additional Guides</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="frontend_chat_integration.html">Frontend Chat Integration Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_optimization_strategy.html">Model Optimization Strategy</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Python Interpreter Tool - Debugging &amp; Logging Guide</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-the-python-interpreter-works">How the Python Interpreter Works</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#available-logs">Available Logs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-enable-detailed-logging">How to Enable Detailed Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#debugging-python-interpreter-errors">Debugging Python Interpreter Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#allowed-operations">Allowed Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#log-output-examples">Log Output Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#best-practices-for-agents-using-python-interpreter">Best Practices for Agents Using Python Interpreter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-examples">Configuration Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#troubleshooting-checklist">Troubleshooting Checklist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="strategic_planning_architecture.html">Strategic Planning Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#reference-and-examples">Reference and Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Guides</a></li>
+      <li class="breadcrumb-item active">Python Interpreter Tool - Debugging &amp; Logging Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/python_interpreter_debugging.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="python-interpreter-tool-debugging-logging-guide">
+<h1>Python Interpreter Tool - Debugging &amp; Logging Guide<a class="headerlink" href="#python-interpreter-tool-debugging-logging-guide" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">PythonInterpreterTool</span></code> executes Python code in a sandboxed environment for data analysis tasks. This guide explains how it works, what logs are available, and how to debug issues.</p>
+</section>
+<section id="how-the-python-interpreter-works">
+<h2>How the Python Interpreter Works<a class="headerlink" href="#how-the-python-interpreter-works" title="Link to this heading"></a></h2>
+<section id="code-location">
+<h3>Code Location<a class="headerlink" href="#code-location" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="n">framework</span><span class="o">/</span><span class="n">components</span><span class="o">/</span><span class="n">tools</span><span class="o">.</span><span class="n">py</span>
+<span class="n">Lines</span><span class="p">:</span> <span class="mi">726</span><span class="o">-</span><span class="mi">836</span>
+</pre></div>
+</div>
+</section>
+<section id="execution-flow">
+<h3>Execution Flow<a class="headerlink" href="#execution-flow" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Security Validation</strong> - Blocks dangerous operations:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">os</span></code>, <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">sys</span></code>, <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">subprocess</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">eval()</span></code>, <code class="docutils literal notranslate"><span class="pre">open()</span></code>, <code class="docutils literal notranslate"><span class="pre">__import__()</span></code></p></li>
+<li><p>File system access, network operations</p></li>
+</ul>
+</li>
+<li><p><strong>Safe Namespace</strong> - Pre-loaded with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span> <span class="p">(</span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="p">)</span>
+<span class="o">-</span> <span class="n">json</span> <span class="n">module</span>
+<span class="o">-</span> <span class="n">Basic</span> <span class="n">Python</span> <span class="n">builtins</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">print</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Code Execution</strong> - Uses <code class="docutils literal notranslate"><span class="pre">exec()</span></code> with:</p>
+<ul class="simple">
+<li><p>Redirected stdout (captures print statements)</p></li>
+<li><p>Isolated namespace (no access to parent scope)</p></li>
+<li><p>Exception handling</p></li>
+</ul>
+</li>
+<li><p><strong>Result Format</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>      <span class="c1"># Captured print() output</span>
+    <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="o">/</span><span class="kc">False</span><span class="p">,</span>
+    <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span> <span class="ow">or</span> <span class="kc">None</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="key-implementation-details">
+<h3>Key Implementation Details<a class="headerlink" href="#key-implementation-details" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lines 746-836 in framework/components/tools.py</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="c1"># 1. Security checks</span>
+    <span class="n">forbidden_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\bimport\s+os\b&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\beval\(&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    
+    <span class="c1"># 2. Create safe namespace</span>
+    <span class="n">safe_namespace</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;__builtins__&#39;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>  <span class="c1"># Limited builtins</span>
+        <span class="s1">&#39;Counter&#39;</span><span class="p">:</span> <span class="n">Counter</span><span class="p">,</span>
+        <span class="s1">&#39;defaultdict&#39;</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">,</span>
+        <span class="s1">&#39;json&#39;</span><span class="p">:</span> <span class="n">json</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># 3. Execute with stdout capture</span>
+    <span class="n">output_buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">output_buffer</span><span class="p">):</span>
+        <span class="n">exec</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">exec_namespace</span><span class="p">)</span>
+    
+    <span class="c1"># 4. Return structured result</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">output_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>
+        <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="available-logs">
+<h2>Available Logs<a class="headerlink" href="#available-logs" title="Link to this heading"></a></h2>
+<section id="event-based-logging">
+<h3>Event-Based Logging<a class="headerlink" href="#event-based-logging" title="Link to this heading"></a></h3>
+<p>The framework publishes these events during Python interpreter execution:</p>
+<section id="action-planned-debug-level">
+<h4>1. <strong>action_planned</strong> (DEBUG level)<a class="headerlink" href="#action-planned-debug-level" title="Link to this heading"></a></h4>
+<p>Emitted when the agent plans to use python_interpreter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;python_interpreter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="action-executed-debug-level">
+<h4>2. <strong>action_executed</strong> (DEBUG level)<a class="headerlink" href="#action-executed-debug-level" title="Link to this heading"></a></h4>
+<p>Emitted after code execution completes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;python_interpreter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tool_name&quot;</span><span class="p">:</span> <span class="s2">&quot;python_interpreter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>      <span class="c1"># What was printed</span>
+        <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="o">/</span><span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="error-error-level">
+<h4>3. <strong>error</strong> (ERROR level)<a class="headerlink" href="#error-error-level" title="Link to this heading"></a></h4>
+<p>Emitted if tool execution fails catastrophically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Tool python_interpreter failed: ...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="log-levels-hierarchy">
+<h3>Log Levels Hierarchy<a class="headerlink" href="#log-levels-hierarchy" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CRITICAL  ← Never used
+ERROR     ← Tool crashes, exceptions
+WARNING   ← Not currently used
+INFO      ← agent_start, agent_end, manager_start, manager_end
+DEBUG     ← action_planned, action_executed, delegation events
+</pre></div>
+</div>
+</section>
+</section>
+<section id="how-to-enable-detailed-logging">
+<h2>How to Enable Detailed Logging<a class="headerlink" href="#how-to-enable-detailed-logging" title="Link to this heading"></a></h2>
+<section id="option-1-environment-variable-recommended">
+<h3>Option 1: Environment Variable (Recommended)<a class="headerlink" href="#option-1-environment-variable-recommended" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your .env file or terminal</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AGENT_LOG_LEVEL</span><span class="o">=</span>DEBUG
+<span class="nb">export</span><span class="w"> </span><span class="nv">AGENT_LOG_FORMAT</span><span class="o">=</span><span class="s2">&quot;[%(asctime)s] %(levelname)s %(name)s - %(message)s&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="option-2-agent-configuration-per-agent">
+<h3>Option 2: Agent Configuration (Per-Agent)<a class="headerlink" href="#option-2-agent-configuration-per-agent" title="Link to this heading"></a></h3>
+<p>Edit your agent YAML file (e.g., <code class="docutils literal notranslate"><span class="pre">configs/agents/react_assistant.yaml</span></code>):</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoggingSubscriber</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEBUG</span><span class="w">                    </span><span class="c1"># Change from INFO to DEBUG</span>
+<span class="w">        </span><span class="nt">include_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">max_payload_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w">         </span><span class="c1"># Increase to see full code &amp; output</span>
+<span class="w">        </span><span class="nt">event_levels</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">action_executed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span><span class="w">         </span><span class="c1"># Make this event always visible</span>
+</pre></div>
+</div>
+</section>
+<section id="option-3-programmatic-configuration">
+<h3>Option 3: Programmatic Configuration<a class="headerlink" href="#option-3-programmatic-configuration" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">framework.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_level</span>
+
+<span class="c1"># Enable DEBUG logging</span>
+<span class="n">set_level</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+
+<span class="c1"># Or use standard Python logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="debugging-python-interpreter-errors">
+<h2>Debugging Python Interpreter Errors<a class="headerlink" href="#debugging-python-interpreter-errors" title="Link to this heading"></a></h2>
+<section id="common-error-pattern-you-saw">
+<h3>Common Error Pattern You Saw<a class="headerlink" href="#common-error-pattern-you-saw" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">action_executed</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Execution error: invalid syntax (&lt;string&gt;, line 1)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;tool&#39;</span><span class="p">:</span> <span class="s1">&#39;python_interpreter&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="how-to-debug-this">
+<h3>How to Debug This<a class="headerlink" href="#how-to-debug-this" title="Link to this heading"></a></h3>
+<section id="step-1-enable-debug-logging">
+<h4>Step 1: Enable DEBUG Logging<a class="headerlink" href="#step-1-enable-debug-logging" title="Link to this heading"></a></h4>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># In configs/agents/react_assistant.yaml</span>
+<span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoggingSubscriber</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEBUG</span>
+<span class="w">      </span><span class="nt">include_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">max_payload_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span><span class="w">  </span><span class="c1"># See full code</span>
+<span class="w">      </span><span class="nt">event_levels</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">action_planned</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span><span class="w">      </span><span class="c1"># See the CODE before execution</span>
+<span class="w">        </span><span class="nt">action_executed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span><span class="w">     </span><span class="c1"># See the RESULT after execution</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-find-the-code-in-logs">
+<h4>Step 2: Find the Code in Logs<a class="headerlink" href="#step-2-find-the-code-in-logs" title="Link to this heading"></a></h4>
+<p>Look for the <code class="docutils literal notranslate"><span class="pre">action_planned</span></code> event before the error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>event=action_planned data={
+    &#39;action&#39;: &#39;python_interpreter&#39;,
+    &#39;args&#39;: {
+        &#39;code&#39;: &#39;...&#39;  ← THIS IS THE ACTUAL CODE THE AGENT GENERATED
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="step-3-test-code-locally">
+<h4>Step 3: Test Code Locally<a class="headerlink" href="#step-3-test-code-locally" title="Link to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a test script</span>
+<span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># Paste the exact code from the logs here</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Test in the same restricted environment</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">redirect_stdout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">safe_namespace</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;__builtins__&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;print&#39;</span><span class="p">:</span> <span class="nb">print</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="s1">&#39;dict&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="c1"># ... add others as needed</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;Counter&#39;</span><span class="p">:</span> <span class="n">Counter</span><span class="p">,</span>
+    <span class="s1">&#39;defaultdict&#39;</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">,</span>
+    <span class="s1">&#39;json&#39;</span><span class="p">:</span> <span class="n">json</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">output_buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">exec_namespace</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">safe_namespace</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">output_buffer</span><span class="p">):</span>
+        <span class="n">exec</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">exec_namespace</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Success:&quot;</span><span class="p">,</span> <span class="n">output_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="common-issues-and-solutions">
+<h3>Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Link to this heading"></a></h3>
+<section id="issue-1-syntax-errors">
+<h4>Issue 1: Syntax Errors<a class="headerlink" href="#issue-1-syntax-errors" title="Link to this heading"></a></h4>
+<p><strong>Symptom</strong>: <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">syntax</span> <span class="pre">(&lt;string&gt;,</span> <span class="pre">line</span> <span class="pre">1)</span></code></p>
+<p><strong>Causes</strong>:</p>
+<ul class="simple">
+<li><p>LLM generated malformed code</p></li>
+<li><p>Missing quotes, parentheses, or colons</p></li>
+<li><p>Incorrect indentation</p></li>
+</ul>
+<p><strong>Solution</strong>: Check <code class="docutils literal notranslate"><span class="pre">action_planned</span></code> logs to see the exact code</p>
+</section>
+<section id="issue-2-no-output">
+<h4>Issue 2: No Output<a class="headerlink" href="#issue-2-no-output" title="Link to this heading"></a></h4>
+<p><strong>Symptom</strong>: <code class="docutils literal notranslate"><span class="pre">success:</span> <span class="pre">True</span></code> but <code class="docutils literal notranslate"><span class="pre">output:</span> <span class="pre">&quot;&quot;</span></code></p>
+<p><strong>Cause</strong>: Code doesn’t use <code class="docutils literal notranslate"><span class="pre">print()</span></code> statements</p>
+<p><strong>Solution</strong>: Agent must always use <code class="docutils literal notranslate"><span class="pre">print()</span></code> to produce output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ❌ BAD - produces no output</span>
+<span class="n">result</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">5</span>
+<span class="n">result</span>
+
+<span class="c1"># ✅ GOOD - produces output</span>
+<span class="n">result</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">5</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="issue-3-forbidden-operations">
+<h4>Issue 3: Forbidden Operations<a class="headerlink" href="#issue-3-forbidden-operations" title="Link to this heading"></a></h4>
+<p><strong>Symptom</strong>: <code class="docutils literal notranslate"><span class="pre">Security:</span> <span class="pre">Code</span> <span class="pre">contains</span> <span class="pre">forbidden</span> <span class="pre">operation</span></code></p>
+<p><strong>Cause</strong>: Code tries to import restricted modules or use dangerous functions</p>
+<p><strong>Solution</strong>: Use only allowed operations (see Allowed Operations below)</p>
+</section>
+<section id="issue-4-nameerror">
+<h4>Issue 4: NameError<a class="headerlink" href="#issue-4-nameerror" title="Link to this heading"></a></h4>
+<p><strong>Symptom</strong>: <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">'variable_name'</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">defined</span></code></p>
+<p><strong>Cause</strong>: Variable from previous tool call not available</p>
+<p><strong>Solution</strong>: Agent must pass data inline, not reference previous variables</p>
+</section>
+</section>
+</section>
+<section id="allowed-operations">
+<h2>Allowed Operations<a class="headerlink" href="#allowed-operations" title="Link to this heading"></a></h2>
+<section id="allowed">
+<h3>✅ Allowed<a class="headerlink" href="#allowed" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data structures</span>
+<span class="n">lists</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">dicts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">}</span>
+<span class="n">sets</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+
+<span class="c1"># Iteration and comprehension</span>
+<span class="p">[</span><span class="n">x</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">]</span>
+<span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dicts</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+<span class="c1"># Built-in functions</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">lists</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">lists</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">lists</span><span class="p">),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">lists</span><span class="p">)</span>
+<span class="nb">sorted</span><span class="p">(</span><span class="n">lists</span><span class="p">),</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">lists</span><span class="p">)</span>
+<span class="nb">enumerate</span><span class="p">(</span><span class="n">lists</span><span class="p">),</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lists</span><span class="p">,</span> <span class="n">lists</span><span class="p">)</span>
+
+<span class="c1"># Collections utilities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
+<span class="n">Counter</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># JSON operations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">})</span>
+<span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="s1">&#39;{&quot;key&quot;: &quot;value&quot;}&#39;</span><span class="p">)</span>
+
+<span class="c1"># Output</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;results:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="forbidden">
+<h3>❌ Forbidden<a class="headerlink" href="#forbidden" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># File system</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file.txt&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+
+<span class="c1"># Operating system</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;command&quot;</span><span class="p">)</span>
+
+<span class="c1"># Network</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+
+<span class="c1"># Process execution</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Dynamic execution</span>
+<span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
+<span class="n">exec</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>  <span class="c1"># Note: exec is used internally but blocked in user code</span>
+
+<span class="c1"># Module imports (except collections)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="log-output-examples">
+<h2>Log Output Examples<a class="headerlink" href="#log-output-examples" title="Link to this heading"></a></h2>
+<section id="full-debug-session">
+<h3>Full Debug Session<a class="headerlink" href="#full-debug-session" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable DEBUG logging</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AGENT_LOG_LEVEL</span><span class="o">=</span>DEBUG
+
+<span class="c1"># Run your agent</span>
+python<span class="w"> </span>run_agent_app.py
+</pre></div>
+</div>
+<p><strong>Output</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2025</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">05</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="p">]</span> <span class="n">INFO</span> <span class="n">framework</span> <span class="o">-</span> <span class="n">event</span><span class="o">=</span><span class="n">agent_start</span>
+<span class="p">[</span><span class="mi">2025</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">05</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">01</span><span class="p">]</span> <span class="n">DEBUG</span> <span class="n">framework</span> <span class="o">-</span> <span class="n">event</span><span class="o">=</span><span class="n">action_planned</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;list_tables&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+<span class="p">[</span><span class="mi">2025</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">05</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">02</span><span class="p">]</span> <span class="n">DEBUG</span> <span class="n">framework</span> <span class="o">-</span> <span class="n">event</span><span class="o">=</span><span class="n">action_executed</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tool&#39;</span><span class="p">:</span> <span class="s1">&#39;list_tables&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Customers&#39;</span><span class="p">,</span> <span class="s1">&#39;Products&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="p">[</span><span class="mi">2025</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">05</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">03</span><span class="p">]</span> <span class="n">DEBUG</span> <span class="n">framework</span> <span class="o">-</span> <span class="n">event</span><span class="o">=</span><span class="n">action_planned</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;python_interpreter&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="s1">&#39;tables = [&quot;Sales&quot;, &quot;Customers&quot;, &quot;Products&quot;]</span><span class="se">\n</span><span class="s1">print(f&quot;Total tables: {len(tables)}&quot;)&#39;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">[</span><span class="mi">2025</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">05</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">04</span><span class="p">]</span> <span class="n">DEBUG</span> <span class="n">framework</span> <span class="o">-</span> <span class="n">event</span><span class="o">=</span><span class="n">action_executed</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tool&#39;</span><span class="p">:</span> <span class="s1">&#39;python_interpreter&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="s1">&#39;Total tables: 3</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">[</span><span class="mi">2025</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">05</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">05</span><span class="p">]</span> <span class="n">INFO</span> <span class="n">framework</span> <span class="o">-</span> <span class="n">event</span><span class="o">=</span><span class="n">agent_end</span>
+</pre></div>
+</div>
+</section>
+<section id="error-case-with-full-details">
+<h3>Error Case with Full Details<a class="headerlink" href="#error-case-with-full-details" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[2025-11-05 10:31:00] DEBUG framework - event=action_planned data={
+    &#39;action&#39;: &#39;python_interpreter&#39;,
+    &#39;args&#39;: {
+        &#39;code&#39;: &#39;import os\nprint(os.listdir())&#39;  ← FORBIDDEN
+    }
+}
+[2025-11-05 10:31:01] DEBUG framework - event=action_executed data={
+    &#39;tool&#39;: &#39;python_interpreter&#39;,
+    &#39;result&#39;: {
+        &#39;output&#39;: &#39;&#39;,
+        &#39;success&#39;: False,
+        &#39;error&#39;: &#39;Security: Code contains forbidden operation&#39;
+    }
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices-for-agents-using-python-interpreter">
+<h2>Best Practices for Agents Using Python Interpreter<a class="headerlink" href="#best-practices-for-agents-using-python-interpreter" title="Link to this heading"></a></h2>
+<section id="always-use-print">
+<h3>1. Always Use print()<a class="headerlink" href="#always-use-print" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ❌ Don&#39;t rely on expression evaluation</span>
+<span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;python_interpreter&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;5 + 5&quot;</span><span class="p">}}</span>
+
+<span class="c1"># ✅ Always print results</span>
+<span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;python_interpreter&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;print(5 + 5)&quot;</span><span class="p">}}</span>
+</pre></div>
+</div>
+</section>
+<section id="pass-data-inline">
+<h3>2. Pass Data Inline<a class="headerlink" href="#pass-data-inline" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ❌ Don&#39;t reference previous variables</span>
+<span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;python_interpreter&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;print(tables)&quot;</span><span class="p">}}</span>
+
+<span class="c1"># ✅ Pass data directly</span>
+<span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;python_interpreter&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;tables = [&#39;Sales&#39;, &#39;Products&#39;]</span><span class="se">\n</span><span class="s2">print(len(tables))&quot;</span><span class="p">}}</span>
+</pre></div>
+</div>
+</section>
+<section id="use-counter-for-frequency-analysis">
+<h3>3. Use Counter for Frequency Analysis<a class="headerlink" href="#use-counter-for-frequency-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">from collections import Counter</span>
+<span class="s2">columns = [&#39;ID&#39;, &#39;Name&#39;, &#39;ID&#39;, &#39;Status&#39;, &#39;Name&#39;, &#39;ID&#39;]</span>
+<span class="s2">freq = Counter(columns)</span>
+<span class="s2">print(freq.most_common(3))</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="structure-output-clearly">
+<h3>4. Structure Output Clearly<a class="headerlink" href="#structure-output-clearly" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">results = {&#39;total&#39;: 10, &#39;max&#39;: 100, &#39;min&#39;: 5}</span>
+<span class="s2">for key, value in results.items():</span>
+<span class="s2">    print(f&quot;</span><span class="si">{key}</span><span class="s2">: </span><span class="si">{value}</span><span class="s2">&quot;)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configuration-examples">
+<h2>Configuration Examples<a class="headerlink" href="#configuration-examples" title="Link to this heading"></a></h2>
+<section id="high-detail-debugging-setup">
+<h3>High-Detail Debugging Setup<a class="headerlink" href="#high-detail-debugging-setup" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/react_assistant.yaml</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoggingSubscriber</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEBUG</span>
+<span class="w">        </span><span class="nt">include_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">max_payload_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span><span class="w">  </span><span class="c1"># See full code and output</span>
+<span class="w">        </span><span class="nt">event_levels</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">action_planned</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span><span class="w">    </span><span class="c1"># Always show planned actions</span>
+<span class="w">          </span><span class="nt">action_executed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span><span class="w">   </span><span class="c1"># Always show results</span>
+<span class="w">          </span><span class="nt">error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ERROR</span><span class="w">            </span><span class="c1"># Highlight errors</span>
+</pre></div>
+</div>
+</section>
+<section id="production-setup-minimal-logging">
+<h3>Production Setup (Minimal Logging)<a class="headerlink" href="#production-setup-minimal-logging" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoggingSubscriber</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+<span class="w">        </span><span class="nt">include_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">max_payload_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000</span>
+<span class="w">        </span><span class="nt">event_levels</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">action_planned</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEBUG</span><span class="w">    </span><span class="c1"># Hide in production</span>
+<span class="w">          </span><span class="nt">action_executed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEBUG</span><span class="w">   </span><span class="c1"># Hide in production</span>
+<span class="w">          </span><span class="nt">agent_start</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+<span class="w">          </span><span class="nt">agent_end</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting-checklist">
+<h2>Troubleshooting Checklist<a class="headerlink" href="#troubleshooting-checklist" title="Link to this heading"></a></h2>
+<p>When debugging Python interpreter issues:</p>
+<ul class="simple">
+<li><p>[ ] Enable DEBUG logging to see the actual code</p></li>
+<li><p>[ ] Check <code class="docutils literal notranslate"><span class="pre">action_planned</span></code> event for the code that was sent</p></li>
+<li><p>[ ] Check <code class="docutils literal notranslate"><span class="pre">action_executed</span></code> event for error details</p></li>
+<li><p>[ ] Verify the code uses <code class="docutils literal notranslate"><span class="pre">print()</span></code> statements</p></li>
+<li><p>[ ] Test the code locally in the same restricted environment</p></li>
+<li><p>[ ] Ensure no forbidden operations (imports, file access, etc.)</p></li>
+<li><p>[ ] Check for syntax errors (quotes, parentheses, indentation)</p></li>
+<li><p>[ ] Verify data is passed inline, not referenced from previous steps</p></li>
+</ul>
+</section>
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Event System</strong>: <code class="docutils literal notranslate"><span class="pre">framework/core/events.py</span></code></p></li>
+<li><p><strong>Agent Execution</strong>: <code class="docutils literal notranslate"><span class="pre">framework/core/agent.py</span></code> (lines 306-338)</p></li>
+<li><p><strong>Tool Implementation</strong>: <code class="docutils literal notranslate"><span class="pre">framework/components/tools.py</span></code> (lines 726-836)</p></li>
+<li><p><strong>Logging Config</strong>: <code class="docutils literal notranslate"><span class="pre">framework/logging.py</span></code></p></li>
+<li><p><strong>Example Configs</strong>: <code class="docutils literal notranslate"><span class="pre">configs/agents/react_assistant.yaml</span></code></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="model_optimization_strategy.html" class="btn btn-neutral float-left" title="Model Optimization Strategy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="strategic_planning_architecture.html" class="btn btn-neutral float-right" title="Strategic Planning Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

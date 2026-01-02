@@ -1,0 +1,247 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Framework Guide &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b21de401"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="AI Agent Framework (Overview)" href="overview.html" />
+    <link rel="prev" title="Central Data Model Flow - Complete Architecture" href="powerbi/central_datamodel_flow.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/index.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Framework Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#library-architecture">Library Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-concepts">Core Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-custom-tools">Creating Custom Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-yaml">Configuration (YAML)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deploy-and-serve">Deploy and Serve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Framework Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/framework_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="framework-guide">
+<h1>Framework Guide<a class="headerlink" href="#framework-guide" title="Link to this heading"></a></h1>
+<p>The AI Agent Framework is a <strong>reusable Python library</strong> for building agentic AI systems.
+This guide provides an overview of core concepts, architecture, and how to get started.</p>
+<section id="library-architecture">
+<h2>Library Architecture<a class="headerlink" href="#library-architecture" title="Link to this heading"></a></h2>
+<p>The framework is split into two parts:</p>
+<dl class="simple">
+<dt><strong>Generic Library</strong> (<code class="docutils literal notranslate"><span class="pre">agent-framework-pypi/src/agent_framework/</span></code>)</dt><dd><p>Pip-installable package containing reusable components:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Agent</span></code>, <code class="docutils literal notranslate"><span class="pre">ManagerAgent</span></code> - Core agent classes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BaseTool</span></code>, <code class="docutils literal notranslate"><span class="pre">BasePlanner</span></code>, <code class="docutils literal notranslate"><span class="pre">BaseMemory</span></code> - Base classes for extension</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EventBus</span></code> - Observability and event system</p></li>
+<li><p>Policy system for behavior control</p></li>
+<li><p>LLM gateways (OpenAI, Google AI)</p></li>
+</ul>
+</dd>
+<dt><strong>Application Code</strong> (e.g., <code class="docutils literal notranslate"><span class="pre">bi_tools/</span></code>)</dt><dd><p>Domain-specific implementations:</p>
+<ul class="simple">
+<li><p>Custom tools for your domain</p></li>
+<li><p>Domain services and data models</p></li>
+<li><p>Application-specific configurations</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="core-concepts">
+<h2>Core Concepts<a class="headerlink" href="#core-concepts" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Agent</strong>: A stateful decision-maker that processes input, plans steps, invokes tools, and produces results.</p></li>
+<li><p><strong>Tools</strong>: Typed operations the agent can invoke. Inherit from <code class="docutils literal notranslate"><span class="pre">BaseTool</span></code>.</p></li>
+<li><p><strong>Memory</strong>: Conversation and long-term context stores.</p></li>
+<li><p><strong>Planner</strong>: Strategy for selecting the next action (ReAct, Router, Strategic, etc.).</p></li>
+<li><p><strong>Policy</strong>: Behavior control (completion detection, termination, HITL, loop prevention).</p></li>
+<li><p><strong>Events</strong>: Structured traces for observability and debugging.</p></li>
+</ul>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">ManagerAgent</span><span class="p">,</span> <span class="n">BaseTool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIGateway</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentFactory</span>
+
+<span class="c1"># Create agent from YAML</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/my_agent.yaml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run the agent</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Your task here&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-custom-tools">
+<h2>Creating Custom Tools<a class="headerlink" href="#creating-custom-tools" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Define the tool class</strong>:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTool</span><span class="p">(</span><span class="n">BaseTool</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="s2">&quot;my_tool&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="s2">&quot;Does something useful&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>Register via YAML</strong> (<code class="docutils literal notranslate"><span class="pre">configs/tools/my_tool.yaml</span></code>):</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyTool</span>
+<span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_app.tools.MyTool</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Or register dynamically</strong>:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">deployment.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_tool</span>
+<span class="n">register_tool</span><span class="p">(</span><span class="s2">&quot;MyTool&quot;</span><span class="p">,</span> <span class="n">MyTool</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="configuration-yaml">
+<h2>Configuration (YAML)<a class="headerlink" href="#configuration-yaml" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Tools</strong>: Names map to registered implementations</p></li>
+<li><p><strong>Model</strong>: LLM provider and parameters</p></li>
+<li><p><strong>Memory</strong>: Conversation history, shared state</p></li>
+<li><p><strong>Policies</strong>: Behavior control settings</p></li>
+<li><p><strong>Environment</strong>: Secrets via env vars</p></li>
+</ul>
+</section>
+<section id="deploy-and-serve">
+<h2>Deploy and Serve<a class="headerlink" href="#deploy-and-serve" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>API Server</strong>: Expose endpoints that run agents</p></li>
+<li><p><strong>Manifest</strong>: Generate machine-readable tool descriptions</p></li>
+<li><p><strong>Docs</strong>: Serve Sphinx HTML alongside the manifest</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="guides/library_architecture.html"><span class="doc">Library Architecture</span></a> - Detailed library architecture</p></li>
+<li><p><a class="reference internal" href="guides/quickstart.html"><span class="doc">Quickstart (5 minutes)</span></a> - 5-minute quickstart</p></li>
+<li><p><a class="reference internal" href="guides/creating_a_custom_tool.html"><span class="doc">Creating a Custom Tool</span></a> - Tool creation guide</p></li>
+<li><p><a class="reference internal" href="tutorials/index.html"><span class="doc">Tutorials</span></a> - Step-by-step tutorials</p></li>
+<li><p><a class="reference internal" href="api/index.html"><span class="doc">API Reference</span></a> - API Reference</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="powerbi/central_datamodel_flow.html" class="btn btn-neutral float-left" title="Central Data Model Flow - Complete Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="overview.html" class="btn btn-neutral float-right" title="AI Agent Framework (Overview)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

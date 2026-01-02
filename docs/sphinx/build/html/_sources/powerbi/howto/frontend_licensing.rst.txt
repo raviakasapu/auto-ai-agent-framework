@@ -1,0 +1,27 @@
+Frontend Licensing Integration
+==============================
+
+Goal
+----
+Integrate license checks in the frontend for gating features.
+
+Approach
+--------
+- Centralize license fetch/validate in a service.
+- Gate routes/components based on license state.
+- Surface clear errors and recovery prompts.
+
+Checklist
+---------
+- Fetch license on app init and cache in state.
+- Show locked UI when license is missing/expired.
+- Retry and refresh flows for transient errors.
+
+Security
+--------
+- Do not expose secrets in the client.
+- Validate license server responses and handle tampering gracefully.
+
+Supersedes
+----------
+- docs/frontend_licensing_integration.md

@@ -1,0 +1,590 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hierarchical History Filtering &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Framework Architecture &amp; Workflow" href="architecture_workflow.html" />
+    <link rel="prev" title="Legacy Guides" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Legacy Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#content-mapping">Content Mapping</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#additional-topics">Additional Topics</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Hierarchical History Filtering</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#problem-statement">Problem Statement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solution-role-based-filtering">Solution: Role-Based Filtering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#historyfilter-interface">HistoryFilter Interface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integration-with-planners">Integration with Planners</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-filter-configuration">Custom Filter Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#turn-boundary-scoping">Turn Boundary Scoping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#message-type-constants">Message Type Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#benefits">Benefits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#completion-detection-integration">Completion Detection Integration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#architecture-flow">Architecture Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backward-compatibility">Backward Compatibility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-custom-filters">Creating Custom Filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#planner-filter-usage">Planner Filter Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="architecture_workflow.html">Framework Architecture &amp; Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="phoenix_tracing.html">Phoenix Tracing (Arize)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="event_system.html">Event System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="async_safety.html">Async Safety with Context Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="strategic_planning_architecture.html">Strategic Planning Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_optimization_strategy.html">Model Optimization Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tool_choice_mechanism.html">Tool Choice Mechanism: How Agents Select Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestrator_vs_manager.html">Orchestrator vs Manager: Key Differences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utility_tools.html">Framework Utility Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="environment_variables.html">Environment Variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Legacy Guides</a></li>
+      <li class="breadcrumb-item active">Hierarchical History Filtering</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/hierarchical_filtering.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hierarchical-history-filtering">
+<h1>Hierarchical History Filtering<a class="headerlink" href="#hierarchical-history-filtering" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Hierarchical history filtering ensures each agent role (orchestrator, manager, worker) receives appropriate history context for prompt building, preventing token waste and confusion from irrelevant context. This system filters conversation history based on the agent’s role and current context.</p>
+</section>
+<section id="problem-statement">
+<h2>Problem Statement<a class="headerlink" href="#problem-statement" title="Link to this heading"></a></h2>
+<p>Without hierarchical filtering, all planners receive the entire history, causing:</p>
+<ol class="arabic simple">
+<li><p><strong>Token Waste</strong>: Unnecessary context included in prompts</p></li>
+<li><p><strong>Context Confusion</strong>: Irrelevant history pollutes decision-making</p></li>
+<li><p><strong>Completion Signal Pollution</strong>: Previous turn’s completion signals confuse new turns</p></li>
+<li><p><strong>No Role Separation</strong>: Orchestrators see raw execution traces; workers see all conversation history</p></li>
+</ol>
+</section>
+<section id="solution-role-based-filtering">
+<h2>Solution: Role-Based Filtering<a class="headerlink" href="#solution-role-based-filtering" title="Link to this heading"></a></h2>
+<p>The framework provides <code class="docutils literal notranslate"><span class="pre">HistoryFilter</span></code> implementations that filter history based on agent role:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────┐
+│  ORCHESTRATOR                                                │
+│  Filter: OrchestratorHistoryFilter                          │
+│  Sees: Conversation summary (last 8 turns)                  │
+│  Excludes: Raw execution traces, tool results, completion   │
+│           signals from previous turns                       │
+└─────────────────────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────────────────┐
+│  MANAGER                                                     │
+│  Filter: ManagerHistoryFilter                               │
+│  Sees: Previous phase synthesis summaries only              │
+│  Excludes: Full conversation history, raw execution traces, │
+│           completion signals from other phases              │
+└─────────────────────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────────────────┐
+│  WORKER                                                      │
+│  Filter: WorkerHistoryFilter                                │
+│  Sees: Current turn execution traces only                   │
+│  Excludes: Previous turn&#39;s history, completion signals from │
+│           previous turns, other workers&#39; traces             │
+└─────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="historyfilter-interface">
+<h2>HistoryFilter Interface<a class="headerlink" href="#historyfilter-interface" title="Link to this heading"></a></h2>
+<p>The framework provides a <code class="docutils literal notranslate"><span class="pre">HistoryFilter</span></code> abstract base class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryFilter</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HistoryFilter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filters history for role-specific prompt building.&quot;&quot;&quot;</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_for_prompt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">history</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter history for prompt building.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<section id="built-in-filter-implementations">
+<h3>Built-in Filter Implementations<a class="headerlink" href="#built-in-filter-implementations" title="Link to this heading"></a></h3>
+<section id="orchestratorhistoryfilter">
+<h4>OrchestratorHistoryFilter<a class="headerlink" href="#orchestratorhistoryfilter" title="Link to this heading"></a></h4>
+<p><strong>Purpose</strong>: High-level conversation summary for orchestrator strategic planning.</p>
+<p><strong>What it includes:</strong></p>
+<ul class="simple">
+<li><p>Conversation turns (<code class="docutils literal notranslate"><span class="pre">user_message</span></code>, <code class="docutils literal notranslate"><span class="pre">assistant_message</span></code>) only</p></li>
+<li><p>Limited to last N turns (default: 8, configurable)</p></li>
+</ul>
+<p><strong>What it excludes:</strong></p>
+<ul class="simple">
+<li><p>Raw execution traces (<code class="docutils literal notranslate"><span class="pre">action</span></code>, <code class="docutils literal notranslate"><span class="pre">observation</span></code>)</p></li>
+<li><p>Detailed tool results</p></li>
+<li><p>Previous turn completion signals</p></li>
+<li><p>Phase-specific details</p></li>
+</ul>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.history_filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratorHistoryFilter</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="n">OrchestratorHistoryFilter</span><span class="p">(</span><span class="n">max_conversation_turns</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">filter_for_prompt</span><span class="p">(</span>
+    <span class="n">history</span><span class="p">,</span>
+    <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;orchestrator&quot;</span><span class="p">,</span> <span class="s2">&quot;max_conversation_turns&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="managerhistoryfilter">
+<h4>ManagerHistoryFilter<a class="headerlink" href="#managerhistoryfilter" title="Link to this heading"></a></h4>
+<p><strong>Purpose</strong>: Phase-relevant context for manager planning.</p>
+<p><strong>What it includes:</strong></p>
+<ul class="simple">
+<li><p>Previous phase synthesis summaries (if sequential phases)</p></li>
+<li><p>Only entries relevant to current phase context (filtered by <code class="docutils literal notranslate"><span class="pre">phase_id</span></code>)</p></li>
+</ul>
+<p><strong>What it excludes:</strong></p>
+<ul class="simple">
+<li><p>Full conversation history (orchestrator handles that)</p></li>
+<li><p>Raw execution traces from workers</p></li>
+<li><p>Completion signals from other phases</p></li>
+</ul>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.history_filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">ManagerHistoryFilter</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="n">ManagerHistoryFilter</span><span class="p">()</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">filter_for_prompt</span><span class="p">(</span>
+    <span class="n">history</span><span class="p">,</span>
+    <span class="p">{</span><span class="s2">&quot;phase_id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;previous_phase_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="workerhistoryfilter">
+<h4>WorkerHistoryFilter<a class="headerlink" href="#workerhistoryfilter" title="Link to this heading"></a></h4>
+<p><strong>Purpose</strong>: Current turn execution traces for worker agents.</p>
+<p><strong>What it includes:</strong></p>
+<ul class="simple">
+<li><p>Current turn execution traces only (after last <code class="docutils literal notranslate"><span class="pre">task</span></code> marker)</p></li>
+<li><p>Execution trace types (<code class="docutils literal notranslate"><span class="pre">action</span></code>, <code class="docutils literal notranslate"><span class="pre">observation</span></code>, <code class="docutils literal notranslate"><span class="pre">global_observation</span></code>)</p></li>
+<li><p>Tool results from current execution</p></li>
+</ul>
+<p><strong>What it excludes:</strong></p>
+<ul class="simple">
+<li><p>Previous turn’s history</p></li>
+<li><p>Completion signals from previous turns</p></li>
+<li><p>Other workers’ execution traces (unless global)</p></li>
+</ul>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.history_filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">WorkerHistoryFilter</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="n">WorkerHistoryFilter</span><span class="p">()</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">filter_for_prompt</span><span class="p">(</span>
+    <span class="n">history</span><span class="p">,</span>
+    <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;worker&quot;</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="defaulthistoryfilter">
+<h4>DefaultHistoryFilter<a class="headerlink" href="#defaulthistoryfilter" title="Link to this heading"></a></h4>
+<p><strong>Purpose</strong>: Backward compatibility - returns all history unchanged.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.history_filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultHistoryFilter</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="n">DefaultHistoryFilter</span><span class="p">()</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">filter_for_prompt</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="p">{})</span>
+<span class="c1"># Returns: all history (no filtering)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="integration-with-planners">
+<h2>Integration with Planners<a class="headerlink" href="#integration-with-planners" title="Link to this heading"></a></h2>
+<p>Filters are automatically applied by planners with sensible defaults:</p>
+<section id="strategicplanner-orchestrator">
+<h3>StrategicPlanner (Orchestrator)<a class="headerlink" href="#strategicplanner-orchestrator" title="Link to this heading"></a></h3>
+<p>Uses <code class="docutils literal notranslate"><span class="pre">OrchestratorHistoryFilter</span></code> by default:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrategicPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">StrategicPlanner</span><span class="p">(</span>
+    <span class="n">worker_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;worker1&quot;</span><span class="p">,</span> <span class="s2">&quot;worker2&quot;</span><span class="p">],</span>
+    <span class="c1"># Automatically uses OrchestratorHistoryFilter()</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">gateway</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="strategicdecomposerplanner-manager">
+<h3>StrategicDecomposerPlanner (Manager)<a class="headerlink" href="#strategicdecomposerplanner-manager" title="Link to this heading"></a></h3>
+<p>Uses <code class="docutils literal notranslate"><span class="pre">ManagerHistoryFilter</span></code> by default:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrategicDecomposerPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">StrategicDecomposerPlanner</span><span class="p">(</span>
+    <span class="c1"># Automatically uses ManagerHistoryFilter()</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">gateway</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reactplanner-worker">
+<h3>ReActPlanner (Worker)<a class="headerlink" href="#reactplanner-worker" title="Link to this heading"></a></h3>
+<p>Uses <code class="docutils literal notranslate"><span class="pre">WorkerHistoryFilter</span></code> by default:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReActPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">ReActPlanner</span><span class="p">(</span>
+    <span class="c1"># Automatically uses WorkerHistoryFilter()</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">gateway</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="custom-filter-configuration">
+<h2>Custom Filter Configuration<a class="headerlink" href="#custom-filter-configuration" title="Link to this heading"></a></h2>
+<p>You can provide a custom filter to any planner:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrategicPlanner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.history_filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratorHistoryFilter</span>
+
+<span class="c1"># Custom filter with specific turn limit</span>
+<span class="n">custom_filter</span> <span class="o">=</span> <span class="n">OrchestratorHistoryFilter</span><span class="p">(</span><span class="n">max_conversation_turns</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">StrategicPlanner</span><span class="p">(</span>
+    <span class="n">worker_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;worker1&quot;</span><span class="p">,</span> <span class="s2">&quot;worker2&quot;</span><span class="p">],</span>
+    <span class="n">history_filter</span><span class="o">=</span><span class="n">custom_filter</span><span class="p">,</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">gateway</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="turn-boundary-scoping">
+<h2>Turn Boundary Scoping<a class="headerlink" href="#turn-boundary-scoping" title="Link to this heading"></a></h2>
+<p>Filters use turn boundaries marked by <code class="docutils literal notranslate"><span class="pre">{&quot;type&quot;:</span> <span class="pre">&quot;task&quot;}</span></code> entries. The framework provides a helper method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_find_last_task_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find index of last &#39;task&#39; entry (marks turn boundary).&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">history</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;task&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">i</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>This ensures:</p>
+<ul class="simple">
+<li><p><strong>Completion Detection</strong>: Only checks entries after last <code class="docutils literal notranslate"><span class="pre">task</span></code> marker</p></li>
+<li><p><strong>Worker Filtering</strong>: Only includes current turn traces</p></li>
+<li><p><strong>Turn Isolation</strong>: Previous turns don’t pollute current context</p></li>
+</ul>
+</section>
+<section id="message-type-constants">
+<h2>Message Type Constants<a class="headerlink" href="#message-type-constants" title="Link to this heading"></a></h2>
+<p>The framework uses constants for message types (defined in <code class="docutils literal notranslate"><span class="pre">agent_framework.constants</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Conversation types</span>
+<span class="n">USER_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;user_message&quot;</span>
+<span class="n">ASSISTANT_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;assistant_message&quot;</span>
+
+<span class="c1"># Execution trace types</span>
+<span class="n">TASK</span> <span class="o">=</span> <span class="s2">&quot;task&quot;</span>
+<span class="n">ACTION</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span>
+<span class="n">OBSERVATION</span> <span class="o">=</span> <span class="s2">&quot;observation&quot;</span>
+<span class="n">ERROR</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span>
+
+<span class="c1"># Completion types</span>
+<span class="n">FINAL</span> <span class="o">=</span> <span class="s2">&quot;final&quot;</span>
+<span class="n">SYNTHESIS</span> <span class="o">=</span> <span class="s2">&quot;synthesis&quot;</span>
+
+<span class="c1"># Type collections</span>
+<span class="n">CONVERSATION_TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="n">USER_MESSAGE</span><span class="p">,</span> <span class="n">ASSISTANT_MESSAGE</span><span class="p">]</span>
+<span class="n">EXECUTION_TRACE_TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="n">TASK</span><span class="p">,</span> <span class="n">ACTION</span><span class="p">,</span> <span class="n">OBSERVATION</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">]</span>
+<span class="n">COMPLETION_TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="n">FINAL</span><span class="p">,</span> <span class="n">SYNTHESIS</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Filters use these constants to categorize and filter history entries.</p>
+</section>
+<section id="benefits">
+<h2>Benefits<a class="headerlink" href="#benefits" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Token Efficiency</strong>: Only relevant context included per role</p></li>
+<li><p><strong>Context Clarity</strong>: No noise from irrelevant history</p></li>
+<li><p><strong>No Completion Pollution</strong>: Turn-scoped filtering prevents false positives</p></li>
+<li><p><strong>Hierarchical Clarity</strong>: Each role sees appropriate level of detail</p></li>
+<li><p><strong>Better Performance</strong>: Smaller prompts = faster LLM calls</p></li>
+<li><p><strong>Backward Compatible</strong>: Default filters match existing behavior</p></li>
+</ol>
+</section>
+<section id="completion-detection-integration">
+<h2>Completion Detection Integration<a class="headerlink" href="#completion-detection-integration" title="Link to this heading"></a></h2>
+<p>The completion detection system also uses turn-scoped history to prevent false positives:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In DefaultCompletionDetector</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1"># Only check current turn for completion signals</span>
+    <span class="n">current_turn_history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_current_turn_history</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+    
+    <span class="c1"># Check for completion signals in current turn only</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">current_turn_history</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">check_history_depth</span><span class="p">:]):</span>
+        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">COMPLETION_TYPES</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>This ensures previous turn completions don’t trigger premature termination.</p>
+</section>
+<section id="architecture-flow">
+<h2>Architecture Flow<a class="headerlink" href="#architecture-flow" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>User Message
+    │
+    ▼
+Orchestrator (OrchestratorHistoryFilter)
+├─ Sees: Last 8 conversation turns only
+├─ Plans: High-level strategic plan
+└─ Delegates: To managers with phase context
+    │
+    ▼
+Manager (ManagerHistoryFilter)
+├─ Sees: Previous phase synthesis only (if sequential)
+├─ Plans: Phase-specific execution plan
+└─ Delegates: To workers with task context
+    │
+    ▼
+Worker (WorkerHistoryFilter)
+├─ Sees: Current turn execution traces only
+├─ Executes: Tools and actions
+└─ Returns: Results to manager
+    │
+    ▼
+Manager Synthesizes
+    │
+    ▼
+Orchestrator Receives Result
+</pre></div>
+</div>
+</section>
+<section id="backward-compatibility">
+<h2>Backward Compatibility<a class="headerlink" href="#backward-compatibility" title="Link to this heading"></a></h2>
+<p>✅ <strong>Fully backward compatible</strong></p>
+<ul class="simple">
+<li><p>Default filters match existing behavior</p></li>
+<li><p>Filters can be disabled by passing <code class="docutils literal notranslate"><span class="pre">DefaultHistoryFilter()</span></code> (returns all history)</p></li>
+<li><p>No breaking API changes</p></li>
+<li><p>Existing code continues to work without modification</p></li>
+</ul>
+</section>
+<section id="creating-custom-filters">
+<h2>Creating Custom Filters<a class="headerlink" href="#creating-custom-filters" title="Link to this heading"></a></h2>
+<p>You can create custom filters by implementing the <code class="docutils literal notranslate"><span class="pre">HistoryFilter</span></code> interface:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomHistoryFilter</span><span class="p">(</span><span class="n">HistoryFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom filter for specific use case.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_for_prompt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">history</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="c1"># Your custom filtering logic</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">history</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_include</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">filtered</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_should_include</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="c1"># Your custom inclusion logic</span>
+        <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="planner-filter-usage">
+<h2>Planner Filter Usage<a class="headerlink" href="#planner-filter-usage" title="Link to this heading"></a></h2>
+<p>The framework applies filters automatically to core planners:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Planner</p></th>
+<th class="head"><p>Filter Used</p></th>
+<th class="head"><p>Status</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StrategicPlanner</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OrchestratorHistoryFilter</span></code></p></td>
+<td><p>✅ Automatic</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StrategicDecomposerPlanner</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ManagerHistoryFilter</span></code></p></td>
+<td><p>✅ Automatic</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ReActPlanner</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">WorkerHistoryFilter</span></code></p></td>
+<td><p>✅ Automatic</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ChatPlanner</span></code></p></td>
+<td><p>Manual filtering (conversation types only)</p></td>
+<td><p>⚠️ Manual</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">WorkerRouterPlanner</span></code></p></td>
+<td><p>Manual filtering (conversation types only)</p></td>
+<td><p>⚠️ Manual</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ManagerScriptPlanner</span></code></p></td>
+<td><p>Manual filtering (synthesis entries)</p></td>
+<td><p>⚠️ Manual</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Core planners</strong> (Strategic, StrategicDecomposer, ReAct) use the filter system automatically.<br />
+<strong>Router/chat planners</strong> use manual filtering appropriate for their simpler routing needs.</p>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>The hierarchical filtering system provides:</p>
+<ul class="simple">
+<li><p><strong>Role-appropriate context</strong>: Each agent role sees only relevant history</p></li>
+<li><p><strong>Automatic application</strong>: Default filters applied automatically by core planners</p></li>
+<li><p><strong>Customizable</strong>: Can provide custom filters per planner</p></li>
+<li><p><strong>Turn-scoped</strong>: Prevents pollution from previous turns</p></li>
+<li><p><strong>Efficient</strong>: Reduces token usage and improves performance</p></li>
+<li><p><strong>Compatible</strong>: Backward compatible with existing code</p></li>
+</ul>
+<p>The framework handles all filtering automatically for core planners, but you can customize it as needed for your specific use cases.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Legacy Guides" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="architecture_workflow.html" class="btn btn-neutral float-right" title="Framework Architecture &amp; Workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

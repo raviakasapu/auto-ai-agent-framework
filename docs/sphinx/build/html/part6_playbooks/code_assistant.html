@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Assistant Playbook &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Part 7: Reference &amp; Appendices" href="../part7_reference/index.html" />
+    <link rel="prev" title="Document Processing Playbook" href="document_processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 6 - Domain Playbooks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Domain Playbooks Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_analytics.html">Data Analytics Playbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_processing.html">Document Processing Playbook</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Code Assistant Playbook</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#use-cases">Use Cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#agent-hierarchy">Agent Hierarchy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tool-categories">Tool Categories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navigation-tools">Navigation Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analysis-tools">Analysis Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modification-tools">Modification Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#execution-tools">Execution Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#policy-patterns">Policy Patterns</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sandbox-execution">Sandbox Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#incremental-changes">Incremental Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hitl-for-writes">HITL for Writes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#context-services">Context Services</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#codebase-index">Codebase Index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test-results-store">Test Results Store</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#structured-output">Structured Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation-notes">Implementation Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 6 - Domain Playbooks</a></li>
+      <li class="breadcrumb-item active">Code Assistant Playbook</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part6_playbooks/code_assistant.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="code-assistant-playbook">
+<h1>Code Assistant Playbook<a class="headerlink" href="#code-assistant-playbook" title="Link to this heading"></a></h1>
+<p>Pattern for building agent systems that analyze, refactor, and generate code.</p>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Code review automation</p></li>
+<li><p>Refactoring assistance</p></li>
+<li><p>Documentation generation</p></li>
+<li><p>Test generation</p></li>
+<li><p>Bug analysis</p></li>
+</ul>
+</section>
+<section id="agent-hierarchy">
+<h2>Agent Hierarchy<a class="headerlink" href="#agent-hierarchy" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────┐
+│ CODE ORCHESTRATOR                                           │
+│ - Understand developer intent                               │
+│ - Route to analysis or modification managers                │
+│ - Maintain codebase awareness                               │
+└─────────────────────────────────────────────────────────────┘
+         │
+         ├──────────────────────────────────────────┐
+         │                                          │
+         ▼                                          ▼
+┌─────────────────────────────┐    ┌─────────────────────────────┐
+│ ANALYSIS MANAGER            │    │ MODIFICATION MANAGER        │
+│ - Code review               │    │ - Refactoring               │
+│ - Dependency analysis       │    │ - Code generation           │
+│ - Documentation lookup      │    │ - Test writing              │
+└─────────────────────────────┘    └─────────────────────────────┘
+         │                                          │
+         ▼                                          ▼
+┌─────────────────────────────┐    ┌─────────────────────────────┐
+│ Analysis Workers            │    │ Modification Workers        │
+│ - glob_tool                 │    │ - write_file                │
+│ - grep_tool                 │    │ - apply_patch               │
+│ - read_file                 │    │ - run_tests                 │
+│ - analyze_ast               │    │ - format_code               │
+└─────────────────────────────┘    └─────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="tool-categories">
+<h2>Tool Categories<a class="headerlink" href="#tool-categories" title="Link to this heading"></a></h2>
+<section id="navigation-tools">
+<h3>Navigation Tools<a class="headerlink" href="#navigation-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">glob_tool</span></code> — Find files by pattern</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grep_tool</span></code> — Search file contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_file</span></code> — Read file contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">list_directory</span></code> — Directory exploration</p></li>
+</ul>
+</section>
+<section id="analysis-tools">
+<h3>Analysis Tools<a class="headerlink" href="#analysis-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">analyze_ast</span></code> — Parse and analyze AST</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">find_references</span></code> — Find symbol usages</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">analyze_dependencies</span></code> — Dependency graph</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_types</span></code> — Type checking</p></li>
+</ul>
+</section>
+<section id="modification-tools">
+<h3>Modification Tools<a class="headerlink" href="#modification-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">write_file</span></code> — Write file contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply_patch</span></code> — Apply diff patches</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format_code</span></code> — Code formatting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_linter</span></code> — Lint checking</p></li>
+</ul>
+</section>
+<section id="execution-tools">
+<h3>Execution Tools<a class="headerlink" href="#execution-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">run_tests</span></code> — Execute test suite</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_command</span></code> — Shell command execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build_project</span></code> — Build verification</p></li>
+</ul>
+</section>
+</section>
+<section id="policy-patterns">
+<h2>Policy Patterns<a class="headerlink" href="#policy-patterns" title="Link to this heading"></a></h2>
+<section id="sandbox-execution">
+<h3>Sandbox Execution<a class="headerlink" href="#sandbox-execution" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">execution</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">sandbox</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">allowed_commands</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">npm test</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pytest</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">cargo test</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">timeout_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+</pre></div>
+</div>
+</section>
+<section id="incremental-changes">
+<h3>Incremental Changes<a class="headerlink" href="#incremental-changes" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">planning_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no">For any code modification:</span>
+<span class="w">  </span><span class="no">1. Read the current file first</span>
+<span class="w">  </span><span class="no">2. Make minimal, focused changes</span>
+<span class="w">  </span><span class="no">3. Run tests after modification</span>
+<span class="w">  </span><span class="no">4. Revert if tests fail</span>
+</pre></div>
+</div>
+</section>
+<section id="hitl-for-writes">
+<h3>HITL for Writes<a class="headerlink" href="#hitl-for-writes" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">hitl</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">write_tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">write_file</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">apply_patch</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">auto_approve_patterns</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*.test.ts&quot;</span><span class="w">      </span><span class="c1"># Auto-approve test files</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*.spec.py&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="context-services">
+<h2>Context Services<a class="headerlink" href="#context-services" title="Link to this heading"></a></h2>
+<section id="codebase-index">
+<h3>Codebase Index<a class="headerlink" href="#codebase-index" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>File tree structure</p></li>
+<li><p>Symbol definitions</p></li>
+<li><p>Cross-references</p></li>
+</ul>
+</section>
+<section id="test-results-store">
+<h3>Test Results Store<a class="headerlink" href="#test-results-store" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Test execution history</p></li>
+<li><p>Coverage metrics</p></li>
+<li><p>Failure patterns</p></li>
+</ul>
+</section>
+</section>
+<section id="structured-output">
+<h2>Structured Output<a class="headerlink" href="#structured-output" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">RefactorResult</span><span class="p">(</span><span class="n">FinalResponse</span><span class="p">):</span>
+    <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;refactor_complete&quot;</span>
+    <span class="n">payload</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;files_modified&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;src/utils.py&quot;</span><span class="p">,</span> <span class="s2">&quot;src/main.py&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;changes&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="s2">&quot;src/utils.py&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;rename_function&quot;</span><span class="p">,</span> <span class="s2">&quot;old&quot;</span><span class="p">:</span> <span class="s2">&quot;calc&quot;</span><span class="p">,</span> <span class="s2">&quot;new&quot;</span><span class="p">:</span> <span class="s2">&quot;calculate&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="s2">&quot;src/main.py&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;update_import&quot;</span><span class="p">,</span> <span class="s2">&quot;old&quot;</span><span class="p">:</span> <span class="s2">&quot;calc&quot;</span><span class="p">,</span> <span class="s2">&quot;new&quot;</span><span class="p">:</span> <span class="s2">&quot;calculate&quot;</span><span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;tests_passed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;test_count&quot;</span><span class="p">:</span> <span class="mi">42</span>
+    <span class="p">}</span>
+    <span class="n">human_readable_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Renamed calc → calculate in 2 files. All 42 tests pass.&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="implementation-notes">
+<h2>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading"></a></h2>
+<p>This playbook is a pattern guide. To implement:</p>
+<ol class="arabic simple">
+<li><p>Create navigation tools (glob, grep) using framework utilities</p></li>
+<li><p>Design analysis workers with language-specific tools</p></li>
+<li><p>Configure sandbox execution for safety</p></li>
+<li><p>Set up HITL for production changes</p></li>
+<li><p>Integrate with your test runner and CI pipeline</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="document_processing.html" class="btn btn-neutral float-left" title="Document Processing Playbook" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../part7_reference/index.html" class="btn btn-neutral float-right" title="Part 7: Reference &amp; Appendices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

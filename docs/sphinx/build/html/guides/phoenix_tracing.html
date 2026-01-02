@@ -1,0 +1,564 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phoenix Tracing (Arize) &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Event System" href="event_system.html" />
+    <link rel="prev" title="Framework Architecture &amp; Workflow" href="architecture_workflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Legacy Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#content-mapping">Content Mapping</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#additional-topics">Additional Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hierarchical_filtering.html">Hierarchical History Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture_workflow.html">Framework Architecture &amp; Workflow</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Phoenix Tracing (Arize)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-files">Key Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-gets-traced">What Gets Traced</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#provider-initialization">Provider Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#span-hierarchy">Span Hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#attributes-metrics">Attributes &amp; Metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-yaml-wiring">Example YAML Wiring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-data-structure-reference">Complete Data Structure Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#replication-notes">Replication Notes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementation-notes">Implementation Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="event_system.html">Event System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="async_safety.html">Async Safety with Context Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="strategic_planning_architecture.html">Strategic Planning Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_optimization_strategy.html">Model Optimization Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tool_choice_mechanism.html">Tool Choice Mechanism: How Agents Select Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestrator_vs_manager.html">Orchestrator vs Manager: Key Differences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utility_tools.html">Framework Utility Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="environment_variables.html">Environment Variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Legacy Guides</a></li>
+      <li class="breadcrumb-item active">Phoenix Tracing (Arize)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/phoenix_tracing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="phoenix-tracing-arize">
+<h1>Phoenix Tracing (Arize)<a class="headerlink" href="#phoenix-tracing-arize" title="Link to this heading"></a></h1>
+<p>This guide documents how the framework integrates with OpenTelemetry and Arize Phoenix, how spans are organized hierarchically, and how we enrich spans with LLM/tool metrics for aggregation (tokens, latency, cost).</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Provider/Exporter: OpenTelemetry with OTLP HTTP exporter to Phoenix</p></li>
+<li><p>Global tracer provider is set so all tracers export to Phoenix</p></li>
+<li><p>Hierarchical spans reflect Manager → Delegation → Agent → Action → Tool/LLM</p></li>
+<li><p>Attributes include LLM usage/cost, latency, and optional prompt/response bodies</p></li>
+</ul>
+</section>
+<section id="key-files">
+<h2>Key Files<a class="headerlink" href="#key-files" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Phoenix subscriber: <code class="docutils literal notranslate"><span class="pre">agent_framework/observability/subscribers.py</span></code></p></li>
+<li><p>Manager/Agent events: <code class="docutils literal notranslate"><span class="pre">agent_framework/core/manager_v2.py</span></code>, <code class="docutils literal notranslate"><span class="pre">agent_framework/core/agent.py</span></code></p></li>
+<li><p>LLM gateway (OpenAI): <code class="docutils literal notranslate"><span class="pre">agent_framework/gateways/inference.py</span></code></p></li>
+<li><p>Factory wiring (subscribers and worker propagation): <code class="docutils literal notranslate"><span class="pre">deployment/factory.py</span></code></p></li>
+<li><p>API root request span: <code class="docutils literal notranslate"><span class="pre">main.py</span></code></p></li>
+</ul>
+</section>
+<section id="what-gets-traced">
+<h2>What Gets Traced<a class="headerlink" href="#what-gets-traced" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Request root: a top-level span per <code class="docutils literal notranslate"><span class="pre">/run</span></code> request</p></li>
+<li><p>Manager spans: <code class="docutils literal notranslate"><span class="pre">manager:{name}</span></code> with actor context</p></li>
+<li><p>Delegations: <code class="docutils literal notranslate"><span class="pre">delegation:{worker}</span></code> child spans</p></li>
+<li><p>Agent spans: <code class="docutils literal notranslate"><span class="pre">agent:{name}</span></code></p></li>
+<li><p>Actions: long-lived spans from planning to execution with args/results</p></li>
+<li><p>Tools: <code class="docutils literal notranslate"><span class="pre">tool.&lt;name&gt;</span></code> child spans around actual tool execution with latency</p></li>
+<li><p>LLM calls: <code class="docutils literal notranslate"><span class="pre">llm.openai.chat_completions</span></code> spans with usage, latency, cost</p></li>
+</ul>
+</section>
+<section id="provider-initialization">
+<h2>Provider Initialization<a class="headerlink" href="#provider-initialization" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>PhoenixSubscriber constructs an OTLP HTTP exporter and a <code class="docutils literal notranslate"><span class="pre">TracerProvider</span></code></p></li>
+<li><p>It sets the provider as the global tracer provider to unify all tracers</p></li>
+<li><p>Manager and workers share the same Phoenix subscriber instance for a single trace</p></li>
+</ul>
+</section>
+<section id="span-hierarchy">
+<h2>Span Hierarchy<a class="headerlink" href="#span-hierarchy" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_start/agent_end</span></code> → opens/closes <code class="docutils literal notranslate"><span class="pre">agent:{name}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manager_start/manager_end</span></code> → opens/closes <code class="docutils literal notranslate"><span class="pre">manager:{name}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delegation_chosen/delegation_executed</span></code> → opens/closes <code class="docutils literal notranslate"><span class="pre">delegation:{worker}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">action_planned/action_executed</span></code> → opens/closes <code class="docutils literal notranslate"><span class="pre">action:{tool}</span></code></p></li>
+<li><p>Tools run inside <code class="docutils literal notranslate"><span class="pre">tool.&lt;name&gt;</span></code> child spans</p></li>
+<li><p>LLM calls run inside <code class="docutils literal notranslate"><span class="pre">llm.openai.chat_completions</span></code> spans and inherit actor context</p></li>
+</ul>
+</section>
+<section id="attributes-metrics">
+<h2>Attributes &amp; Metrics<a class="headerlink" href="#attributes-metrics" title="Link to this heading"></a></h2>
+<p>We set both legacy <code class="docutils literal notranslate"><span class="pre">llm.*</span></code> and GenAI-style <code class="docutils literal notranslate"><span class="pre">gen_ai.*</span></code> attributes.</p>
+<ul class="simple">
+<li><p>GenAI request/response
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.system</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">openai</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.operation.name</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">chat.completions</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.request.model</span></code>, <code class="docutils literal notranslate"><span class="pre">gen_ai.request.temperature</span></code>
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.prompt</span></code> (optional, truncated)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.response.output_text</span></code> (optional, truncated)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.response.finish_reason</span></code>
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.response.tool_calls.{count,json}</span></code></p></li>
+<li><p>Usage &amp; latency
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.usage.input_tokens</span></code>
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.usage.output_tokens</span></code>
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.usage.total_tokens</span></code>
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.latency_ms</span></code>
+- <code class="docutils literal notranslate"><span class="pre">http.status_code</span></code> (and error text on failures)</p></li>
+<li><p>Cost
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.cost.{input_usd_per_1k,output_usd_per_1k,pricing_source}</span></code>
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.cost.{input_usd,output_usd,total_usd}</span></code></p></li>
+<li><p>Actor context
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.actor.role</span></code> (<code class="docutils literal notranslate"><span class="pre">manager``|``agent</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.actor.name</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">Orchestrator</span></code>, <code class="docutils literal notranslate"><span class="pre">PBI_Manager</span></code>)</p></li>
+<li><p>Tools (on tool spans)
+- <code class="docutils literal notranslate"><span class="pre">tool.name</span></code> - Tool identifier
+- <code class="docutils literal notranslate"><span class="pre">tool.latency_ms</span></code> - Execution latency in milliseconds
+- <code class="docutils literal notranslate"><span class="pre">tool.input.args_json</span></code> - Tool arguments as compact JSON string
+- <code class="docutils literal notranslate"><span class="pre">tool.input.args.pretty</span></code> - Pretty-printed JSON arguments (if <code class="docutils literal notranslate"><span class="pre">PHOENIX_PRETTY_JSON=true</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">tool.input.args</span></code> - Fallback string representation if JSON serialization fails
+- <code class="docutils literal notranslate"><span class="pre">tool.output.result_summary</span></code> - Quick summary extracted from result (human_readable_summary, summary, or message) or first 200 chars
+- <code class="docutils literal notranslate"><span class="pre">tool.output.result_json</span></code> - Full result as compact JSON (only if size &lt;= <code class="docutils literal notranslate"><span class="pre">PHOENIX_MAX_ATTR_CHARS</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">tool.output.result.pretty</span></code> - Pretty-printed JSON result (if <code class="docutils literal notranslate"><span class="pre">PHOENIX_PRETTY_JSON=true</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">tool.output.result</span></code> - String representation for non-dict results</p></li>
+</ul>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Phoenix endpoint
+- <code class="docutils literal notranslate"><span class="pre">PHOENIX_ENDPOINT</span></code> (default <code class="docutils literal notranslate"><span class="pre">http://localhost:6006/v1/traces</span></code>)</p></li>
+<li><p>Capture size &amp; bodies
+- <code class="docutils literal notranslate"><span class="pre">PHOENIX_MAX_ATTR_CHARS</span></code> (default: <code class="docutils literal notranslate"><span class="pre">4000</span></code>) - Maximum characters for attributes before truncation
+- <code class="docutils literal notranslate"><span class="pre">PHOENIX_CAPTURE_LLM_BODIES</span></code> (<code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code>, default: <code class="docutils literal notranslate"><span class="pre">true</span></code>) - Include prompt/response in LLM spans
+- <code class="docutils literal notranslate"><span class="pre">PHOENIX_PRETTY_JSON</span></code> (<code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code>, default: <code class="docutils literal notranslate"><span class="pre">false</span></code>) - Enable pretty-printed JSON for tool args/results</p></li>
+<li><p>Pricing (per-1K tokens)
+- Option 1 (recommended): Single JSON blob via <code class="docutils literal notranslate"><span class="pre">LLM_PRICING_JSON</span></code></p>
+<blockquote>
+<div><ul>
+<li><p>Flat per model (model key normalized as underscores):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;gpt_4o_mini&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;input_per_1k&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.15</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;output_per_1k&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.6</span><span class="p">}}</span>
+</pre></div>
+</div>
+</li>
+<li><p>Nested by provider (natural model name preserved):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;openai&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;gpt-4o-mini&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;input_per_1k&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.15</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;output_per_1k&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.6</span><span class="p">}}}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Option 2: Per-model env vars (model name normalized to uppercase with non-alphanumeric → <code class="docutils literal notranslate"><span class="pre">_</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">&lt;PROVIDER&gt;_PRICE_&lt;MODEL&gt;_INPUT_PER_1K</span></code> / <code class="docutils literal notranslate"><span class="pre">&lt;PROVIDER&gt;_PRICE_&lt;MODEL&gt;_OUTPUT_PER_1K</span></code></p></li>
+<li><p>Option 3: Global defaults
+- <code class="docutils literal notranslate"><span class="pre">LLM_PRICE_DEFAULT_INPUT_PER_1K</span></code> / <code class="docutils literal notranslate"><span class="pre">LLM_PRICE_DEFAULT_OUTPUT_PER_1K</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="example-yaml-wiring">
+<h2>Example YAML Wiring<a class="headerlink" href="#example-yaml-wiring" title="Link to this heading"></a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">phoenix</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PhoenixSubscriber</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${PHOENIX_ENDPOINT:-http://localhost:6006/v1/traces}</span>
+<span class="w">        </span><span class="nt">service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">orchestrator</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">logging</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">phoenix</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-data-structure-reference">
+<h2>Complete Data Structure Reference<a class="headerlink" href="#complete-data-structure-reference" title="Link to this heading"></a></h2>
+<p>For a complete reference of all spans, attributes, and data structures, see the detailed documentation below.</p>
+<section id="id1">
+<h3>Span Hierarchy<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>The complete hierarchy from root to leaf:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🎯 Root Request Span (task name)
+├── manager:{manager_name}
+│   ├── delegation:{worker}
+│   │   ├── agent:{agent_name}
+│   │   │   ├── action:{tool_name}
+│   │   │   │   ├── tool.{tool_name}
+│   │   │   │   └── llm.openai.chat_completions (if LLM called)
+│   │   │   └── [other action spans]
+│   │   └── [other agent spans]
+│   └── [other delegation spans]
+└── [other manager spans]
+</pre></div>
+</div>
+</section>
+<section id="event-to-span-mapping">
+<h3>Event-to-Span Mapping<a class="headerlink" href="#event-to-span-mapping" title="Link to this heading"></a></h3>
+<div class="line-block">
+<div class="line">Event Name | Span Name | Span Type | Lifecycle |</div>
+</div>
+<p><a href="#id2"><span class="problematic" id="id3">|-----------|</span></a>———–<a href="#id4"><span class="problematic" id="id5">|-----------|</span></a>———–|
+| <code class="docutils literal notranslate"><span class="pre">request_start</span></code> | (clears stacks) | N/A | N/A |
+| <code class="docutils literal notranslate"><span class="pre">manager_start</span></code> | <code class="docutils literal notranslate"><span class="pre">manager:{name}</span></code> | Long-lived | Start |
+| <code class="docutils literal notranslate"><span class="pre">manager_end</span></code> | <code class="docutils literal notranslate"><span class="pre">manager:{name}</span></code> | Long-lived | End |
+| <code class="docutils literal notranslate"><span class="pre">delegation_chosen</span></code> | <code class="docutils literal notranslate"><span class="pre">delegation:{worker}</span></code> | Long-lived | Start |
+| <code class="docutils literal notranslate"><span class="pre">delegation_executed</span></code> | <code class="docutils literal notranslate"><span class="pre">delegation:{worker}</span></code> | Long-lived | End |
+| <code class="docutils literal notranslate"><span class="pre">agent_start</span></code> | <code class="docutils literal notranslate"><span class="pre">agent:{name}</span></code> | Long-lived | Start |
+| <code class="docutils literal notranslate"><span class="pre">agent_end</span></code> | <code class="docutils literal notranslate"><span class="pre">agent:{name}</span></code> | Long-lived | End |
+| <code class="docutils literal notranslate"><span class="pre">action_planned</span></code> | <code class="docutils literal notranslate"><span class="pre">action:{tool}</span></code> | Long-lived | Start |
+| <code class="docutils literal notranslate"><span class="pre">action_executed</span></code> | <code class="docutils literal notranslate"><span class="pre">action:{tool}</span></code> | Long-lived | End |
+| <code class="docutils literal notranslate"><span class="pre">multi_step_start</span></code> | <code class="docutils literal notranslate"><span class="pre">step_{idx}:{action}</span></code> | Long-lived | Start |
+| <code class="docutils literal notranslate"><span class="pre">multi_step_complete</span></code> | <code class="docutils literal notranslate"><span class="pre">step_{idx}:{action}</span></code> | Long-lived | End |
+| <code class="docutils literal notranslate"><span class="pre">multi_step_error</span></code> | <code class="docutils literal notranslate"><span class="pre">step_{idx}:{action}</span></code> | Long-lived | End |
+| Tool execution | <code class="docutils literal notranslate"><span class="pre">tool.{name}</span></code> | Short-lived | Auto |
+| LLM invocation | <code class="docutils literal notranslate"><span class="pre">llm.openai.chat_completions</span></code> or <code class="docutils literal notranslate"><span class="pre">llm.google.generateContent</span></code> | Short-lived | Auto |
+| Other events | <code class="docutils literal notranslate"><span class="pre">{event_name}</span></code> | Short-lived | Auto |</p>
+</section>
+<section id="manager-spans">
+<h3>Manager Spans<a class="headerlink" href="#manager-spans" title="Link to this heading"></a></h3>
+<p><strong>Span Name</strong>: <code class="docutils literal notranslate"><span class="pre">manager:{manager_name}</span></code></p>
+<p><strong>Lifecycle Events</strong>:
+- Start: <code class="docutils literal notranslate"><span class="pre">manager_start</span></code>
+- End: <code class="docutils literal notranslate"><span class="pre">manager_end</span></code></p>
+<p><strong>Start Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">agent.event_name</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;manager_start&quot;</span></code>
+- <code class="docutils literal notranslate"><span class="pre">agent.payload_json</span></code>: Compact JSON payload
+- <code class="docutils literal notranslate"><span class="pre">agent.payload.pretty</span></code>: Pretty JSON payload (if <code class="docutils literal notranslate"><span class="pre">PHOENIX_PRETTY_JSON=true</span></code>)</p>
+<p><strong>End Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">manager.result_summary</span></code>: Truncated result summary
+- <code class="docutils literal notranslate"><span class="pre">manager.result_json</span></code>: Compact JSON (if <code class="docutils literal notranslate"><span class="pre">PHOENIX_COMPACT_JSON=true</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">manager.result.pretty</span></code>: Pretty JSON (if <code class="docutils literal notranslate"><span class="pre">PHOENIX_PRETTY_JSON=true</span></code>)</p>
+<p><strong>Baggage</strong>:
+- <code class="docutils literal notranslate"><span class="pre">actor.role</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;manager&quot;</span></code>
+- <code class="docutils literal notranslate"><span class="pre">actor.name</span></code>: <code class="docutils literal notranslate"><span class="pre">{manager_name}</span></code></p>
+</section>
+<section id="delegation-spans">
+<h3>Delegation Spans<a class="headerlink" href="#delegation-spans" title="Link to this heading"></a></h3>
+<p><strong>Span Name</strong>: <code class="docutils literal notranslate"><span class="pre">delegation:{worker}</span></code></p>
+<p><strong>Lifecycle Events</strong>:
+- Start: <code class="docutils literal notranslate"><span class="pre">delegation_chosen</span></code>
+- End: <code class="docutils literal notranslate"><span class="pre">delegation_executed</span></code></p>
+<p><strong>Start Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">agent.event_name</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;delegation_chosen&quot;</span></code>
+- <code class="docutils literal notranslate"><span class="pre">agent.payload_json</span></code>: Compact JSON payload
+- <code class="docutils literal notranslate"><span class="pre">worker.name</span></code>: Worker identifier
+- <code class="docutils literal notranslate"><span class="pre">worker.agent_name</span></code>: Agent name for worker</p>
+<p><strong>End Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">delegation.result_summary</span></code>: Truncated result summary
+- <code class="docutils literal notranslate"><span class="pre">delegation.result_json</span></code>: Compact JSON (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">delegation.result.pretty</span></code>: Pretty JSON (if enabled)</p>
+</section>
+<section id="agent-spans">
+<h3>Agent Spans<a class="headerlink" href="#agent-spans" title="Link to this heading"></a></h3>
+<p><strong>Span Name</strong>: <code class="docutils literal notranslate"><span class="pre">agent:{agent_name}</span></code></p>
+<p><strong>Lifecycle Events</strong>:
+- Start: <code class="docutils literal notranslate"><span class="pre">agent_start</span></code>
+- End: <code class="docutils literal notranslate"><span class="pre">agent_end</span></code></p>
+<p><strong>Start Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">agent.event_name</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;agent_start&quot;</span></code>
+- <code class="docutils literal notranslate"><span class="pre">agent.payload_json</span></code>: Compact JSON payload</p>
+<p><strong>End Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">agent.name</span></code>: Agent name
+- <code class="docutils literal notranslate"><span class="pre">agent.result_summary</span></code>: Truncated result summary
+- <code class="docutils literal notranslate"><span class="pre">agent.result_json</span></code>: Compact JSON (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">agent.result.pretty</span></code>: Pretty JSON (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">agent.operation</span></code>: Operation name (if present)
+- <code class="docutils literal notranslate"><span class="pre">agent.summary</span></code>: Summary text (if present)</p>
+</section>
+<section id="action-spans">
+<h3>Action Spans<a class="headerlink" href="#action-spans" title="Link to this heading"></a></h3>
+<p><strong>Span Name</strong>: <code class="docutils literal notranslate"><span class="pre">action:{tool_name}</span></code></p>
+<p><strong>Lifecycle Events</strong>:
+- Start: <code class="docutils literal notranslate"><span class="pre">action_planned</span></code>
+- End: <code class="docutils literal notranslate"><span class="pre">action_executed</span></code></p>
+<p><strong>Start Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">agent.event_name</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;action_planned&quot;</span></code>
+- <code class="docutils literal notranslate"><span class="pre">tool.name</span></code>: Tool name
+- <code class="docutils literal notranslate"><span class="pre">tool.args_json</span></code>: Compact JSON args (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">tool.args.pretty</span></code>: Pretty JSON args (if enabled)</p>
+<p><strong>End Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">tool.result_summary</span></code>: Truncated result summary
+- <code class="docutils literal notranslate"><span class="pre">tool.result_json</span></code>: Compact JSON (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">tool.result.pretty</span></code>: Pretty JSON (if enabled)</p>
+</section>
+<section id="tool-spans">
+<h3>Tool Spans<a class="headerlink" href="#tool-spans" title="Link to this heading"></a></h3>
+<p><strong>Span Name</strong>: <code class="docutils literal notranslate"><span class="pre">tool.{tool_name}</span></code></p>
+<p><strong>Lifecycle</strong>: Automatic (context manager, short-lived)</p>
+<p><strong>Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">tool.name</span></code>: Tool instance name
+- <code class="docutils literal notranslate"><span class="pre">tool.input.args_json</span></code>: Compact JSON of input arguments
+- <code class="docutils literal notranslate"><span class="pre">tool.input.args.pretty</span></code>: Pretty JSON (if <code class="docutils literal notranslate"><span class="pre">PHOENIX_PRETTY_JSON=true</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">tool.input.args</span></code>: Fallback string if JSON fails
+- <code class="docutils literal notranslate"><span class="pre">tool.latency_ms</span></code>: Execution time in milliseconds
+- <code class="docutils literal notranslate"><span class="pre">tool.output.result_summary</span></code>: Summary of result
+- <code class="docutils literal notranslate"><span class="pre">tool.output.result_json</span></code>: Full result as JSON (if size &lt;= MAX_CHARS)
+- <code class="docutils literal notranslate"><span class="pre">tool.output.result.pretty</span></code>: Pretty JSON (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">tool.output.result</span></code>: String result for non-dict</p>
+</section>
+<section id="llm-spans">
+<h3>LLM Spans<a class="headerlink" href="#llm-spans" title="Link to this heading"></a></h3>
+<p><strong>Span Name</strong>: <code class="docutils literal notranslate"><span class="pre">llm.openai.chat_completions</span></code> or <code class="docutils literal notranslate"><span class="pre">llm.google.generateContent</span></code></p>
+<p><strong>Lifecycle</strong>: Automatic (context manager, short-lived)</p>
+<p><strong>Semantic Attributes</strong> (<code class="docutils literal notranslate"><span class="pre">gen_ai.*</span></code>):
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.system</span></code>: Provider identifier (<code class="docutils literal notranslate"><span class="pre">&quot;openai&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;google&quot;</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.operation.name</span></code>: Operation type (<code class="docutils literal notranslate"><span class="pre">&quot;chat.completions&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;generateContent&quot;</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.request.model</span></code>: Model name
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.request.temperature</span></code>: Temperature setting (if set)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.request.tools.count</span></code>: Number of tools provided
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.request.tools.schema</span></code>: Compact tools schema (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.request.tools.schema.pretty</span></code>: Pretty tools schema (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.actor.role</span></code>: Actor role (from baggage)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.actor.name</span></code>: Actor name (from baggage)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.prompt</span></code>: User prompt/messages (truncated)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.latency_ms</span></code>: API call latency
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.response.finish_reason</span></code>: Why generation stopped
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.response.tool_calls.count</span></code>: Number of tool calls
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.response.tool_calls.json</span></code>: Compact JSON (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.response.tool_calls.pretty</span></code>: Pretty JSON with parsed args (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.response.output_text</span></code>: Response text (if present)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.usage.input_tokens</span></code>: Input tokens
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.usage.output_tokens</span></code>: Output tokens
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.usage.total_tokens</span></code>: Total tokens
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.cost.input_usd_per_1k</span></code>: Price per 1K input tokens
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.cost.output_usd_per_1k</span></code>: Price per 1K output tokens
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.cost.pricing_source</span></code>: Pricing source (<code class="docutils literal notranslate"><span class="pre">&quot;env.json&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;env.vars&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;default&quot;</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.cost.input_usd</span></code>: Cost for input tokens
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.cost.output_usd</span></code>: Cost for output tokens
+- <code class="docutils literal notranslate"><span class="pre">gen_ai.cost.total_usd</span></code>: Total cost
+- <code class="docutils literal notranslate"><span class="pre">http.status_code</span></code>: HTTP response code
+- <code class="docutils literal notranslate"><span class="pre">error</span></code>: Error indicator (if HTTP error)
+- <code class="docutils literal notranslate"><span class="pre">http.response_text</span></code>: Error response text (errors only)</p>
+<p><strong>Legacy Attributes</strong> (<code class="docutils literal notranslate"><span class="pre">llm.*</span></code>, if <code class="docutils literal notranslate"><span class="pre">PHOENIX_ATTR_MODE=legacy</span></code> or <code class="docutils literal notranslate"><span class="pre">both</span></code>):
+- <code class="docutils literal notranslate"><span class="pre">llm.provider</span></code>: Provider identifier
+- <code class="docutils literal notranslate"><span class="pre">llm.model</span></code>: Model name
+- <code class="docutils literal notranslate"><span class="pre">llm.base_url</span></code>: API base URL
+- <code class="docutils literal notranslate"><span class="pre">llm.temperature</span></code>: Temperature setting
+- <code class="docutils literal notranslate"><span class="pre">llm.use_function_calling</span></code>: Function calling enabled
+- <code class="docutils literal notranslate"><span class="pre">llm.messages.count</span></code>: Number of messages
+- <code class="docutils literal notranslate"><span class="pre">llm.prompt</span></code>: User prompt (truncated)
+- <code class="docutils literal notranslate"><span class="pre">llm.tools_schema</span></code>: Compact tools schema (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">llm.tools_schema.pretty</span></code>: Pretty tools schema (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">llm.latency_ms</span></code>: API call latency
+- <code class="docutils literal notranslate"><span class="pre">llm.finish_reason</span></code>: Finish reason
+- <code class="docutils literal notranslate"><span class="pre">llm.tool_calls.count</span></code>: Number of tool calls
+- <code class="docutils literal notranslate"><span class="pre">llm.tool_calls.json</span></code>: Compact JSON (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">llm.tool_calls.pretty</span></code>: Pretty JSON (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">llm.response</span></code>: Response text
+- <code class="docutils literal notranslate"><span class="pre">llm.usage.prompt_tokens</span></code>: Input tokens
+- <code class="docutils literal notranslate"><span class="pre">llm.usage.completion_tokens</span></code>: Output tokens
+- <code class="docutils literal notranslate"><span class="pre">llm.usage.total_tokens</span></code>: Total tokens</p>
+<p><strong>Span Events</strong> (if <code class="docutils literal notranslate"><span class="pre">PHOENIX_BODY_EVENTS=true</span></code>):
+- <code class="docutils literal notranslate"><span class="pre">prompt</span></code>: User prompt text
+- <code class="docutils literal notranslate"><span class="pre">response</span></code>: LLM response text
+- <code class="docutils literal notranslate"><span class="pre">tools_schema</span></code>: Pretty tools schema</p>
+<p><strong>Span Events</strong> (if <code class="docutils literal notranslate"><span class="pre">PHOENIX_TOOL_CALL_EVENTS=true</span></code>):
+- <code class="docutils literal notranslate"><span class="pre">tool_call</span></code>: One event per tool call with <code class="docutils literal notranslate"><span class="pre">tool_call.id</span></code>, <code class="docutils literal notranslate"><span class="pre">tool_call.function.name</span></code>, <code class="docutils literal notranslate"><span class="pre">tool_call.function.arguments</span></code></p>
+</section>
+<section id="multi-step-spans">
+<h3>Multi-Step Spans<a class="headerlink" href="#multi-step-spans" title="Link to this heading"></a></h3>
+<p><strong>Span Name</strong>: <code class="docutils literal notranslate"><span class="pre">step_{step_idx}:{step_action}</span></code></p>
+<p><strong>Lifecycle Events</strong>:
+- Start: <code class="docutils literal notranslate"><span class="pre">multi_step_start</span></code>
+- End: <code class="docutils literal notranslate"><span class="pre">multi_step_complete</span></code> or <code class="docutils literal notranslate"><span class="pre">multi_step_error</span></code></p>
+<p><strong>Attributes</strong>:
+- <code class="docutils literal notranslate"><span class="pre">agent.event_name</span></code>: Event name
+- <code class="docutils literal notranslate"><span class="pre">agent.payload_json</span></code>: Compact JSON payload
+- <code class="docutils literal notranslate"><span class="pre">step.index</span></code>: Step number (0-based)
+- <code class="docutils literal notranslate"><span class="pre">step.total</span></code>: Total steps
+- <code class="docutils literal notranslate"><span class="pre">step.action</span></code>: Action description
+- <code class="docutils literal notranslate"><span class="pre">step.worker</span></code>: Worker identifier
+- <code class="docutils literal notranslate"><span class="pre">step.context</span></code>: Context data (truncated)
+- <code class="docutils literal notranslate"><span class="pre">step.context.pretty</span></code>: Pretty JSON context (if enabled)
+- <code class="docutils literal notranslate"><span class="pre">step.success</span></code>: Success indicator
+- <code class="docutils literal notranslate"><span class="pre">step.error</span></code>: Error indicator
+- <code class="docutils literal notranslate"><span class="pre">step.error_message</span></code>: Error message (if error)</p>
+</section>
+<section id="baggage-context-propagation">
+<h3>Baggage/Context Propagation<a class="headerlink" href="#baggage-context-propagation" title="Link to this heading"></a></h3>
+<p>Baggage is propagated via OpenTelemetry context to maintain actor context across spans.</p>
+<p><strong>Baggage Keys</strong>:
+- <code class="docutils literal notranslate"><span class="pre">actor.role</span></code>: Role identifier (<code class="docutils literal notranslate"><span class="pre">&quot;manager&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;agent&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;step&quot;</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">actor.name</span></code>: Actor name (manager_name, agent_name, worker_name)</p>
+<p>Baggage can be read in child spans using:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">opentelemetry.baggage</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_baggage</span>
+<span class="n">actor_name</span> <span class="o">=</span> <span class="n">get_baggage</span><span class="p">(</span><span class="s2">&quot;actor.name&quot;</span><span class="p">)</span>
+<span class="n">actor_role</span> <span class="o">=</span> <span class="n">get_baggage</span><span class="p">(</span><span class="s2">&quot;actor.role&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">PHOENIX_EMIT_ACTOR_IN_LLM=true</span></code>, actor info is duplicated as span attributes.</p>
+</section>
+<section id="additional-configuration">
+<h3>Additional Configuration<a class="headerlink" href="#additional-configuration" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PHOENIX_COMPACT_JSON</span></code> (<code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code>, default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Also emit compact JSON copies</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PHOENIX_TOOL_CALL_EVENTS</span></code> (<code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code>, default: <code class="docutils literal notranslate"><span class="pre">true</span></code>): Emit span events for each tool call</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PHOENIX_BODY_EVENTS</span></code> (<code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code>, default: <code class="docutils literal notranslate"><span class="pre">true</span></code>): Emit span events for prompt/response/tools_schema</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PHOENIX_ATTR_MODE</span></code> (<code class="docutils literal notranslate"><span class="pre">semantic</span></code>, <code class="docutils literal notranslate"><span class="pre">legacy</span></code>, or <code class="docutils literal notranslate"><span class="pre">both</span></code>, default: <code class="docutils literal notranslate"><span class="pre">semantic</span></code>): Attribute style</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PHOENIX_EMIT_ACTOR_IN_LLM</span></code> (<code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code>, default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Duplicate actor baggage as LLM span attributes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PHOENIX_DISABLE_PAYLOADS</span></code> (<code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code>, default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Disable all payload/body attributes</p></li>
+</ul>
+</section>
+</section>
+<section id="replication-notes">
+<h2>Replication Notes<a class="headerlink" href="#replication-notes" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Create a subscriber that sets the OTel <code class="docutils literal notranslate"><span class="pre">TracerProvider</span></code> and OTLP exporter</p></li>
+<li><p>Set the provider globally via <code class="docutils literal notranslate"><span class="pre">trace.set_tracer_provider</span></code></p></li>
+<li><p>Use long-lived spans for lifecycle events (start/end pairs)</p></li>
+<li><p>Propagate the subscriber to nested agents/workers so they share the trace</p></li>
+<li><p>Wrap LLM/tool calls in child spans and set numeric attributes for usage/latency/cost</p></li>
+<li><p>Optionally include prompt/response text (truncated) via env flags</p></li>
+</ol>
+</section>
+<section id="implementation-notes">
+<h2>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The framework keeps both <code class="docutils literal notranslate"><span class="pre">llm.*</span></code> (legacy) and <code class="docutils literal notranslate"><span class="pre">gen_ai.*</span></code> (semantic-style) attributes for compatibility</p></li>
+<li><p>Pricing is purely env-driven (no provider calls); this avoids network in tracing path</p></li>
+<li><p>If you add additional LLM providers/gateways, reuse the same attribute names</p></li>
+<li><p>Root request spans are typically created by implementations after agent loads and <code class="docutils literal notranslate"><span class="pre">request_start</span></code> event is published</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="architecture_workflow.html" class="btn btn-neutral float-left" title="Framework Architecture &amp; Workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="event_system.html" class="btn btn-neutral float-right" title="Event System" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

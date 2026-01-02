@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>agent_framework.decorators &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/index.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">agent_framework.decorators</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for agent_framework.decorators</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tool Decorator - Simplify tool creation with a decorator pattern.</span>
+
+<span class="sd">This module provides a ``@tool`` decorator that converts regular Python</span>
+<span class="sd">functions into framework-compatible tools with automatic schema generation.</span>
+
+<span class="sd">Example::</span>
+
+<span class="sd">    from agent_framework import tool</span>
+
+<span class="sd">    @tool(name=&quot;add_numbers&quot;, description=&quot;Add two numbers together&quot;)</span>
+<span class="sd">    def add(a: int, b: int) -&gt; int:</span>
+<span class="sd">        \&quot;\&quot;\&quot;Add two numbers and return the sum.\&quot;\&quot;\&quot;</span>
+<span class="sd">        return a + b</span>
+
+<span class="sd">    # Or with minimal configuration (uses function name and docstring)</span>
+<span class="sd">    @tool</span>
+<span class="sd">    def multiply(x: float, y: float) -&gt; float:</span>
+<span class="sd">        \&quot;\&quot;\&quot;Multiply two numbers and return the product.\&quot;\&quot;\&quot;</span>
+<span class="sd">        return x * y</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">get_type_hints</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">create_model</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTool</span>
+
+
+<div class="viewcode-block" id="FunctionalTool">
+<a class="viewcode-back" href="../../api/index.html#agent_framework.decorators.FunctionalTool">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FunctionalTool</span><span class="p">(</span><span class="n">BaseTool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A tool implementation that wraps a regular Python function.</span>
+<span class="sd">    </span>
+<span class="sd">    This is used internally by the @tool decorator to create BaseTool-compatible</span>
+<span class="sd">    instances from decorated functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">args_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">output_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span> <span class="ow">or</span> <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;Execute </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args_schema</span> <span class="o">=</span> <span class="n">args_schema</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_args_schema</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_schema</span> <span class="o">=</span> <span class="n">output_schema</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">args_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_schema</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">output_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_schema</span>
+    
+<div class="viewcode-block" id="FunctionalTool.execute">
+<a class="viewcode-back" href="../../api/index.html#agent_framework.decorators.FunctionalTool.execute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the wrapped function with validated arguments.&quot;&quot;&quot;</span>
+        <span class="c1"># Validate args through the schema</span>
+        <span class="n">validated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_schema</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Extract values as dict and call the function</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="o">**</span><span class="n">validated</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_args_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a Pydantic model from function signature and type hints.</span>
+<span class="sd">        </span>
+<span class="sd">        Handles:</span>
+<span class="sd">        - Type annotations for each parameter</span>
+<span class="sd">        - Default values</span>
+<span class="sd">        - Docstring parameter descriptions (Google/NumPy style)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        
+        <span class="c1"># Try to get type hints (may fail for some edge cases)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hints</span> <span class="o">=</span> <span class="n">get_type_hints</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">hints</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="c1"># Parse docstring for parameter descriptions</span>
+        <span class="n">param_descriptions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_docstring_params</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Build field definitions for Pydantic model</span>
+        <span class="n">field_definitions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Skip *args and **kwargs</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">VAR_KEYWORD</span><span class="p">):</span>
+                <span class="k">continue</span>
+            
+            <span class="c1"># Get type annotation (default to Any)</span>
+            <span class="n">param_type</span> <span class="o">=</span> <span class="n">hints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">Any</span><span class="p">)</span>
+            
+            <span class="c1"># Get default value</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="c1"># Required field</span>
+                <span class="n">default</span> <span class="o">=</span> <span class="o">...</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">default</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span>
+            
+            <span class="c1"># Get description from docstring</span>
+            <span class="n">field_desc</span> <span class="o">=</span> <span class="n">param_descriptions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Parameter </span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Create field definition: (type, default_or_field)</span>
+            <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="o">...</span><span class="p">:</span>
+                <span class="n">field_definitions</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">param_type</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">field_desc</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">field_definitions</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">param_type</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">field_desc</span><span class="p">))</span>
+        
+        <span class="c1"># Create dynamic Pydantic model</span>
+        <span class="n">model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">Args&quot;</span>
+        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="o">**</span><span class="n">field_definitions</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_docstring_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docstring</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse parameter descriptions from a docstring.</span>
+<span class="sd">        </span>
+<span class="sd">        Supports simple patterns like:</span>
+<span class="sd">        - Google style: `arg_name: Description here`</span>
+<span class="sd">        - NumPy style: `arg_name : type\n    Description here`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">descriptions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">docstring</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">descriptions</span>
+        
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">docstring</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">current_param</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">current_desc</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">stripped</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            
+            <span class="c1"># Check for parameter definition patterns</span>
+            <span class="c1"># Google style: &quot;param_name: description&quot; or &quot;param_name (type): description&quot;</span>
+            <span class="k">if</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="n">stripped</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stripped</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+                <span class="n">parts</span> <span class="o">=</span> <span class="n">stripped</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">param_part</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">desc_part</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                
+                <span class="c1"># Extract param name (remove type annotation in parentheses)</span>
+                <span class="k">if</span> <span class="s1">&#39;(&#39;</span> <span class="ow">in</span> <span class="n">param_part</span><span class="p">:</span>
+                    <span class="n">param_name</span> <span class="o">=</span> <span class="n">param_part</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">param_name</span> <span class="o">=</span> <span class="n">param_part</span>
+                
+                <span class="c1"># Check if it looks like a parameter name (simple identifier)</span>
+                <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">,</span> <span class="s1">&#39;Returns&#39;</span><span class="p">,</span> <span class="s1">&#39;Raises&#39;</span><span class="p">,</span> <span class="s1">&#39;Example&#39;</span><span class="p">,</span> <span class="s1">&#39;Note&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">current_param</span><span class="p">:</span>
+                        <span class="n">descriptions</span><span class="p">[</span><span class="n">current_param</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_desc</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">current_param</span> <span class="o">=</span> <span class="n">param_name</span>
+                    <span class="n">current_desc</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc_part</span><span class="p">]</span> <span class="k">if</span> <span class="n">desc_part</span> <span class="k">else</span> <span class="p">[]</span>
+                    <span class="k">continue</span>
+            
+            <span class="c1"># Continuation of current parameter description</span>
+            <span class="k">if</span> <span class="n">current_param</span> <span class="ow">and</span> <span class="n">stripped</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stripped</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+                <span class="n">current_desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stripped</span><span class="p">)</span>
+        
+        <span class="c1"># Don&#39;t forget the last parameter</span>
+        <span class="k">if</span> <span class="n">current_param</span><span class="p">:</span>
+            <span class="n">descriptions</span><span class="p">[</span><span class="n">current_param</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_desc</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="n">descriptions</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow the tool to be called directly like a function.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;FunctionalTool name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="tool">
+<a class="viewcode-back" href="../../api/index.html#agent_framework.decorators.tool">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">tool</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">args_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">FunctionalTool</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">FunctionalTool</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator to convert a Python function into a framework-compatible tool.</span>
+<span class="sd">    </span>
+<span class="sd">    The decorator automatically:</span>
+<span class="sd">    - Generates an args_schema from function type hints</span>
+<span class="sd">    - Uses the function&#39;s docstring as the description</span>
+<span class="sd">    - Creates a BaseTool-compatible instance</span>
+<span class="sd">    </span>
+<span class="sd">    Can be used with or without parentheses::</span>
+
+<span class="sd">        @tool</span>
+<span class="sd">        def my_func(x: int) -&gt; int:</span>
+<span class="sd">            \&quot;\&quot;\&quot;My description.\&quot;\&quot;\&quot;</span>
+<span class="sd">            return x * 2</span>
+
+<span class="sd">        @tool(name=&quot;custom_name&quot;, description=&quot;Custom description&quot;)</span>
+<span class="sd">        def another_func(x: int) -&gt; int:</span>
+<span class="sd">            return x * 3</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        func: The function to wrap (when used without parentheses)</span>
+<span class="sd">        name: Optional custom name for the tool (defaults to function name)</span>
+<span class="sd">        description: Optional description (defaults to function docstring)</span>
+<span class="sd">        args_schema: Optional custom Pydantic model for arguments</span>
+<span class="sd">        output_schema: Optional Pydantic model for output validation</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        FunctionalTool instance that implements BaseTool interface</span>
+<span class="sd">    </span>
+<span class="sd">    Example::</span>
+
+<span class="sd">        from agent_framework import tool</span>
+<span class="sd">        from pydantic import BaseModel</span>
+
+<span class="sd">        # Simple usage - auto-generates everything</span>
+<span class="sd">        @tool</span>
+<span class="sd">        def greet(name: str, formal: bool = False) -&gt; str:</span>
+<span class="sd">            \&quot;\&quot;\&quot;Generate a greeting message.</span>
+
+<span class="sd">            name: The name of the person to greet</span>
+<span class="sd">            formal: Whether to use formal greeting</span>
+<span class="sd">            \&quot;\&quot;\&quot;</span>
+<span class="sd">            if formal:</span>
+<span class="sd">                return f&quot;Good day, {name}.&quot;</span>
+<span class="sd">            return f&quot;Hello, {name}!&quot;</span>
+
+<span class="sd">        # Usage with custom schema</span>
+<span class="sd">        class CalculatorArgs(BaseModel):</span>
+<span class="sd">            a: float</span>
+<span class="sd">            b: float</span>
+<span class="sd">            operation: str = &quot;add&quot;</span>
+
+<span class="sd">        @tool(name=&quot;calculator&quot;, args_schema=CalculatorArgs)</span>
+<span class="sd">        def calc(a: float, b: float, operation: str = &quot;add&quot;) -&gt; float:</span>
+<span class="sd">            \&quot;\&quot;\&quot;Perform basic arithmetic operations.\&quot;\&quot;\&quot;</span>
+<span class="sd">            ops = {&quot;add&quot;: a + b, &quot;sub&quot;: a - b, &quot;mul&quot;: a * b, &quot;div&quot;: a / b}</span>
+<span class="sd">            return ops.get(operation, a + b)</span>
+
+<span class="sd">        # The tool can now be used with the agent framework</span>
+<span class="sd">        result = greet.execute(name=&quot;Alice&quot;, formal=True)</span>
+<span class="sd">        # Or called directly:</span>
+<span class="sd">        result = greet(name=&quot;Bob&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">FunctionalTool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FunctionalTool</span><span class="p">(</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">fn</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">args_schema</span><span class="o">=</span><span class="n">args_schema</span><span class="p">,</span>
+            <span class="n">output_schema</span><span class="o">=</span><span class="n">output_schema</span><span class="p">,</span>
+        <span class="p">)</span>
+    
+    <span class="c1"># Handle both @tool and @tool(...) syntax</span>
+    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Called without parentheses: @tool</span>
+        <span class="k">return</span> <span class="n">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Called with parentheses: @tool(...) </span>
+        <span class="k">return</span> <span class="n">decorator</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Execution Framework &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Framework Integration Overview" href="framwrok.html" />
+    <link rel="prev" title="Library Architecture" href="library_architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#start-here">Start Here</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#howto">How‑To</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#architecture">Architecture</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Execution Framework</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framwrok.html">Framework Integration Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chat_driven_architecture.html">Chat-Driven Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deployment_layer.html">Deployment Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flows.html">Flow Orchestration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="manifest_and_docs_server.html">Manifest and Docs Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="phoenix_tracing.html">Phoenix Tracing (Arize)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-guides">Additional Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#reference-and-examples">Reference and Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Guides</a></li>
+      <li class="breadcrumb-item active">Execution Framework</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/execution_framework.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="execution-framework">
+<h1>Execution Framework<a class="headerlink" href="#execution-framework" title="Link to this heading"></a></h1>
+<p>Pure runtime library for building and running agents. YAML-agnostic by design.</p>
+<p>Core abstractions: <code class="docutils literal notranslate"><span class="pre">agent_framework/base.py</span></code></p>
+<ul class="simple">
+<li><p>Planner: <code class="docutils literal notranslate"><span class="pre">BasePlanner.plan(task,</span> <span class="pre">history)</span> <span class="pre">-&gt;</span> <span class="pre">Action</span> <span class="pre">|</span> <span class="pre">List[Action]</span> <span class="pre">|</span> <span class="pre">FinalResponse</span></code></p></li>
+<li><p>Tool: <code class="docutils literal notranslate"><span class="pre">BaseTool</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">description</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args_schema:</span> <span class="pre">Type[pydantic.BaseModel]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_schema:</span> <span class="pre">Optional[Type[pydantic.BaseModel]]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">execute(**kwargs)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code> (args validated by the Agent)</p></li>
+</ul>
+</li>
+<li><p>Memory: <code class="docutils literal notranslate"><span class="pre">BaseMemory.add/get_history</span></code></p></li>
+<li><p>Prompt Manager: <code class="docutils literal notranslate"><span class="pre">BasePromptManager.generate_prompt(...)</span></code></p></li>
+<li><p>Inference Gateway: <code class="docutils literal notranslate"><span class="pre">BaseInferenceGateway.invoke(prompt)</span></code></p></li>
+<li><p>Event Subscriber: <code class="docutils literal notranslate"><span class="pre">BaseEventSubscriber.handle_event(name,</span> <span class="pre">data)</span></code></p></li>
+<li><p>Progress Handler: <code class="docutils literal notranslate"><span class="pre">BaseProgressHandler.on_event(name,</span> <span class="pre">data)</span></code> (async)</p></li>
+<li><p>Data: <code class="docutils literal notranslate"><span class="pre">Action(tool_name,</span> <span class="pre">tool_args)</span></code>, <code class="docutils literal notranslate"><span class="pre">FinalResponse(operation,</span> <span class="pre">payload,</span> <span class="pre">human_readable_summary)</span></code></p></li>
+</ul>
+<p>Agent orchestrator: <code class="docutils literal notranslate"><span class="pre">agent_framework/core/agent.py</span></code></p>
+<ul class="simple">
+<li><p>Async <code class="docutils literal notranslate"><span class="pre">run(task,</span> <span class="pre">progress_handler=None)</span></code> drives the plan→act→observe loop</p></li>
+<li><p>Publishes events: <code class="docutils literal notranslate"><span class="pre">agent_start</span></code>, <code class="docutils literal notranslate"><span class="pre">action_planned</span></code>, <code class="docutils literal notranslate"><span class="pre">action_executed</span></code>, <code class="docutils literal notranslate"><span class="pre">agent_end</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code></p></li>
+<li><p>Validates tool args via the tool <code class="docutils literal notranslate"><span class="pre">args_schema</span></code> and passes normalized kwargs to <code class="docutils literal notranslate"><span class="pre">execute</span></code></p></li>
+<li><p>Executes multiple actions in parallel when a planner returns <code class="docutils literal notranslate"><span class="pre">List[Action]</span></code></p></li>
+<li><p>Records steps in <code class="docutils literal notranslate"><span class="pre">memory</span></code> (task, action, observation, final)</p></li>
+<li><p>Safety: enforces planner <code class="docutils literal notranslate"><span class="pre">max_iterations</span></code> and detects stagnation (see Runtime &amp; Stagnation)</p></li>
+</ul>
+<p>Manager agent: <code class="docutils literal notranslate"><span class="pre">agent_framework/core/manager_v2.py</span></code></p>
+<ul class="simple">
+<li><p>Planner‑driven delegation to named workers (<code class="docutils literal notranslate"><span class="pre">Action(tool_name=&lt;worker_key&gt;)</span></code>)</p></li>
+<li><p>Emits <code class="docutils literal notranslate"><span class="pre">manager_start</span></code>, <code class="docutils literal notranslate"><span class="pre">delegation_planned</span></code>, <code class="docutils literal notranslate"><span class="pre">delegation_chosen</span></code>, <code class="docutils literal notranslate"><span class="pre">delegation_executed</span></code>, <code class="docutils literal notranslate"><span class="pre">manager_end</span></code></p></li>
+<li><p>Can synthesize worker results via an optional <code class="docutils literal notranslate"><span class="pre">synthesis_gateway</span></code></p></li>
+</ul>
+<p>Events &amp; Observability: <code class="docutils literal notranslate"><span class="pre">agent_framework/core/events.py</span></code>, <code class="docutils literal notranslate"><span class="pre">agent_framework/observability/subscribers.py</span></code></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">EventBus</span></code> with <code class="docutils literal notranslate"><span class="pre">subscribe()</span></code> and <code class="docutils literal notranslate"><span class="pre">publish()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LoggingSubscriber</span></code> prints structured events with configurable levels</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LangfuseSubscriber</span></code> and <code class="docutils literal notranslate"><span class="pre">PhoenixSubscriber</span></code> (OpenTelemetry) for external tracing</p></li>
+</ul>
+<p>Built-in components: <code class="docutils literal notranslate"><span class="pre">agent_framework/components/</span></code></p>
+<ul class="simple">
+<li><p>Planners: <code class="docutils literal notranslate"><span class="pre">StaticPlanner</span></code>, <code class="docutils literal notranslate"><span class="pre">SingleActionPlanner</span></code>, <code class="docutils literal notranslate"><span class="pre">LLMRouterPlanner</span></code>, <code class="docutils literal notranslate"><span class="pre">StrategicPlanner</span></code>, <code class="docutils literal notranslate"><span class="pre">WorkerRouterPlanner</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatPlanner</span></code>, <code class="docutils literal notranslate"><span class="pre">ReActPlanner</span></code>, <code class="docutils literal notranslate"><span class="pre">MathPlanner</span></code></p></li>
+<li><p>Tools: utility set under <code class="docutils literal notranslate"><span class="pre">agent_framework.tools.utility</span></code> (calculator, math QA, Python interpreter, glob/grep, etc.)</p></li>
+<li><p>Memory: <code class="docutils literal notranslate"><span class="pre">InMemoryMemory</span></code>, <code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code>, <code class="docutils literal notranslate"><span class="pre">HierarchicalSharedMemory</span></code>, plus message-store backed memories</p></li>
+</ul>
+<p>Shared Memory &amp; Message Stores</p>
+<ul class="simple">
+<li><p>Shared Memory: <code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code> and <code class="docutils literal notranslate"><span class="pre">HierarchicalSharedMemory</span></code> enable context sharing across agents and managers using a common <code class="docutils literal notranslate"><span class="pre">namespace</span></code>. The <code class="docutils literal notranslate"><span class="pre">SharedStateStore</span></code> provides a process-wide, thread-safe mechanism for managing this state.</p></li>
+<li><p>Message Store Memory: <code class="docutils literal notranslate"><span class="pre">MessageStoreMemory</span></code> and <code class="docutils literal notranslate"><span class="pre">HierarchicalMessageStoreMemory</span></code> read messages from a persisted <code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code>, letting implementations control storage formats.</p></li>
+<li><p>Request Context: A thread-local <code class="docutils literal notranslate"><span class="pre">request_context</span></code> service is available for sharing request-scoped data like <code class="docutils literal notranslate"><span class="pre">job_id</span></code> and <code class="docutils literal notranslate"><span class="pre">user_id</span></code> across the framework.</p></li>
+<li><p>Manager Tools: <code class="docutils literal notranslate"><span class="pre">ManagerAgent</span></code> can execute its own tools in addition to delegating tasks to workers.</p></li>
+</ul>
+<p>Logging &amp; diagnostics</p>
+<ul class="simple">
+<li><p>Shared logger: <code class="docutils literal notranslate"><span class="pre">agent_framework/logging.py</span></code>; set level via <code class="docutils literal notranslate"><span class="pre">AGENT_LOG_LEVEL</span></code> (default <code class="docutils literal notranslate"><span class="pre">INFO</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LoggingSubscriber</span></code> options: <code class="docutils literal notranslate"><span class="pre">level</span></code>, <code class="docutils literal notranslate"><span class="pre">include_data</span></code>, <code class="docutils literal notranslate"><span class="pre">max_payload_chars</span></code>, <code class="docutils literal notranslate"><span class="pre">event_levels</span></code></p></li>
+<li><p>Router debug: set <code class="docutils literal notranslate"><span class="pre">AGENT_LOG_ROUTER_DETAILS=true</span></code> or planner <code class="docutils literal notranslate"><span class="pre">log_details:</span> <span class="pre">true</span></code></p></li>
+</ul>
+<p>Structured Final Responses</p>
+<ul class="simple">
+<li><p>Planners can return <code class="docutils literal notranslate"><span class="pre">FinalResponse</span></code> to end the loop with a machine‑readable result</p></li>
+<li><p>See: :doc:<code class="docutils literal notranslate"><span class="pre">structured_final_response</span></code> for operation types and payload conventions</p></li>
+</ul>
+<p>Runtime &amp; Stagnation</p>
+<ul class="simple">
+<li><p>Max iterations check is enforced by <code class="docutils literal notranslate"><span class="pre">Agent.run()</span></code></p></li>
+<li><p>Stagnation detection guards against repeating the same action signature</p></li>
+<li><p>See: :doc:<code class="docutils literal notranslate"><span class="pre">runtime_loop_stagnation</span></code></p></li>
+</ul>
+<p>Parallel execution</p>
+<ul class="simple">
+<li><p>The agent executes parallel actions with <code class="docutils literal notranslate"><span class="pre">asyncio.gather</span></code>, emitting <code class="docutils literal notranslate"><span class="pre">action_executed</span></code> per tool</p></li>
+</ul>
+<p>Manifest generator: <code class="docutils literal notranslate"><span class="pre">agent_framework/utils/manifest_generator.py</span></code></p>
+<ul class="simple">
+<li><p>Introspects an assembled Agent to emit an OpenAPI‑like manifest of tools</p></li>
+<li><p>Includes input <code class="docutils literal notranslate"><span class="pre">parameters</span></code> and <code class="docutils literal notranslate"><span class="pre">returns</span></code> (tool <code class="docutils literal notranslate"><span class="pre">output_schema</span></code> when provided)</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="library_architecture.html" class="btn btn-neutral float-left" title="Library Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="framwrok.html" class="btn btn-neutral float-right" title="Framework Integration Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+Framework Integration Overview
+==============================
+
+This guide summarizes how the repository's agent *framework* integrates with
+configuration and deployment layers, and pinpoints where planning, tools,
+memory, and execution responsibilities live.
+
+
+Execution Building Blocks
+-------------------------
+
+- ``agent_framework/base.py`` defines the abstract contracts for planners, tools,
+  memory, prompt managers, inference gateways, event subscribers, and progress
+  handlers. ``Action`` and ``FinalResponse`` are the structured messages that
+  planners return to the agent loop.
+- ``agent_framework/components/`` ships reference implementations: planners such as
+  ``StaticPlanner``, ``LLMRouterPlanner``, ``WorkerRouterPlanner``,
+  ``ReActPlanner``, tools including ``MockSearchTool`` plus BI-specific
+  helpers, and the default ``InMemoryMemory``.
+- ``agent_framework/core/agent.py`` houses the async agent loop: it calls the
+  planner, validates tool arguments (via each tool's Pydantic schema), executes
+  tools (including parallel batches), records results to memory, and publishes
+  lifecycle events through ``EventBus``.
+- ``agent_framework/core/manager_v2.py`` provides ``ManagerAgent`` that delegates to
+  named workers using a planner and emits orchestration events.
+
+
+Declarative Deployment Layer
+----------------------------
+
+- YAML definitions live under ``configs/agents/``. Each file follows the
+  ``apiVersion/kind/spec`` schema and names the planner, memory, and tools the
+  agent should use. Shared resources are defined once inside the ``resources``
+  block and referenced by name from the ``spec``.
+- ``deployment/registry.py`` maps the string identifiers used in YAML (for
+  planners, tools, memories, inference gateways, prompt managers, and
+  subscribers) to their concrete classes inside the framework.
+- ``deployment/factory.py`` loads a YAML file, expands environment variables,
+  instantiates shared resources via the registries, and then builds either an
+  ``Agent`` or ``ManagerAgent`` with the requested components. Manager
+  configurations recursively instantiate worker agents from their own YAML
+  files. Subscribers declared in ``spec.subscribers`` are attached to the
+  agent's ``EventBus``.
+- Component registries are populated from YAML under ``configs/`` so new
+  planners, tools, memories, gateways, and subscribers can be introduced
+  without touching Python source.
+
+
+Runtime Flow and Observability
+------------------------------
+
+1. Applications call ``AgentFactory.create_from_yaml(...)`` (see ``main.py``
+   for an example). The factory constructs the runtime objects and returns a
+   ready-to-run agent instance.
+2. ``Agent.run(task, progress_handler=...)`` publishes lifecycle events such as
+   ``agent_start``, ``action_planned``, ``action_executed``, and ``agent_end``
+   through ``EventBus``. Any ``LoggingSubscriber`` (or custom subscriber such
+   as the built-in ``LangfuseSubscriber`` or ``PhoenixSubscriber``) receives
+   these events, while an optional progress handler gets async callbacks for UI
+   or API streaming. Configure verbosity via ``AGENT_LOG_LEVEL`` or by passing
+   ``level`` and ``include_data`` in the subscriber YAML config.
+3. Memory entries track tasks, tool actions, observations, and final responses,
+   keeping the agent's reasoning trace accessible via the configured memory
+   implementation.
+
+
+Extending the Stack
+-------------------
+
+- Register custom components at runtime with
+  ``AgentFactory.register_component("MyPlanner", MyPlanner)`` or by adding new
+  entries to the deployment registries.
+- Add bespoke tools under ``agent_framework/components/`` (or your
+  own module), expose them through the registry, and reference them by name in
+  YAML.
+- Implement richer planning by subclassing ``BasePlanner``—for example, add a
+  multi-step planner that iterates until a ``FinalResponse`` is returned.
+- Swap inference gateways (e.g., ``OpenAIGateway``) inside planners like
+  ``LLMRouterPlanner`` to connect different LLM providers without changing the
+  YAML schema.
+- Wire in observability platforms declaratively by defining subscribers such as
+  ``LangfuseSubscriber`` or ``PhoenixSubscriber`` in YAML and referencing them
+  from ``spec.subscribers``.
+
+
+Next Steps
+----------
+
+- Review :doc:`execution_framework` for deeper coverage of the runtime APIs.
+- Explore :doc:`deployment_layer` to see the declarative schema in detail.
+- Try the quick demo via ``python main.py`` to observe the full loop from YAML
+  configuration through tool execution and event logging.

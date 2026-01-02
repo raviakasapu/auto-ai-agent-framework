@@ -1,0 +1,13 @@
+Defining Agents with YAML (v1)
+==============================
+
+Agents are defined declaratively with a v1 schema featuring ``apiVersion``, ``kind``, ``metadata``, ``resources``, and ``spec``.
+
+See also: ``docs/agent_config_schema.md`` in the repo for annotated examples.
+
+Basic steps::
+
+  - Create resources (tools, gateways) with ``name`` and ``type``
+  - Reference resources by name in the ``spec``
+  - Load with ``AgentFactory.create_from_yaml(path)``
+

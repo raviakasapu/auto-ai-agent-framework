@@ -1,0 +1,230 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Config Schema (v1) &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tests and Examples" href="tests_and_examples.html" />
+    <link rel="prev" title="API Documentation (Legacy Notes)" href="api_documentation_notes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#start-here">Start Here</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#howto">How‑To</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-guides">Additional Guides</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#reference-and-examples">Reference and Examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="api_overview.html">API Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_documentation_notes.html">API Documentation (Legacy Notes)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Agent Config Schema (v1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests_and_examples.html">Tests and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sdk_analysis.html">SDK Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Guides</a></li>
+      <li class="breadcrumb-item active">Agent Config Schema (v1)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/agent_config_schema.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="agent-config-schema-v1">
+<h1>Agent Config Schema (v1)<a class="headerlink" href="#agent-config-schema-v1" title="Link to this heading"></a></h1>
+<p>The Deployment Layer uses a declarative YAML schema to define agents.</p>
+<p>Top-level keys</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">apiVersion</span></code>: <code class="docutils literal notranslate"><span class="pre">agent.framework/v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kind</span></code>: <code class="docutils literal notranslate"><span class="pre">Agent</span></code> or <code class="docutils literal notranslate"><span class="pre">ManagerAgent</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code>: name, description, version</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resources</span></code>: reusable components instantiated once and referenced by name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spec</span></code>: how to assemble the agent from resources</p></li>
+</ul>
+<p>Resources</p>
+<ul class="simple">
+<li><p>Categories are flexible; typical groups: <code class="docutils literal notranslate"><span class="pre">inference_gateways</span></code>, <code class="docutils literal notranslate"><span class="pre">tools</span></code>, <code class="docutils literal notranslate"><span class="pre">memories</span></code>.</p></li>
+<li><p>Each resource entry:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: unique string key used for references</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: class name registered in the component registries</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config</span></code>: dict of constructor kwargs (env vars expanded via <code class="docutils literal notranslate"><span class="pre">${VAR}</span></code>)</p></li>
+</ul>
+</li>
+</ul>
+<p>Spec for kind: Agent</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">planner</span></code>: <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">type,</span> <span class="pre">config</span> <span class="pre">}</span></code> — strings in <code class="docutils literal notranslate"><span class="pre">config</span></code> that match a resource name are replaced by that resource instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memory</span></code>: <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">type,</span> <span class="pre">config</span> <span class="pre">}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tools</span></code>: list of resource names (tools) to include</p></li>
+</ul>
+<p>Spec for kind: ManagerAgent</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">planner</span></code>, <code class="docutils literal notranslate"><span class="pre">memory</span></code> — same as Agent</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workers</span></code>: list of nested agent YAMLs to load recursively</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_config_path</span></code>: string path to another v1 YAML</p></li>
+</ul>
+</li>
+</ul>
+<p>Example: Agent</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ResearchAgent</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">An agent demonstrating the mock search tool.</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mock-llm</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MockInferenceGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mock_search</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MockSearchTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">StaticPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">InMemoryMemory</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mock_search</span>
+</pre></div>
+</div>
+<p>Example: ManagerAgent</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ProjectManager</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delegates to worker agents.</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+<span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">StaticPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">InMemoryMemory</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/research_assistant.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/research_assistant.yaml</span>
+</pre></div>
+</div>
+<p>Notes</p>
+<ul class="simple">
+<li><p>Registry mapping is defined in <code class="docutils literal notranslate"><span class="pre">deployment/registry.py</span></code>.</p></li>
+<li><p>You can add new components without changing the factory by calling <code class="docutils literal notranslate"><span class="pre">AgentFactory.register_component(&quot;Name&quot;,</span> <span class="pre">Class)</span></code> before loading YAML.</p></li>
+<li><p>Environment variables are expanded before parsing using <code class="docutils literal notranslate"><span class="pre">os.path.expandvars</span></code>.</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api_documentation_notes.html" class="btn btn-neutral float-left" title="API Documentation (Legacy Notes)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tests_and_examples.html" class="btn btn-neutral float-right" title="Tests and Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

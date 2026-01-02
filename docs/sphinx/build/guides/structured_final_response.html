@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Structured Final Response Pattern &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Frontend Chat Integration Guide" href="frontend_chat_integration.html" />
+    <link rel="prev" title="Phoenix Tracing (Arize)" href="phoenix_tracing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Structured Final Response Pattern</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-problem">The Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-solution">The Solution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#architecture-changes">Architecture Changes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-type-framework-base-py">1. Core Type (framework/base.py)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#agent-loop-framework-core-agent-py">2. Agent Loop (framework/core/agent.py)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#planner-parsing-framework-components-planners-py">3. Planner Parsing (framework/components/planners.py)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#llm-prompt-instructions-configs-agents-pbi-schema-editor-function-calling-yaml">4. LLM Prompt Instructions (configs/agents/pbi/schema_editor_function_calling.yaml)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-operations">Supported Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#display-message">1. display_message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#display-table">2. display_table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-ops">3. model_ops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-file-tree">4. update_file_tree</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#frontend-integration">Frontend Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#websocket-handler">WebSocket Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#react-frontend">React Frontend</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#why-this-approach-is-superior">Why This Approach is Superior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#decoupling">1. <strong>Decoupling</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#type-safety">2. <strong>Type Safety</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extensibility">3. <strong>Extensibility</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clear-separation-of-concerns">4. <strong>Clear Separation of Concerns</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backward-compatibility">5. <strong>Backward Compatibility</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-1-list-tables-query">Example 1: List Tables (Query)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-add-measure-modification">Example 2: Add Measure (Modification)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-3-propose-operations-preview-mode">Example 3: Propose Operations (Preview Mode)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#decision-tree-when-to-use-what">Decision Tree: When to Use What</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-guide">Migration Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-existing-agents">For Existing Agents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#for-frontend-developers">For Frontend Developers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Guides</a></li>
+      <li class="breadcrumb-item active">Structured Final Response Pattern</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/structured_final_response.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="structured-final-response-pattern">
+<h1>Structured Final Response Pattern<a class="headerlink" href="#structured-final-response-pattern" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <strong>Structured Final Response</strong> pattern is a fundamental architectural approach for agent-to-application integration. It solves the problem of passing machine-readable, actionable data from the agent’s reasoning loop to external systems (like React frontends) without fragile string parsing.</p>
+</section>
+<section id="the-problem">
+<h2>The Problem<a class="headerlink" href="#the-problem" title="Link to this heading"></a></h2>
+<p>Previously, agents returned simple text responses:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;I have successfully created the &#39;Total Profit&#39; measure in the &#39;sales&#39; table.&quot;</span>
+</pre></div>
+</div>
+<p>This is great for chat logs but:</p>
+<ul class="simple">
+<li><p>❌ Not machine-readable</p></li>
+<li><p>❌ Requires brittle string parsing</p></li>
+<li><p>❌ No clear contract between agent and frontend</p></li>
+<li><p>❌ Difficult to trigger specific UI behaviors</p></li>
+</ul>
+</section>
+<section id="the-solution">
+<h2>The Solution<a class="headerlink" href="#the-solution" title="Link to this heading"></a></h2>
+<p>Agents now return <strong>structured <code class="docutils literal notranslate"><span class="pre">FinalResponse</span></code> objects</strong> with:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">operation</span></code>: High-level command for the frontend (e.g., “display_table”, “model_ops”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">payload</span></code>: JSON data to execute the operation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">human_readable_summary</span></code>: Natural language for chat display</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FinalResponse</span><span class="p">(</span>
+    <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;model_ops&quot;</span><span class="p">,</span>
+    <span class="n">payload</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;proposed_ops&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;addRelationship&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;relationship&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="s2">&quot;LU_EMPLOYEE&quot;</span><span class="p">,</span> <span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="s2">&quot;EmployeeKey&quot;</span><span class="p">},</span>
+                    <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="s2">&quot;FACT_SALES&quot;</span><span class="p">,</span> <span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="s2">&quot;EmployeeKey&quot;</span><span class="p">},</span>
+                    <span class="s2">&quot;isActive&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+                    <span class="s2">&quot;fromCardinality&quot;</span><span class="p">:</span> <span class="s2">&quot;one&quot;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">human_readable_summary</span><span class="o">=</span><span class="s2">&quot;Proposed adding relationship between LU_EMPLOYEE and FACT_SALES.&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="architecture-changes">
+<h2>Architecture Changes<a class="headerlink" href="#architecture-changes" title="Link to this heading"></a></h2>
+<section id="core-type-framework-base-py">
+<h3>1. Core Type (framework/base.py)<a class="headerlink" href="#core-type-framework-base-py" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FinalResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pydantic model for structured agent responses&quot;&quot;&quot;</span>
+    <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Frontend operation type&quot;</span><span class="p">)</span>
+    <span class="n">payload</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Operation data&quot;</span><span class="p">)</span>
+    <span class="n">human_readable_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Chat display text&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="agent-loop-framework-core-agent-py">
+<h3>2. Agent Loop (framework/core/agent.py)<a class="headerlink" href="#agent-loop-framework-core-agent-py" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FinalResponse</span><span class="p">:</span>
+    <span class="c1"># ... planning loop ...</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plan_outcome</span><span class="p">,</span> <span class="n">FinalResponse</span><span class="p">):</span>
+        <span class="c1"># Publish full structured response</span>
+        <span class="n">end_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">plan_outcome</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span>
+            <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="n">plan_outcome</span><span class="o">.</span><span class="n">operation</span><span class="p">,</span>
+            <span class="s2">&quot;payload&quot;</span><span class="p">:</span> <span class="n">plan_outcome</span><span class="o">.</span><span class="n">payload</span><span class="p">,</span>
+            <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="n">plan_outcome</span><span class="o">.</span><span class="n">human_readable_summary</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plan_outcome</span>  <span class="c1"># Return structured object</span>
+</pre></div>
+</div>
+</section>
+<section id="planner-parsing-framework-components-planners-py">
+<h3>3. Planner Parsing (framework/components/planners.py)<a class="headerlink" href="#planner-parsing-framework-components-planners-py" title="Link to this heading"></a></h3>
+<p>The ReActPlanner now parses both:</p>
+<ul class="simple">
+<li><p><strong>New format</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;final_response&quot;:</span> <span class="pre">{...}}</span></code></p></li>
+<li><p><strong>Legacy format</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;final_answer&quot;:</span> <span class="pre">&quot;...&quot;}</span></code></p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for new structured final_response format</span>
+<span class="k">if</span> <span class="s2">&quot;final_response&quot;</span> <span class="ow">in</span> <span class="n">decision</span><span class="p">:</span>
+    <span class="n">final_resp_data</span> <span class="o">=</span> <span class="n">decision</span><span class="p">[</span><span class="s2">&quot;final_response&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">FinalResponse</span><span class="p">(</span>
+        <span class="n">operation</span><span class="o">=</span><span class="n">final_resp_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation&quot;</span><span class="p">,</span> <span class="s2">&quot;display_message&quot;</span><span class="p">),</span>
+        <span class="n">payload</span><span class="o">=</span><span class="n">final_resp_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;payload&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+        <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">final_resp_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">,</span> <span class="s2">&quot;Task completed.&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="c1"># Legacy support: simple final_answer string</span>
+<span class="k">if</span> <span class="n">decision</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;final_answer&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">FinalResponse</span><span class="p">(</span>
+        <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;display_message&quot;</span><span class="p">,</span>
+        <span class="n">payload</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">decision</span><span class="p">[</span><span class="s2">&quot;final_answer&quot;</span><span class="p">]},</span>
+        <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">decision</span><span class="p">[</span><span class="s2">&quot;final_answer&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="llm-prompt-instructions-configs-agents-pbi-schema-editor-function-calling-yaml">
+<h3>4. LLM Prompt Instructions (configs/agents/pbi/schema_editor_function_calling.yaml)<a class="headerlink" href="#llm-prompt-instructions-configs-agents-pbi-schema-editor-function-calling-yaml" title="Link to this heading"></a></h3>
+<p>The agent prompt now explicitly instructs the LLM on how to format final responses:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no">...</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="no">FORMAT - Return JSON with a &quot;final_response&quot; key:</span>
+<span class="w">  </span><span class="no">{</span>
+<span class="w">    </span><span class="no">&quot;thought&quot;: &quot;I have completed the task...&quot;,</span>
+<span class="w">    </span><span class="no">&quot;final_response&quot;: {</span>
+<span class="w">      </span><span class="no">&quot;operation&quot;: &quot;&lt;operation_type&gt;&quot;,</span>
+<span class="w">      </span><span class="no">&quot;payload&quot;: { ...data... },</span>
+<span class="w">      </span><span class="no">&quot;human_readable_summary&quot;: &quot;Natural language summary&quot;</span>
+<span class="w">    </span><span class="no">}</span>
+<span class="w">  </span><span class="no">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="supported-operations">
+<h2>Supported Operations<a class="headerlink" href="#supported-operations" title="Link to this heading"></a></h2>
+<section id="display-message">
+<h3>1. display_message<a class="headerlink" href="#display-message" title="Link to this heading"></a></h3>
+<p>Simple text responses.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;display_message&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Here are the results...&quot;</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;human_readable_summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Here are the results...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="display-table">
+<h3>2. display_table<a class="headerlink" href="#display-table" title="Link to this heading"></a></h3>
+<p>Structured tabular data.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;display_table&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Model Tables&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Table Name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Row Count&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;rows&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;sales&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;1000&quot;</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;products&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;500&quot;</span><span class="p">]]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;human_readable_summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Found 2 tables in the model.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="model-ops">
+<h3>3. model_ops<a class="headerlink" href="#model-ops" title="Link to this heading"></a></h3>
+<p>Proposed Power BI model operations.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;model_ops&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;proposed_ops&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;addRelationship&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;relationship&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;table&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LU_EMPLOYEE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;column&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EmployeeKey&quot;</span><span class="p">},</span>
+<span class="w">          </span><span class="nt">&quot;to&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;table&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FACT_SALES&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;column&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EmployeeKey&quot;</span><span class="p">},</span>
+<span class="w">          </span><span class="nt">&quot;isActive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;fromCardinality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;one&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;human_readable_summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Proposed relationship between tables.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="update-file-tree">
+<h3>4. update_file_tree<a class="headerlink" href="#update-file-tree" title="Link to this heading"></a></h3>
+<p>File system modifications.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;update_file_tree&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;changed_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Model/tables/sales.tmdl&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;details&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Added DAX measure &#39;Total Profit&#39;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;human_readable_summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Successfully added measure.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="frontend-integration">
+<h2>Frontend Integration<a class="headerlink" href="#frontend-integration" title="Link to this heading"></a></h2>
+<section id="websocket-handler">
+<h3>WebSocket Handler<a class="headerlink" href="#websocket-handler" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># FastAPI WebSocket endpoint</span>
+<span class="n">final_result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+<span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">({</span>
+    <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="s2">&quot;agent_end&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">final_result</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span>
+        <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="n">final_result</span><span class="o">.</span><span class="n">operation</span><span class="p">,</span>
+        <span class="s2">&quot;payload&quot;</span><span class="p">:</span> <span class="n">final_result</span><span class="o">.</span><span class="n">payload</span><span class="p">,</span>
+        <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="n">final_result</span><span class="o">.</span><span class="n">human_readable_summary</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</section>
+<section id="react-frontend">
+<h3>React Frontend<a class="headerlink" href="#react-frontend" title="Link to this heading"></a></h3>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="c1">// React component handling agent responses</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">handleAgentEnd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">AgentEndData</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">operation</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;display_table&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="o">&lt;</span><span class="nx">DataTable</span><span class="w"> </span><span class="p">{...</span><span class="nx">data</span><span class="p">.</span><span class="nx">payload</span><span class="p">}</span><span class="w"> </span><span class="o">/&gt;</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;model_ops&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="o">&lt;</span><span class="nx">ModelOperationsList</span><span class="w"> </span><span class="nx">ops</span><span class="o">=</span><span class="p">{</span><span class="nx">data</span><span class="p">.</span><span class="nx">payload</span><span class="p">.</span><span class="nx">proposed_ops</span><span class="p">}</span><span class="w"> </span><span class="o">/&gt;</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;update_file_tree&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="nx">refreshFileTree</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">payload</span><span class="p">.</span><span class="nx">changed_files</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="o">&lt;</span><span class="nx">ChatMessage</span><span class="w"> </span><span class="nx">text</span><span class="o">=</span><span class="p">{</span><span class="nx">data</span><span class="p">.</span><span class="nx">summary</span><span class="p">}</span><span class="w"> </span><span class="o">/&gt;</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;display_message&quot;</span><span class="o">:</span>
+<span class="w">    </span><span class="nx">default</span><span class="o">:</span>
+<span class="w">      </span><span class="kt">return</span><span class="w"> </span><span class="o">&lt;</span><span class="nx">ChatMessage</span><span class="w"> </span><span class="nx">text</span><span class="o">=</span><span class="p">{</span><span class="nx">data</span><span class="p">.</span><span class="nx">summary</span><span class="p">}</span><span class="w"> </span><span class="o">/&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="why-this-approach-is-superior">
+<h2>Why This Approach is Superior<a class="headerlink" href="#why-this-approach-is-superior" title="Link to this heading"></a></h2>
+<section id="decoupling">
+<h3>1. <strong>Decoupling</strong><a class="headerlink" href="#decoupling" title="Link to this heading"></a></h3>
+<p>The agent doesn’t need to know about React or frontend details. It just produces a structured payload in an agreed-upon format.</p>
+</section>
+<section id="type-safety">
+<h3>2. <strong>Type Safety</strong><a class="headerlink" href="#type-safety" title="Link to this heading"></a></h3>
+<p>Pydantic validation ensures the contract is enforced. No runtime surprises.</p>
+</section>
+<section id="extensibility">
+<h3>3. <strong>Extensibility</strong><a class="headerlink" href="#extensibility" title="Link to this heading"></a></h3>
+<p>Need a new UI interaction? Just:</p>
+<ul class="simple">
+<li><p>Define a new <code class="docutils literal notranslate"><span class="pre">operation</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;display_chart&quot;</span></code>)</p></li>
+<li><p>Add it to the prompt documentation</p></li>
+<li><p>Implement the corresponding React component</p></li>
+</ul>
+<p>No framework changes needed!</p>
+</section>
+<section id="clear-separation-of-concerns">
+<h3>4. <strong>Clear Separation of Concerns</strong><a class="headerlink" href="#clear-separation-of-concerns" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Agent</strong>: Responsible for <em>generating</em> the final result</p></li>
+<li><p><strong>Application</strong>: Responsible for <em>rendering</em> the final result</p></li>
+</ul>
+</section>
+<section id="backward-compatibility">
+<h3>5. <strong>Backward Compatibility</strong><a class="headerlink" href="#backward-compatibility" title="Link to this heading"></a></h3>
+<p>The system supports both new structured responses and legacy string responses, ensuring smooth migration.</p>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="example-1-list-tables-query">
+<h3>Example 1: List Tables (Query)<a class="headerlink" href="#example-1-list-tables-query" title="Link to this heading"></a></h3>
+<p><strong>User Request:</strong> “What tables are in the model?”</p>
+<p><strong>Agent Response (LLM Output):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;thought&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I have the list of tables. I&#39;ll return them in a structured table format.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;final_response&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;display_table&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Model Tables&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Table Name&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;rows&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;sales&quot;</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;products&quot;</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;customers&quot;</span><span class="p">]]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;human_readable_summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Found 3 tables: sales, products, and customers.&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Frontend Receives:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;display_table&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Model Tables&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Table Name&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;rows&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;sales&quot;</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;products&quot;</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;customers&quot;</span><span class="p">]]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Found 3 tables: sales, products, and customers.&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2-add-measure-modification">
+<h3>Example 2: Add Measure (Modification)<a class="headerlink" href="#example-2-add-measure-modification" title="Link to this heading"></a></h3>
+<p><strong>User Request:</strong> “Add a ‘Total Profit’ measure to the sales table”</p>
+<p><strong>Agent Response (after executing tools):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;thought&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I&#39;ve successfully added the measure. I&#39;ll inform the frontend to refresh the file tree.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;final_response&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;update_file_tree&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;changed_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Model/tables/sales.tmdl&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;details&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Appended DAX measure &#39;Total Profit&#39;&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;human_readable_summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Successfully created the &#39;Total Profit&#39; measure in the sales table.&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Frontend Receives:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;update_file_tree&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;changed_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Model/tables/sales.tmdl&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;details&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Appended DAX measure &#39;Total Profit&#39;&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Successfully created the &#39;Total Profit&#39; measure in the sales table.&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3-propose-operations-preview-mode">
+<h3>Example 3: Propose Operations (Preview Mode)<a class="headerlink" href="#example-3-propose-operations-preview-mode" title="Link to this heading"></a></h3>
+<p><strong>User Request:</strong> “What operations would you perform to link Employees to Sales?”</p>
+<p><strong>Agent Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;thought&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I&#39;ll propose the relationship operation without executing it.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;final_response&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;operation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;model_ops&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;proposed_ops&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;addRelationship&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;relationship&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;table&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LU_EMPLOYEE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;column&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EmployeeKey&quot;</span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;to&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;table&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FACT_SALES&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;column&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EmployeeKey&quot;</span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;isActive&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;fromCardinality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;one&quot;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;human_readable_summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I would add a one-to-many relationship from LU_EMPLOYEE to FACT_SALES on EmployeeKey.&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="decision-tree-when-to-use-what">
+<h2>Decision Tree: When to Use What<a class="headerlink" href="#decision-tree-when-to-use-what" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Task Completed?
+├─ Yes
+│  ├─ Need special UI rendering? (table, file tree, ops preview)
+│  │  └─ Use final_response with appropriate operation
+│  │
+│  └─ Simple conversational response?
+│     └─ Use complete_task OR final_response with &quot;display_message&quot;
+│
+└─ No
+   └─ Return Action(s) for next step
+</pre></div>
+</div>
+</section>
+<section id="migration-guide">
+<h2>Migration Guide<a class="headerlink" href="#migration-guide" title="Link to this heading"></a></h2>
+<section id="for-existing-agents">
+<h3>For Existing Agents<a class="headerlink" href="#for-existing-agents" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>No immediate changes required</strong> - Legacy <code class="docutils literal notranslate"><span class="pre">complete_task</span></code> still works</p></li>
+<li><p><strong>Optional enhancement</strong> - Add <code class="docutils literal notranslate"><span class="pre">final_response</span></code> instructions to prompts</p></li>
+<li><p><strong>Gradual adoption</strong> - Start with one operation type, expand over time</p></li>
+</ol>
+</section>
+<section id="for-frontend-developers">
+<h3>For Frontend Developers<a class="headerlink" href="#for-frontend-developers" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Listen for <code class="docutils literal notranslate"><span class="pre">agent_end</span></code> event</p></li>
+<li><p>Check <code class="docutils literal notranslate"><span class="pre">data.operation</span></code> field</p></li>
+<li><p>Implement handlers for each operation type</p></li>
+<li><p>Fall back to <code class="docutils literal notranslate"><span class="pre">data.summary</span></code> for unknown operations</p></li>
+</ol>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Use descriptive operation names</strong> - Make it obvious what the frontend should do</p></li>
+<li><p><strong>Include rich metadata in payload</strong> - Give frontend all the context it needs</p></li>
+<li><p><strong>Always provide human_readable_summary</strong> - Fallback for chat/logging</p></li>
+<li><p><strong>Validate payloads</strong> - Use TypeScript interfaces or JSON Schema on frontend</p></li>
+<li><p><strong>Document new operations</strong> - Update this file when adding new operation types</p></li>
+</ol>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>✅ <strong>Type-safe</strong> structured outputs with Pydantic<br />
+✅ <strong>Decoupled</strong> agent and frontend architectures<br />
+✅ <strong>Extensible</strong> - add new operations without framework changes<br />
+✅ <strong>Backward compatible</strong> - supports legacy responses<br />
+✅ <strong>Clear contract</strong> between agent and application layers</p>
+<p>This pattern transforms agent outputs from “strings to parse” into “commands to execute”, making the entire system more reliable, maintainable, and extensible.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="phoenix_tracing.html" class="btn btn-neutral float-left" title="Phoenix Tracing (Arize)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="frontend_chat_integration.html" class="btn btn-neutral float-right" title="Frontend Chat Integration Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

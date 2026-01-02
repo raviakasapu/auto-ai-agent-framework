@@ -1,0 +1,706 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Store Implementation Guide &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Overview" href="api_overview.html" />
+    <link rel="prev" title="Message Store Format Specification" href="message_store_format.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Message Store Implementation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-import-required-framework-classes">Step 1: Import Required Framework Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-implement-basemessagestore">Step 2: Implement BaseMessageStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-how-messagestorememory-reads-from-your-store">Step 3: How MessageStoreMemory Reads from Your Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-4-use-messagestorememory-with-agents">Step 4: Use MessageStoreMemory with Agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-5-writing-messages-to-your-store">Step 5: Writing Messages to Your Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-example-api-endpoint-integration">Complete Example: API Endpoint Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hierarchical-memory-for-managers">Hierarchical Memory for Managers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#runtime-messages">Runtime Messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-points">Key Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-checklist">Implementation Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Guides</a></li>
+      <li class="breadcrumb-item active">Message Store Implementation Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/message_store_implementation.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="message-store-implementation-guide">
+<h1>Message Store Implementation Guide<a class="headerlink" href="#message-store-implementation-guide" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Implementations create message stores in their preferred format (database, file system, etc.) and the framework reads messages directly from the store. This separates storage concerns from framework logic.</p>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────┐
+│  IMPLEMENTATION LAYER                                       │
+│                                                             │
+│  ┌──────────────┐    ┌──────────────────┐                 │
+│  │ Your Store   │───▶│ BaseMessageStore │                 │
+│  │ (DB/File/...)│    │ Implementation   │                 │
+│  └──────────────┘    └──────────────────┘                 │
+│         │                      │                            │
+│         │                      │ location reference         │
+│         │                      ▼                            │
+│         │            ┌──────────────────────┐              │
+│         │            │ MessageStoreMemory   │              │
+│         │            │ (Framework)          │              │
+│         │            └──────────────────────┘              │
+│         │                      │                            │
+│         └──────────────────────┼──────────────────────────┘
+│                                │                            │
+└────────────────────────────────┼────────────────────────────┘
+                                 ▼
+┌─────────────────────────────────────────────────────────────┐
+│  FRAMEWORK LAYER                                            │
+│                                                             │
+│  ┌──────────────────────┐                                  │
+│  │ ManagerAgent/Agent   │                                  │
+│  │ memory.get_history() │───▶ Reads from MessageStore     │
+│  └──────────────────────┘                                  │
+└─────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="step-1-import-required-framework-classes">
+<h2>Step 1: Import Required Framework Classes<a class="headerlink" href="#step-1-import-required-framework-classes" title="Link to this heading"></a></h2>
+<p>All necessary classes are exported from the framework’s main package:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="c1"># Base interface you&#39;ll implement</span>
+    <span class="n">BaseMessageStore</span><span class="p">,</span>
+    
+    <span class="c1"># Memory implementations</span>
+    <span class="n">MessageStoreMemory</span><span class="p">,</span>
+    <span class="n">HierarchicalMessageStoreMemory</span><span class="p">,</span>
+    
+    <span class="c1"># Agents you&#39;ll use</span>
+    <span class="n">ManagerAgent</span><span class="p">,</span>
+    <span class="n">Agent</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Message builder utilities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.utils.message_builder</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_user_message</span><span class="p">,</span>
+    <span class="n">create_assistant_message</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Constants (optional, but recommended)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">USER_MESSAGE</span><span class="p">,</span>
+    <span class="n">ASSISTANT_MESSAGE</span><span class="p">,</span>
+    <span class="n">TASK</span><span class="p">,</span>
+    <span class="n">ACTION</span><span class="p">,</span>
+    <span class="n">OBSERVATION</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-implement-basemessagestore">
+<h2>Step 2: Implement BaseMessageStore<a class="headerlink" href="#step-2-implement-basemessagestore" title="Link to this heading"></a></h2>
+<p>You must implement all four methods of the <code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code> interface. The framework will call these methods via <code class="docutils literal notranslate"><span class="pre">MessageStoreMemory.get_history()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessageStore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DatabaseMessageStore</span><span class="p">(</span><span class="n">BaseMessageStore</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Example implementation: SQLite-backed message store.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span> <span class="o">=</span> <span class="n">db_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_db</span><span class="p">()</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create tables for storing messages.&quot;&quot;&quot;</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            CREATE TABLE IF NOT EXISTS messages (</span>
+<span class="s2">                id INTEGER PRIMARY KEY AUTOINCREMENT,</span>
+<span class="s2">                location TEXT NOT NULL,</span>
+<span class="s2">                agent_key TEXT,</span>
+<span class="s2">                type TEXT NOT NULL,</span>
+<span class="s2">                content TEXT NOT NULL,</span>
+<span class="s2">                timestamp REAL,</span>
+<span class="s2">                turn_id TEXT,</span>
+<span class="s2">                tool TEXT,</span>
+<span class="s2">                args TEXT,</span>
+<span class="s2">                from_worker TEXT,</span>
+<span class="s2">                from_manager TEXT,</span>
+<span class="s2">                summary TEXT</span>
+<span class="s2">            )</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE INDEX IF NOT EXISTS idx_location_type ON messages(location, type)&quot;</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE INDEX IF NOT EXISTS idx_location_agent ON messages(location, agent_key)&quot;</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_conversation_messages</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get conversation messages (user_message, assistant_message).</span>
+<span class="sd">        </span>
+<span class="sd">        This is called by MessageStoreMemory.get_history() to retrieve</span>
+<span class="sd">        conversation-level messages.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            location: Your location identifier (e.g., job_id, namespace)</span>
+<span class="sd">            limit: Optional limit (not currently used by framework, but provided for future use)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of message dicts with type in [&quot;user_message&quot;, &quot;assistant_message&quot;]</span>
+<span class="sd">            Must be ordered chronologically.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT type, content, timestamp, turn_id</span>
+<span class="s2">            FROM messages</span>
+<span class="s2">            WHERE location = ? AND type IN (&#39;user_message&#39;, &#39;assistant_message&#39;)</span>
+<span class="s2">            ORDER BY timestamp ASC</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; LIMIT </span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">location</span><span class="p">,))</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;turn_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
+        <span class="p">]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_agent_messages</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">agent_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get execution trace messages for a specific agent.</span>
+<span class="sd">        </span>
+<span class="sd">        This is called by MessageStoreMemory.get_history() to retrieve</span>
+<span class="sd">        execution traces (task, action, observation, etc.) for the specified agent.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            location: Your location identifier</span>
+<span class="sd">            agent_key: The agent identifier (e.g., &quot;orchestrator&quot;, &quot;worker-1&quot;)</span>
+<span class="sd">            limit: Optional limit (not currently used by framework)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of message dicts with type in execution trace types</span>
+<span class="sd">            (task, action, observation, error, final, delegation)</span>
+<span class="sd">            Must be ordered chronologically.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT type, content, timestamp, turn_id, tool, args</span>
+<span class="s2">            FROM messages</span>
+<span class="s2">            WHERE location = ? AND agent_key = ?</span>
+<span class="s2">              AND type IN (&#39;task&#39;, &#39;action&#39;, &#39;observation&#39;, &#39;error&#39;, &#39;final&#39;, &#39;delegation&#39;)</span>
+<span class="s2">            ORDER BY timestamp ASC</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; LIMIT </span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">agent_key</span><span class="p">))</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;turn_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
+        <span class="p">]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_global_messages</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get global/broadcast messages (global_observation, synthesis).</span>
+<span class="sd">        </span>
+<span class="sd">        This is called by MessageStoreMemory.get_history() to retrieve</span>
+<span class="sd">        global messages that are visible to all agents.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            location: Your location identifier</span>
+<span class="sd">            limit: Optional limit (not currently used by framework)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of message dicts with type in [&quot;global_observation&quot;, &quot;synthesis&quot;]</span>
+<span class="sd">            Must be ordered chronologically.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT type, content, timestamp, turn_id, from_worker, from_manager, summary</span>
+<span class="s2">            FROM messages</span>
+<span class="s2">            WHERE location = ? AND type IN (&#39;global_observation&#39;, &#39;synthesis&#39;)</span>
+<span class="s2">            ORDER BY timestamp ASC</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; LIMIT </span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">location</span><span class="p">,))</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;turn_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                <span class="s2">&quot;from_worker&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                <span class="s2">&quot;from_manager&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+                <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
+        <span class="p">]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_team_messages</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">agent_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get messages from multiple agents (for managers viewing subordinates).</span>
+<span class="sd">        </span>
+<span class="sd">        This is called by HierarchicalMessageStoreMemory.get_history() to retrieve</span>
+<span class="sd">        messages from subordinate agents.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            location: Your location identifier</span>
+<span class="sd">            agent_keys: List of agent identifiers to retrieve messages from</span>
+<span class="sd">            limit: Optional limit (not currently used by framework)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of message dicts from all specified agents</span>
+<span class="sd">            Must be ordered chronologically.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">agent_keys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+            
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">placeholders</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">agent_keys</span><span class="p">))</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT type, content, timestamp, turn_id, agent_key</span>
+<span class="s2">            FROM messages</span>
+<span class="s2">            WHERE location = ? AND agent_key IN (</span><span class="si">{</span><span class="n">placeholders</span><span class="si">}</span><span class="s2">)</span>
+<span class="s2">            ORDER BY timestamp ASC</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; LIMIT </span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="o">*</span><span class="n">agent_keys</span><span class="p">))</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;turn_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                <span class="s2">&quot;agent_key&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
+        <span class="p">]</span>
+    
+    <span class="c1"># Helper method (NOT part of BaseMessageStore interface)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">agent_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method to write messages to your store.</span>
+<span class="sd">        </span>
+<span class="sd">        This is NOT part of the BaseMessageStore interface - it&#39;s just a convenience</span>
+<span class="sd">        method for your implementation to use when storing messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">content_value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            INSERT INTO messages </span>
+<span class="s2">            (location, agent_key, type, content, timestamp, turn_id, tool, args, from_worker, from_manager, summary)</span>
+<span class="s2">            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span>
+            <span class="n">location</span><span class="p">,</span>
+            <span class="n">agent_key</span> <span class="ow">or</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;agent_key&quot;</span><span class="p">),</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">),</span>
+            <span class="n">content_value</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">),</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;turn_id&quot;</span><span class="p">),</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool&quot;</span><span class="p">),</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;from_worker&quot;</span><span class="p">),</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;from_manager&quot;</span><span class="p">),</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;summary&quot;</span><span class="p">)</span>
+        <span class="p">))</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-how-messagestorememory-reads-from-your-store">
+<h2>Step 3: How MessageStoreMemory Reads from Your Store<a class="headerlink" href="#step-3-how-messagestorememory-reads-from-your-store" title="Link to this heading"></a></h2>
+<p>The framework’s <code class="docutils literal notranslate"><span class="pre">MessageStoreMemory.get_history()</span></code> method calls your store methods in this order:</p>
+<ol class="arabic simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">get_conversation_messages(location)</span></code></strong> - Retrieves user_message and assistant_message entries</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">get_agent_messages(location,</span> <span class="pre">agent_key)</span></code></strong> - Retrieves execution traces for the specific agent</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">get_global_messages(location)</span></code></strong> - Retrieves global_observation and synthesis entries</p></li>
+</ol>
+<p>The messages are combined in this order and returned to the framework. <strong>Important</strong>: Your methods should return messages in chronological order (by timestamp or insertion order).</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">HierarchicalMessageStoreMemory</span></code>, the order is:</p>
+<ol class="arabic simple">
+<li><p>Conversation messages</p></li>
+<li><p>Manager’s own agent messages</p></li>
+<li><p>Subordinate team messages (via <code class="docutils literal notranslate"><span class="pre">get_team_messages</span></code>)</p></li>
+<li><p>Global messages</p></li>
+</ol>
+</section>
+<section id="step-4-use-messagestorememory-with-agents">
+<h2>Step 4: Use MessageStoreMemory with Agents<a class="headerlink" href="#step-4-use-messagestorememory-with-agents" title="Link to this heading"></a></h2>
+<p>Create memory that reads from your store and pass it to agents:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">ManagerAgent</span><span class="p">,</span> <span class="n">MessageStoreMemory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrategicPlanner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIGateway</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_preset</span>
+
+<span class="c1"># Create your message store implementation</span>
+<span class="n">message_store</span> <span class="o">=</span> <span class="n">DatabaseMessageStore</span><span class="p">(</span><span class="s2">&quot;messages.db&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create memory that reads from your store</span>
+<span class="n">location</span> <span class="o">=</span> <span class="s2">&quot;job_123&quot;</span>  <span class="c1"># Your location identifier</span>
+<span class="n">memory</span> <span class="o">=</span> <span class="n">MessageStoreMemory</span><span class="p">(</span>
+    <span class="n">message_store</span><span class="o">=</span><span class="n">message_store</span><span class="p">,</span>
+    <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">,</span>
+    <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;orchestrator&quot;</span>  <span class="c1"># The agent key for this memory instance</span>
+<span class="p">)</span>
+
+<span class="c1"># Create planner and other components</span>
+<span class="n">llm_gateway</span> <span class="o">=</span> <span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+<span class="n">planner</span> <span class="o">=</span> <span class="n">StrategicPlanner</span><span class="p">(</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">llm_gateway</span><span class="p">,</span>
+    <span class="n">system_prompt</span><span class="o">=</span><span class="s2">&quot;You are an orchestrator...&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Create agent with policies</span>
+<span class="n">policies</span> <span class="o">=</span> <span class="n">get_preset</span><span class="p">(</span><span class="s2">&quot;manager&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create manager agent - framework will read from your store</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">ManagerAgent</span><span class="p">(</span>
+    <span class="n">planner</span><span class="o">=</span><span class="n">planner</span><span class="p">,</span>
+    <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span>  <span class="c1"># Framework reads via memory.get_history()</span>
+    <span class="n">workers</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">},</span>
+    <span class="n">policies</span><span class="o">=</span><span class="n">policies</span>
+<span class="p">)</span>
+
+<span class="c1"># Run agent - framework reads messages from your store automatically</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">task</span><span class="o">=</span><span class="s2">&quot;List all tables in the model&quot;</span><span class="p">,</span>
+    <span class="n">progress_handler</span><span class="o">=</span><span class="n">progress_handler</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-5-writing-messages-to-your-store">
+<h2>Step 5: Writing Messages to Your Store<a class="headerlink" href="#step-5-writing-messages-to-your-store" title="Link to this heading"></a></h2>
+<p>The framework reads from the store, but <strong>does not write</strong>. You are responsible for writing messages to your store. Use message builder utilities to create properly formatted messages:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.utils.message_builder</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_user_message</span><span class="p">,</span>
+    <span class="n">create_assistant_message</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="c1"># When user sends message</span>
+<span class="n">user_msg</span> <span class="o">=</span> <span class="n">create_user_message</span><span class="p">(</span>
+    <span class="n">content</span><span class="o">=</span><span class="n">user_input</span><span class="p">,</span>
+    <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+    <span class="n">turn_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;turn_</span><span class="si">{</span><span class="n">turn_number</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="n">message_store</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;job_123&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">user_msg</span><span class="p">)</span>
+
+<span class="c1"># When assistant completes (after agent.run() returns)</span>
+<span class="n">summary</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="n">assistant_msg</span> <span class="o">=</span> <span class="n">create_assistant_message</span><span class="p">(</span>
+    <span class="n">content</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span>
+    <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+    <span class="n">turn_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;turn_</span><span class="si">{</span><span class="n">turn_number</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="n">message_store</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;job_123&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">assistant_msg</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: The <code class="docutils literal notranslate"><span class="pre">write_message()</span></code> method shown above is a helper method for your implementation - it’s not part of the <code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code> interface. You can implement message storage however you prefer.</p>
+</section>
+<section id="complete-example-api-endpoint-integration">
+<h2>Complete Example: API Endpoint Integration<a class="headerlink" href="#complete-example-api-endpoint-integration" title="Link to this heading"></a></h2>
+<p>Here’s a complete example showing how to integrate message store in a FastAPI endpoint:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ManagerAgent</span><span class="p">,</span>
+    <span class="n">MessageStoreMemory</span><span class="p">,</span>
+    <span class="n">BaseMessageStore</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrategicPlanner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIGateway</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_preset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.utils.message_builder</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_user_message</span><span class="p">,</span>
+    <span class="n">create_assistant_message</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="c1"># Initialize your message store</span>
+<span class="n">message_store</span> <span class="o">=</span> <span class="n">DatabaseMessageStore</span><span class="p">(</span><span class="s2">&quot;messages.db&quot;</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/run&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_agent</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">RunRequest</span><span class="p">):</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">job_id</span>
+    
+    <span class="c1"># 1. PREPARE: Store user message in your store</span>
+    <span class="n">user_msg</span> <span class="o">=</span> <span class="n">create_user_message</span><span class="p">(</span>
+        <span class="n">content</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">task</span><span class="p">,</span>
+        <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+        <span class="n">turn_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;turn_</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="n">message_store</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">user_msg</span><span class="p">)</span>
+    
+    <span class="c1"># 2. CREATE: Memory that reads from your store</span>
+    <span class="n">memory</span> <span class="o">=</span> <span class="n">MessageStoreMemory</span><span class="p">(</span>
+        <span class="n">message_store</span><span class="o">=</span><span class="n">message_store</span><span class="p">,</span>
+        <span class="n">location</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
+        <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;orchestrator&quot;</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># 3. CREATE: Agent (framework will read from your store)</span>
+    <span class="n">llm_gateway</span> <span class="o">=</span> <span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+    <span class="n">planner</span> <span class="o">=</span> <span class="n">StrategicPlanner</span><span class="p">(</span>
+        <span class="n">inference_gateway</span><span class="o">=</span><span class="n">llm_gateway</span><span class="p">,</span>
+        <span class="n">system_prompt</span><span class="o">=</span><span class="s2">&quot;You are an orchestrator...&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">agent</span> <span class="o">=</span> <span class="n">ManagerAgent</span><span class="p">(</span>
+        <span class="n">planner</span><span class="o">=</span><span class="n">planner</span><span class="p">,</span>
+        <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span>  <span class="c1"># Framework reads via memory.get_history()</span>
+        <span class="n">workers</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">},</span>
+        <span class="n">policies</span><span class="o">=</span><span class="n">get_preset</span><span class="p">(</span><span class="s2">&quot;manager&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># 4. RUN: Framework handles everything else</span>
+    <span class="c1"># - Reads messages from your store via memory.get_history()</span>
+    <span class="c1"># - Creates runtime messages internally (task, action, observation, etc.)</span>
+    <span class="c1"># - Processes task and returns result</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="n">progress_handler</span><span class="o">=</span><span class="n">handler</span><span class="p">)</span>
+    
+    <span class="c1"># 5. STORE: Save assistant response</span>
+    <span class="n">assistant_msg</span> <span class="o">=</span> <span class="n">create_assistant_message</span><span class="p">(</span>
+        <span class="n">content</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">),</span>
+        <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+        <span class="n">turn_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;turn_</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="n">message_store</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">assistant_msg</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+</section>
+<section id="hierarchical-memory-for-managers">
+<h2>Hierarchical Memory for Managers<a class="headerlink" href="#hierarchical-memory-for-managers" title="Link to this heading"></a></h2>
+<p>For managers that need to see subordinate agent messages, use <code class="docutils literal notranslate"><span class="pre">HierarchicalMessageStoreMemory</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">HierarchicalMessageStoreMemory</span>
+
+<span class="c1"># Create hierarchical memory for a manager</span>
+<span class="n">memory</span> <span class="o">=</span> <span class="n">HierarchicalMessageStoreMemory</span><span class="p">(</span>
+    <span class="n">message_store</span><span class="o">=</span><span class="n">message_store</span><span class="p">,</span>
+    <span class="n">location</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
+    <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;manager-1&quot;</span><span class="p">,</span>
+    <span class="n">subordinates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;worker-1&quot;</span><span class="p">,</span> <span class="s2">&quot;worker-2&quot;</span><span class="p">]</span>  <span class="c1"># Manager can see these workers&#39; messages</span>
+<span class="p">)</span>
+
+<span class="n">agent</span> <span class="o">=</span> <span class="n">ManagerAgent</span><span class="p">(</span>
+    <span class="n">planner</span><span class="o">=</span><span class="n">planner</span><span class="p">,</span>
+    <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span>
+    <span class="n">workers</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">},</span>
+    <span class="n">policies</span><span class="o">=</span><span class="n">policies</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>When using <code class="docutils literal notranslate"><span class="pre">HierarchicalMessageStoreMemory</span></code>, your <code class="docutils literal notranslate"><span class="pre">get_team_messages()</span></code> method will be called with the list of subordinate agent keys.</p>
+</section>
+<section id="runtime-messages">
+<h2>Runtime Messages<a class="headerlink" href="#runtime-messages" title="Link to this heading"></a></h2>
+<p><strong>Important</strong>: The framework will call <code class="docutils literal notranslate"><span class="pre">memory.add()</span></code> during execution, but <code class="docutils literal notranslate"><span class="pre">MessageStoreMemory.add()</span></code> is a <strong>no-op</strong> (does nothing). The framework reads messages via <code class="docutils literal notranslate"><span class="pre">get_history()</span></code>, which calls your store methods.</p>
+<p>If you need runtime message storage (messages created during agent execution), you have several options:</p>
+<ol class="arabic simple">
+<li><p><strong>Option A</strong>: Store them yourself when framework calls <code class="docutils literal notranslate"><span class="pre">memory.add()</span></code></p>
+<ul class="simple">
+<li><p>Override or wrap <code class="docutils literal notranslate"><span class="pre">MessageStoreMemory</span></code> to intercept <code class="docutils literal notranslate"><span class="pre">add()</span></code> calls</p></li>
+<li><p>Write messages to your store when the framework calls <code class="docutils literal notranslate"><span class="pre">add()</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Option B</strong>: Use <code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code> for runtime messages</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">MessageStoreMemory</span></code> for initial history (conversation messages)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code> for runtime messages created during execution</p></li>
+<li><p>Combine both when reading history</p></li>
+</ul>
+</li>
+<li><p><strong>Option C</strong>: Hybrid approach</p>
+<ul class="simple">
+<li><p>Read from store for initial history</p></li>
+<li><p>Use in-memory storage for runtime messages</p></li>
+<li><p>Your implementation manages combining both sources</p></li>
+</ul>
+</li>
+</ol>
+<p>For most use cases, Option A or B is recommended. The framework’s runtime messages (task, action, observation, etc.) are typically ephemeral and don’t need persistence unless you have specific requirements.</p>
+</section>
+<section id="key-points">
+<h2>Key Points<a class="headerlink" href="#key-points" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Framework reads, you write</strong>: Framework only reads via <code class="docutils literal notranslate"><span class="pre">get_history()</span></code> → calls your store methods. You write messages to your store.</p></li>
+<li><p><strong>Location is yours</strong>: You decide what location represents (job_id, namespace, path, etc.). The framework only uses it as an identifier.</p></li>
+<li><p><strong>Format must match</strong>: Messages must have <code class="docutils literal notranslate"><span class="pre">type</span></code> and <code class="docutils literal notranslate"><span class="pre">content</span></code> fields (or type-specific fields like <code class="docutils literal notranslate"><span class="pre">tool</span></code>/<code class="docutils literal notranslate"><span class="pre">args</span></code> for action entries) matching framework constants. See the <a class="reference internal" href="message_store_format.html"><span class="std std-doc">Message Store Format</span></a> guide.</p></li>
+<li><p><strong>Interface contract</strong>: Implement all 4 methods of <code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code>. The framework will call them in a specific order via <code class="docutils literal notranslate"><span class="pre">get_history()</span></code>.</p></li>
+<li><p><strong>Organize freely</strong>: Your store structure is your choice - framework only sees the interface you provide. Use any storage backend (SQLite, PostgreSQL, files, etc.).</p></li>
+<li><p><strong>Chronological ordering</strong>: Messages must be returned in chronological order (by timestamp or insertion order).</p></li>
+<li><p><strong>Agent key matters</strong>: Each <code class="docutils literal notranslate"><span class="pre">MessageStoreMemory</span></code> instance is associated with an <code class="docutils literal notranslate"><span class="pre">agent_key</span></code>. Your <code class="docutils literal notranslate"><span class="pre">get_agent_messages()</span></code> method filters by this key.</p></li>
+</ol>
+</section>
+<section id="implementation-checklist">
+<h2>Implementation Checklist<a class="headerlink" href="#implementation-checklist" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>[ ] Implement all 4 methods of <code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code></p></li>
+<li><p>[ ] Ensure messages are returned in chronological order</p></li>
+<li><p>[ ] Use type constants from <code class="docutils literal notranslate"><span class="pre">agent_framework.constants</span></code> (don’t use string literals)</p></li>
+<li><p>[ ] Test that <code class="docutils literal notranslate"><span class="pre">get_history()</span></code> returns messages in expected format</p></li>
+<li><p>[ ] Handle JSON serialization/deserialization if storing structured content</p></li>
+<li><p>[ ] Implement helper methods for writing messages (not part of interface, but useful)</p></li>
+<li><p>[ ] Test with actual <code class="docutils literal notranslate"><span class="pre">ManagerAgent</span></code> or <code class="docutils literal notranslate"><span class="pre">Agent</span></code> instances</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="message_store_integration.html"><span class="std std-doc">Message Store Integration</span></a> - High-level integration guide</p></li>
+<li><p><a class="reference internal" href="message_store_format.html"><span class="std std-doc">Message Store Format</span></a> - Complete message format specification</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_framework.constants</span></code> - All message type constants</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_framework.utils.message_builder</span></code> - Utilities for creating properly formatted messages</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="message_store_format.html" class="btn btn-neutral float-left" title="Message Store Format Specification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_overview.html" class="btn btn-neutral float-right" title="API Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

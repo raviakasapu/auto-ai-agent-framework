@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Agent Framework Documentation &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b21de401"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Part 1: Orientation &amp; Quick Wins" href="part1_orientation/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">AI Agent Framework Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ai-agent-framework-documentation">
+<h1>AI Agent Framework Documentation<a class="headerlink" href="#ai-agent-framework-documentation" title="Link to this heading"></a></h1>
+<p><strong>Version 2.2</strong> — A production-grade Python library for building hierarchical, policy-driven AI agent systems.</p>
+<p>The framework ships as the <code class="docutils literal notranslate"><span class="pre">agent_framework</span></code> pip package and includes:</p>
+<ul class="simple">
+<li><p>🧱 <strong>Pip-installable library</strong> with clean <code class="docutils literal notranslate"><span class="pre">agent_framework</span></code> namespace</p></li>
+<li><p>🛠️ <strong>&#64;tool decorator</strong> and <code class="docutils literal notranslate"><span class="pre">FunctionalTool</span></code> for zero-boilerplate tool creation</p></li>
+<li><p>🧠 <strong>Policy presets</strong> (<code class="docutils literal notranslate"><span class="pre">get_preset</span></code>) for completion, termination, and loop prevention</p></li>
+<li><p>📦 <strong>Message store memory</strong> so agents read/write from external stores</p></li>
+<li><p>📡 <strong>Phoenix/OpenTelemetry tracing</strong> with usage, cost, and actor metadata</p></li>
+<li><p>🎯 <strong>Hierarchical agents</strong> with Orchestrator → Manager → Worker patterns</p></li>
+</ul>
+<section id="quick-links">
+<h2>Quick Links<a class="headerlink" href="#quick-links" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="part1_orientation/quickstart.html"><span class="doc">Quickstart (5 minutes)</span></a> — Get started in 5 minutes</p></li>
+<li><p><a class="reference internal" href="part1_orientation/conceptual_model.html"><span class="doc">Conceptual Model</span></a> — Understand the mental model</p></li>
+<li><p><a class="reference internal" href="part2_runtime/agents.html"><span class="doc">Agents &amp; Manager Stack</span></a> — Deep dive into Agent and ManagerAgent</p></li>
+<li><p><a class="reference internal" href="part4_cookbook/index.html"><span class="doc">Part 4: Extensibility Cookbook</span></a> — “How do I…?” recipes</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part1_orientation/overview.html">Product Overview &amp; Capabilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_orientation/quickstart.html">Quickstart (5 minutes)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_orientation/conceptual_model.html">Conceptual Model</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part2_runtime/index.html">Part 2: Runtime Building Blocks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part2_runtime/agents.html">Agents &amp; Manager Stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_runtime/memory.html">Memory &amp; Message Stores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_runtime/tools.html">Tools &amp; Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_runtime/planners.html">Planners &amp; Gateways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_runtime/policies.html">Policies &amp; Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_runtime/context_services.html">Context &amp; Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_runtime/observability.html">Observability &amp; Streaming</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part3_solutions/index.html">Part 3: Building Solutions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part3_solutions/configuration.html">Declarative Configuration &amp; AgentFactory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3_solutions/flows.html">Flow Orchestration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3_solutions/job_state.html">Scripts, Job State &amp; Approvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3_solutions/message_stores.html">Message Stores &amp; Integrations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3_solutions/deployment.html">Deployment &amp; Runtime Operations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part4_cookbook/index.html">Part 4: Extensibility Cookbook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part4_cookbook/custom_planner.html">Recipe: Custom Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_cookbook/custom_tool.html">Recipe: Custom Tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_cookbook/progress_subscriber.html">Recipe: Progress Subscriber</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_cookbook/inference_gateway.html">Recipe: Custom Inference Gateway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_cookbook/tool_policy.html">Recipe: Tool Policy</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part5_operations/index.html">Part 5: Operating the Framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part5_operations/monitoring.html">Monitoring &amp; Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part5_operations/security.html">Security &amp; Guardrails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part5_operations/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part6_playbooks/index.html">Part 6 - Domain Playbooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part6_playbooks/overview.html">Domain Playbooks Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part6_playbooks/data_analytics.html">Data Analytics Playbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part6_playbooks/document_processing.html">Document Processing Playbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part6_playbooks/code_assistant.html">Code Assistant Playbook</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part7_reference/index.html">Part 7: Reference &amp; Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part7_reference/api.html">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part7_reference/message_format.html">Message Format Specification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part7_reference/env_variables.html">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part7_reference/migration.html">Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#framework-generic-library">Framework (Generic Library)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#module-deployment.registry">Deployment Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#bi-tools-domain-example">BI Tools (Domain Example)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="powerbi_impl/runtime_integration.html">Runtime Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbi_impl/agent_stack.html">Agent &amp; Policy Stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbi_impl/data_services.html">Data &amp; Context Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbi_impl/tools_coverage.html">Tool Implementation Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbi_impl/observability_approvals.html">Observability &amp; Approvals</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/index.html">Legacy Guides</a></li>
+</ul>
+</div>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part1_orientation/index.html" class="btn btn-neutral float-right" title="Part 1: Orientation &amp; Quick Wins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

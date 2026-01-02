@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scripts, Job State &amp; Approvals &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Message Stores &amp; Integrations" href="message_stores.html" />
+    <link rel="prev" title="Flow Orchestration" href="flows.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 3: Building Solutions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="configuration.html">Declarative Configuration &amp; AgentFactory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flows.html">Flow Orchestration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Scripts, Job State &amp; Approvals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scriptplan">ScriptPlan</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scriptplan-fields">ScriptPlan Fields</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#basejobstore">BaseJobStore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filejobstore">FileJobStore</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#job-structure">Job Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pendingaction">PendingAction</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#approval-lifecycle">Approval Lifecycle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#action-requires-approval">1. Action Requires Approval</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#user-approves-denies">2. User Approves/Denies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resume-execution">3. Resume Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#resume-tokens">Resume Tokens</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#executed-actions-tracking">Executed Actions Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-job-store">Custom Job Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-job-store-with-manageragent">Using Job Store with ManagerAgent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="message_stores.html">Message Stores &amp; Integrations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html">Deployment &amp; Runtime Operations</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 3: Building Solutions</a></li>
+      <li class="breadcrumb-item active">Scripts, Job State &amp; Approvals</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part3_solutions/job_state.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scripts-job-state-approvals">
+<h1>Scripts, Job State &amp; Approvals<a class="headerlink" href="#scripts-job-state-approvals" title="Link to this heading"></a></h1>
+<p>This chapter covers script plans, job persistence, and the approval lifecycle.</p>
+<section id="scriptplan">
+<h2>ScriptPlan<a class="headerlink" href="#scriptplan" title="Link to this heading"></a></h2>
+<p>Managers can create script plans for workers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.models.script</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScriptPlan</span>
+
+<span class="n">plan</span> <span class="o">=</span> <span class="n">ScriptPlan</span><span class="p">(</span>
+    <span class="n">goal</span><span class="o">=</span><span class="s2">&quot;Analyze table structure&quot;</span><span class="p">,</span>
+    <span class="n">notes</span><span class="o">=</span><span class="s2">&quot;Use schema reader tools&quot;</span><span class="p">,</span>
+    <span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;list_tables&quot;</span><span class="p">,</span> <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;list_tables&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{}},</span>
+        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;get_columns&quot;</span><span class="p">,</span> <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;list_columns&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="s2">&quot;{{list_tables.result[0]}}&quot;</span><span class="p">}},</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<section id="scriptplan-fields">
+<h3>ScriptPlan Fields<a class="headerlink" href="#scriptplan-fields" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">goal</span></code></p></td>
+<td><p>string</p></td>
+<td><p>What the script achieves</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">notes</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Context for execution</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">steps</span></code></p></td>
+<td><p>list</p></td>
+<td><p>Ordered steps to execute</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">thought</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Manager’s reasoning</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="basejobstore">
+<h2>BaseJobStore<a class="headerlink" href="#basejobstore" title="Link to this heading"></a></h2>
+<p>Abstract interface for job persistence:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseJobStore</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseJobStore</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new job entry.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_orchestrator_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plan</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store orchestrator&#39;s strategic plan.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_manager_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">manager</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plan</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store a manager&#39;s execution plan.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_pending_action</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">worker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tool</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">manager</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">resume_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save action awaiting approval.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_pending_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">new_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear pending action after approval/denial.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="filejobstore">
+<h2>FileJobStore<a class="headerlink" href="#filejobstore" title="Link to this heading"></a></h2>
+<p>Built-in file-based implementation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.state.job_store</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileJobStore</span>
+
+<span class="n">store</span> <span class="o">=</span> <span class="n">FileJobStore</span><span class="p">(</span><span class="n">base_dir</span><span class="o">=</span><span class="s2">&quot;./job_data&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create job</span>
+<span class="n">store</span><span class="o">.</span><span class="n">create_job</span><span class="p">(</span><span class="s2">&quot;job_123&quot;</span><span class="p">)</span>
+
+<span class="c1"># Store plan</span>
+<span class="n">store</span><span class="o">.</span><span class="n">update_orchestrator_plan</span><span class="p">(</span><span class="s2">&quot;job_123&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;phases&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Analyze&quot;</span><span class="p">,</span> <span class="s2">&quot;worker&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+<span class="p">})</span>
+
+<span class="c1"># Check action execution</span>
+<span class="n">store</span><span class="o">.</span><span class="n">add_executed_action</span><span class="p">(</span><span class="s2">&quot;job_123&quot;</span><span class="p">,</span> <span class="s2">&quot;list_tables:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">store</span><span class="o">.</span><span class="n">has_executed_action</span><span class="p">(</span><span class="s2">&quot;job_123&quot;</span><span class="p">,</span> <span class="s2">&quot;list_tables:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Already executed&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="job-structure">
+<h3>Job Structure<a class="headerlink" href="#job-structure" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Job</span><span class="p">:</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># &quot;active&quot;, &quot;completed&quot;, &quot;paused&quot;</span>
+    <span class="n">orchestrator_plan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+    <span class="n">manager_plans</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
+    <span class="n">pending_action</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PendingAction</span><span class="p">]</span>
+    <span class="n">executed_actions</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">approvals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span>
+    <span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">updated_at</span><span class="p">:</span> <span class="n">datetime</span>
+</pre></div>
+</div>
+</section>
+<section id="pendingaction">
+<h3>PendingAction<a class="headerlink" href="#pendingaction" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PendingAction</span><span class="p">:</span>
+    <span class="n">worker</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">tool</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="n">manager</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">resume_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="approval-lifecycle">
+<h2>Approval Lifecycle<a class="headerlink" href="#approval-lifecycle" title="Link to this heading"></a></h2>
+<section id="action-requires-approval">
+<h3>1. Action Requires Approval<a class="headerlink" href="#action-requires-approval" title="Link to this heading"></a></h3>
+<p>When HITL policy requires approval:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Agent checks HITL policy</span>
+<span class="n">needs_approval</span><span class="p">,</span> <span class="n">reason</span> <span class="o">=</span> <span class="n">hitl_policy</span><span class="o">.</span><span class="n">requires_approval</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">needs_approval</span><span class="p">:</span>
+    <span class="c1"># Save pending action</span>
+    <span class="n">job_store</span><span class="o">.</span><span class="n">save_pending_action</span><span class="p">(</span>
+        <span class="n">job_id</span><span class="p">,</span>
+        <span class="n">worker</span><span class="o">=</span><span class="s2">&quot;schema_editor&quot;</span><span class="p">,</span>
+        <span class="n">tool</span><span class="o">=</span><span class="s2">&quot;add_column&quot;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="s2">&quot;email&quot;</span><span class="p">},</span>
+        <span class="n">resume_token</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># Return pending status</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;pending_approval&quot;</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="user-approves-denies">
+<h3>2. User Approves/Denies<a class="headerlink" href="#user-approves-denies" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your API endpoint</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/jobs/</span><span class="si">{job_id}</span><span class="s2">/approve&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">approve_action</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">approved</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">approved</span><span class="p">:</span>
+        <span class="c1"># Clear pending and continue</span>
+        <span class="n">job_store</span><span class="o">.</span><span class="n">clear_pending_action</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">new_status</span><span class="o">=</span><span class="s2">&quot;approved&quot;</span><span class="p">)</span>
+        <span class="c1"># Resume execution...</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">job_store</span><span class="o">.</span><span class="n">clear_pending_action</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">new_status</span><span class="o">=</span><span class="s2">&quot;denied&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;denied&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="resume-execution">
+<h3>3. Resume Execution<a class="headerlink" href="#resume-execution" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Resume with the pending action</span>
+<span class="n">job</span> <span class="o">=</span> <span class="n">job_store</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">pending_action</span> <span class="ow">and</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;approved&quot;</span><span class="p">:</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span>
+        <span class="n">tool_name</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">pending_action</span><span class="o">.</span><span class="n">tool</span><span class="p">,</span>
+        <span class="n">tool_args</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">pending_action</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">execute_action</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="resume-tokens">
+<h2>Resume Tokens<a class="headerlink" href="#resume-tokens" title="Link to this heading"></a></h2>
+<p>Resume tokens enable stateless resumption:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate token when pausing</span>
+<span class="n">resume_token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+<span class="n">job_store</span><span class="o">.</span><span class="n">save_pending_action</span><span class="p">(</span>
+    <span class="n">job_id</span><span class="p">,</span>
+    <span class="n">worker</span><span class="o">=</span><span class="s2">&quot;editor&quot;</span><span class="p">,</span>
+    <span class="n">tool</span><span class="o">=</span><span class="s2">&quot;update_column&quot;</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">},</span>
+    <span class="n">resume_token</span><span class="o">=</span><span class="n">resume_token</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Resume using token</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/resume/</span><span class="si">{resume_token}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span class="p">(</span><span class="n">resume_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">find_job_by_resume_token</span><span class="p">(</span><span class="n">resume_token</span><span class="p">)</span>
+    <span class="c1"># Continue execution...</span>
+</pre></div>
+</div>
+</section>
+<section id="executed-actions-tracking">
+<h2>Executed Actions Tracking<a class="headerlink" href="#executed-actions-tracking" title="Link to this heading"></a></h2>
+<p>Prevent duplicate execution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create action signature</span>
+<span class="n">signature</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Check before executing</span>
+<span class="k">if</span> <span class="n">job_store</span><span class="o">.</span><span class="n">has_executed_action</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">signature</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;already_executed&quot;</span><span class="p">}</span>
+
+<span class="c1"># Execute and record</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
+<span class="n">job_store</span><span class="o">.</span><span class="n">add_executed_action</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">signature</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-job-store">
+<h2>Custom Job Store<a class="headerlink" href="#custom-job-store" title="Link to this heading"></a></h2>
+<p>Implement for your storage backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseJobStore</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DatabaseJobStore</span><span class="p">(</span><span class="n">BaseJobStore</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_connection</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">db_connection</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;INSERT INTO jobs (id, status) VALUES (?, ?)&quot;</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">job_id</span><span class="p">,</span> <span class="s2">&quot;active&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;active&quot;</span><span class="p">}</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_orchestrator_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plan</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;UPDATE jobs SET orchestrator_plan = ? WHERE id = ?&quot;</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">plan</span><span class="p">),</span> <span class="n">job_id</span><span class="p">]</span>
+        <span class="p">)</span>
+    
+    <span class="c1"># ... implement other methods</span>
+</pre></div>
+</div>
+</section>
+<section id="using-job-store-with-manageragent">
+<h2>Using Job Store with ManagerAgent<a class="headerlink" href="#using-job-store-with-manageragent" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">ManagerAgent</span>
+
+<span class="n">manager</span> <span class="o">=</span> <span class="n">ManagerAgent</span><span class="p">(</span>
+    <span class="n">planner</span><span class="o">=</span><span class="n">planner</span><span class="p">,</span>
+    <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span>
+    <span class="n">workers</span><span class="o">=</span><span class="n">workers</span><span class="p">,</span>
+    <span class="n">job_store</span><span class="o">=</span><span class="n">FileJobStore</span><span class="p">(</span><span class="s2">&quot;./jobs&quot;</span><span class="p">),</span>  <span class="c1"># Pass job store</span>
+<span class="p">)</span>
+
+<span class="c1"># Job state is automatically managed</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Use job stores</strong> for production deployments</p></li>
+<li><p><strong>Generate unique job IDs</strong> per request</p></li>
+<li><p><strong>Store execution signatures</strong> to prevent duplicates</p></li>
+<li><p><strong>Use resume tokens</strong> for stateless APIs</p></li>
+<li><p><strong>Clean up old jobs</strong> periodically</p></li>
+<li><p><strong>Log state transitions</strong> for debugging</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="flows.html" class="btn btn-neutral float-left" title="Flow Orchestration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="message_stores.html" class="btn btn-neutral float-right" title="Message Stores &amp; Integrations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+Phoenix Tracing (Arize)
+=======================
+
+This guide documents how the framework integrates with OpenTelemetry and Arize Phoenix, how spans are organized hierarchically, and how we enrich spans with LLM/tool metrics for aggregation (tokens, latency, cost).
+
+Overview
+--------
+
+- Provider/Exporter: OpenTelemetry with OTLP HTTP exporter to Phoenix
+- Global tracer provider is set so all tracers export to Phoenix
+- Hierarchical spans reflect Manager → Delegation → Agent → Action → Tool/LLM
+- Attributes include LLM usage/cost, latency, and optional prompt/response bodies
+
+Key Files
+---------
+
+- Phoenix subscriber: ``agent_framework/observability/subscribers.py``
+- Manager/Agent events: ``agent_framework/core/manager_v2.py``, ``agent_framework/core/agent.py``
+- LLM gateway (OpenAI): ``agent_framework/gateways/inference.py``
+- Factory wiring (subscribers and worker propagation): ``deployment/factory.py``
+- API root request span: ``main.py``
+
+What Gets Traced
+----------------
+
+- Request root: a top-level span per ``/run`` request
+- Manager spans: ``manager:{name}`` with actor context
+- Delegations: ``delegation:{worker}`` child spans
+- Agent spans: ``agent:{name}``
+- Actions: long-lived spans from planning to execution with args/results
+- Tools: ``tool.<name>`` child spans around actual tool execution with latency
+- LLM calls: ``llm.openai.chat_completions`` spans with usage, latency, cost
+
+Provider Initialization
+-----------------------
+
+- PhoenixSubscriber constructs an OTLP HTTP exporter and a ``TracerProvider``
+- It sets the provider as the global tracer provider to unify all tracers
+- Manager and workers share the same Phoenix subscriber instance for a single trace
+
+Span Hierarchy
+--------------
+
+- ``agent_start/agent_end`` → opens/closes ``agent:{name}``
+- ``manager_start/manager_end`` → opens/closes ``manager:{name}``
+- ``delegation_chosen/delegation_executed`` → opens/closes ``delegation:{worker}``
+- ``action_planned/action_executed`` → opens/closes ``action:{tool}``
+- Tools run inside ``tool.<name>`` child spans
+- LLM calls run inside ``llm.openai.chat_completions`` spans and inherit actor context
+
+Attributes & Metrics
+--------------------
+
+We set both legacy ``llm.*`` and GenAI-style ``gen_ai.*`` attributes.
+
+- GenAI request/response
+  - ``gen_ai.system`` (e.g., ``openai``)
+  - ``gen_ai.operation.name`` (e.g., ``chat.completions``)
+  - ``gen_ai.request.model``, ``gen_ai.request.temperature``
+  - ``gen_ai.prompt`` (optional, truncated)
+  - ``gen_ai.response.output_text`` (optional, truncated)
+  - ``gen_ai.response.finish_reason``
+  - ``gen_ai.response.tool_calls.{count,json}``
+- Usage & latency
+  - ``gen_ai.usage.input_tokens``
+  - ``gen_ai.usage.output_tokens``
+  - ``gen_ai.usage.total_tokens``
+  - ``gen_ai.latency_ms``
+  - ``http.status_code`` (and error text on failures)
+- Cost
+  - ``gen_ai.cost.{input_usd_per_1k,output_usd_per_1k,pricing_source}``
+  - ``gen_ai.cost.{input_usd,output_usd,total_usd}``
+- Actor context
+  - ``gen_ai.actor.role`` (``manager``|``agent``)
+  - ``gen_ai.actor.name`` (e.g., ``Orchestrator``, ``PBI_Manager``)
+- Tools
+  - ``tool.latency_ms``, ``tool.args_json`` (on tool spans)
+  - ``tool.result_json`` (on action spans at ``action_executed``)
+
+Configuration
+-------------
+
+- Phoenix endpoint
+  - ``PHOENIX_ENDPOINT`` (default ``http://localhost:6006/v1/traces``)
+- Capture size & bodies
+  - ``PHOENIX_MAX_ATTR_CHARS`` (default: ``4000``)
+  - ``PHOENIX_CAPTURE_LLM_BODIES`` (``true``/``false``, default: ``true``)
+- Pricing (per-1K tokens)
+  - Option 1 (recommended): Single JSON blob via ``LLM_PRICING_JSON``
+    - Flat per model (model key normalized as underscores):
+
+      .. code-block:: json
+
+         {"gpt_4o_mini": {"input_per_1k": 0.15, "output_per_1k": 0.6}}
+
+    - Nested by provider (natural model name preserved):
+
+      .. code-block:: json
+
+         {"openai": {"gpt-4o-mini": {"input_per_1k": 0.15, "output_per_1k": 0.6}}}
+
+  - Option 2: Per-model env vars (model name normalized to uppercase with non-alphanumeric → ``_``)
+    - ``<PROVIDER>_PRICE_<MODEL>_INPUT_PER_1K`` / ``<PROVIDER>_PRICE_<MODEL>_OUTPUT_PER_1K``
+  - Option 3: Global defaults
+    - ``LLM_PRICE_DEFAULT_INPUT_PER_1K`` / ``LLM_PRICE_DEFAULT_OUTPUT_PER_1K``
+
+Example YAML Wiring
+-------------------
+
+.. code-block:: yaml
+
+   resources:
+     subscribers:
+       - name: phoenix
+         type: PhoenixSubscriber
+         config:
+           endpoint: ${PHOENIX_ENDPOINT:-http://localhost:6006/v1/traces}
+           service_name: orchestrator
+   spec:
+     subscribers: [logging, phoenix]
+
+Replication Notes
+-----------------
+
+1. Create a subscriber that sets the OTel ``TracerProvider`` and OTLP exporter
+2. Set the provider globally via ``trace.set_tracer_provider``
+3. Use long-lived spans for lifecycle events (start/end pairs)
+4. Propagate the subscriber to nested agents/workers so they share the trace
+5. Wrap LLM/tool calls in child spans and set numeric attributes for usage/latency/cost
+6. Optionally include prompt/response text (truncated) via env flags

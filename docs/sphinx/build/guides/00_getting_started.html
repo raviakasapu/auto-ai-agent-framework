@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started (Complete Guide) &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Quickstart (5 minutes)" href="quickstart.html" />
+    <link rel="prev" title="Guides" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Guides</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#start-here">Start Here</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Getting Started (Complete Guide)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#verify-installation">Verify Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#first-steps">First Steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#understanding-the-project-structure">Understanding the Project Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-concepts">Key Concepts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-how-it-all-fits-together">Example: How It All Fits Together</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-tasks">Common Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#getting-help">Getting Help</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#community-resources">Community Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html">Quickstart (5 minutes)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="v2_features.html">What’s New in v2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hello_agent.html">Hello Agent (5 minutes)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#howto">How‑To</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-guides">Additional Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#reference-and-examples">Reference and Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Guides</a></li>
+      <li class="breadcrumb-item active">Getting Started (Complete Guide)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/00_getting_started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started-complete-guide">
+<h1>Getting Started (Complete Guide)<a class="headerlink" href="#getting-started-complete-guide" title="Link to this heading"></a></h1>
+<p>Welcome to the AI Agent Framework! This guide will get you from zero to a working agent in 10 minutes.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Before you begin, make sure you have:</p>
+<ul class="simple">
+<li><p>Python 3.11 or higher</p></li>
+<li><p>pip (Python package installer)</p></li>
+<li><p>A terminal/command prompt</p></li>
+<li><p>(Optional) A code editor like VS Code</p></li>
+</ul>
+<section id="quick-check">
+<h3>Quick Check<a class="headerlink" href="#quick-check" title="Link to this heading"></a></h3>
+<p>Open your terminal and verify Python is installed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">--</span><span class="n">version</span>
+</pre></div>
+</div>
+<p>You should see something like <code class="docutils literal notranslate"><span class="pre">Python</span> <span class="pre">3.11.x</span></code> or higher.</p>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<section id="step-1-clone-or-navigate-to-the-repository">
+<h3>Step 1: Clone or Navigate to the Repository<a class="headerlink" href="#step-1-clone-or-navigate-to-the-repository" title="Link to this heading"></a></h3>
+<p>Clone the repo (or pull the latest changes) and open it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">akasa</span><span class="o">-</span><span class="n">ai</span><span class="o">/</span><span class="n">AI_Agent_Framework</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">AI_Agent_Framework</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-create-virtual-environment">
+<h3>Step 2: Create Virtual Environment<a class="headerlink" href="#step-2-create-virtual-environment" title="Link to this heading"></a></h3>
+<p>Create an isolated Python environment for the project:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">venv</span>
+</pre></div>
+</div>
+<p>This creates a <code class="docutils literal notranslate"><span class="pre">venv/</span></code> directory with a clean Python installation.</p>
+</section>
+<section id="step-3-activate-virtual-environment">
+<h3>Step 3: Activate Virtual Environment<a class="headerlink" href="#step-3-activate-virtual-environment" title="Link to this heading"></a></h3>
+<p><strong>On macOS/Linux</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p><strong>On Windows</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">venv</span>\<span class="n">Scripts</span>\<span class="n">activate</span>
+</pre></div>
+</div>
+<p>You should see <code class="docutils literal notranslate"><span class="pre">(venv)</span></code> appear in your terminal prompt.</p>
+</section>
+<section id="step-4-install-dependencies">
+<h3>Step 4: Install Dependencies<a class="headerlink" href="#step-4-install-dependencies" title="Link to this heading"></a></h3>
+<p>Install the reusable library plus repo tooling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">./</span><span class="n">agent</span><span class="o">-</span><span class="n">framework</span><span class="o">-</span><span class="n">pypi</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>The editable install exposes the <code class="docutils literal notranslate"><span class="pre">agent_framework</span></code> package locally while
+<code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> covers FastAPI, Uvicorn, Pydantic, Sphinx, and tooling for the docs server.</p>
+</section>
+</section>
+<section id="verify-installation">
+<h2>Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading"></a></h2>
+<p>Test that everything is working:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;from deployment.factory import AgentFactory; print(&#39;✓ Installation successful!&#39;)&quot;</span>
+</pre></div>
+</div>
+<p>If you see <code class="docutils literal notranslate"><span class="pre">✓</span> <span class="pre">Installation</span> <span class="pre">successful!</span></code>, you’re ready to go!</p>
+</section>
+<section id="first-steps">
+<h2>First Steps<a class="headerlink" href="#first-steps" title="Link to this heading"></a></h2>
+<p>Now that you’re set up, here’s what to do next:</p>
+<p><strong>Option A: Run a Demo (Fastest)</strong></p>
+<p>Run the existing research assistant agent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">tests</span><span class="o">/</span><span class="n">quick_run</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>You’ll see the agent execute and print results.</p>
+<p><strong>Option B: Start the Documentation Server</strong></p>
+<p>Launch the interactive documentation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AGENT_MANIFEST_PATH</span><span class="o">=</span><span class="n">docs</span><span class="o">/</span><span class="n">agent_manifest</span><span class="o">.</span><span class="n">json</span> <span class="n">uvicorn</span> <span class="n">docs_server</span><span class="o">.</span><span class="n">main</span><span class="p">:</span><span class="n">app</span> <span class="o">--</span><span class="n">reload</span> <span class="o">--</span><span class="n">port</span> <span class="mi">8002</span>
+</pre></div>
+</div>
+<p>Then open <a class="reference external" href="http://127.0.0.1:8002">http://127.0.0.1:8002</a> in your browser.</p>
+<p><strong>Option C: Create Your First Agent</strong></p>
+<p>Jump straight into the tutorial: <a class="reference internal" href="../tutorials/01_new_agent.html"><span class="doc">Create a New Agent (10 minutes)</span></a></p>
+</section>
+<section id="understanding-the-project-structure">
+<h2>Understanding the Project Structure<a class="headerlink" href="#understanding-the-project-structure" title="Link to this heading"></a></h2>
+<p>Repository structure (key paths):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── agent-framework-pypi/
+│   └── src/agent_framework/   # Core pip package
+│       ├── base.py            # Abstract base classes
+│       ├── core/              # Agent + ManagerAgent
+│       ├── components/        # Planners, memories, memory stores
+│       ├── gateways/          # LLM interfaces
+│       ├── decorators.py      # @tool helper
+│       └── policies/          # Behavioral policies &amp; presets
+│
+├── bi_tools/                  # Power BI domain example
+│
+├── deployment/                # YAML → Agent factory + registry
+│   ├── factory.py
+│   └── registry.py
+│
+├── configs/                   # Agent / tool / planner yaml configs
+│
+├── docs/sphinx/               # This documentation site
+├── docs_server/               # Manifest + docs FastAPI server
+├── scripts/, tests/, examples/  # Utilities and demos
+└── README.md                  # High-level summary
+</pre></div>
+</div>
+</section>
+<section id="key-concepts">
+<h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
+<p>Before diving deeper, understand these core concepts:</p>
+<dl class="simple">
+<dt><strong>1. Agent</strong></dt><dd><p>An autonomous entity that can use tools to accomplish tasks.</p>
+</dd>
+<dt><strong>2. Tool</strong></dt><dd><p>A specific capability (e.g., search, calculate, read file).</p>
+</dd>
+<dt><strong>3. Planner</strong></dt><dd><p>Decides which tool to use and when. Can be:</p>
+<ul class="simple">
+<li><p><strong>StaticPlanner</strong> - Always uses the same tool</p></li>
+<li><p><strong>LLMRouterPlanner</strong> - Uses LLM to decide based on user input</p></li>
+</ul>
+</dd>
+<dt><strong>4. Gateway</strong></dt><dd><p>Interface to LLMs (OpenAI, Anthropic, or mock for testing).</p>
+</dd>
+<dt><strong>5. Memory</strong></dt><dd><p>Stores conversation history and context.</p>
+</dd>
+</dl>
+</section>
+<section id="example-how-it-all-fits-together">
+<h2>Example: How It All Fits Together<a class="headerlink" href="#example-how-it-all-fits-together" title="Link to this heading"></a></h2>
+<p>Here’s a simple example of how components work together:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentFactory</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Load agent from YAML configuration</span>
+    <span class="n">agent</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span>
+        <span class="s2">&quot;configs/agents/research_assistant.yaml&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Run the agent with a task</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;What is Python?&quot;</span><span class="p">,</span>
+        <span class="n">region</span><span class="o">=</span><span class="s2">&quot;us-en&quot;</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run the async function</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>When you run this:</p>
+<ol class="arabic simple">
+<li><p>✅ <strong>Factory</strong> reads the YAML config</p></li>
+<li><p>✅ <strong>Resources</strong> are instantiated (tools, LLM gateway, memory)</p></li>
+<li><p>✅ <strong>Agent</strong> is assembled with planner and tools</p></li>
+<li><p>✅ <strong>Planner</strong> decides which tool to use</p></li>
+<li><p>✅ <strong>Tool</strong> executes and returns results</p></li>
+<li><p>✅ <strong>Memory</strong> stores the interaction</p></li>
+<li><p>✅ <strong>Result</strong> is returned to you</p></li>
+</ol>
+</section>
+<section id="common-tasks">
+<h2>Common Tasks<a class="headerlink" href="#common-tasks" title="Link to this heading"></a></h2>
+<p>Here are the most common things you’ll want to do:</p>
+<section id="run-an-existing-agent">
+<h3>Run an Existing Agent<a class="headerlink" href="#run-an-existing-agent" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">tests</span><span class="o">/</span><span class="n">quick_run</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</section>
+<section id="create-a-new-agent">
+<h3>Create a New Agent<a class="headerlink" href="#create-a-new-agent" title="Link to this heading"></a></h3>
+<p>See: <a class="reference internal" href="../tutorials/01_new_agent.html"><span class="doc">Create a New Agent (10 minutes)</span></a></p>
+</section>
+<section id="view-agent-configuration">
+<h3>View Agent Configuration<a class="headerlink" href="#view-agent-configuration" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="n">configs</span><span class="o">/</span><span class="n">agents</span><span class="o">/</span><span class="n">research_assistant</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="start-documentation-server">
+<h3>Start Documentation Server<a class="headerlink" href="#start-documentation-server" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AGENT_MANIFEST_PATH</span><span class="o">=</span><span class="n">docs</span><span class="o">/</span><span class="n">agent_manifest</span><span class="o">.</span><span class="n">json</span> <span class="n">uvicorn</span> <span class="n">docs_server</span><span class="o">.</span><span class="n">main</span><span class="p">:</span><span class="n">app</span> <span class="o">--</span><span class="n">reload</span>
+</pre></div>
+</div>
+</section>
+<section id="generate-documentation">
+<h3>Generate Documentation<a class="headerlink" href="#generate-documentation" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docs</span><span class="o">/</span><span class="n">sphinx</span>
+<span class="n">make</span> <span class="n">html</span>
+<span class="nb">open</span> <span class="n">build</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">index</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<p><strong>Problem: “ModuleNotFoundError”</strong></p>
+<p><em>Solution:</em> Make sure virtual environment is activated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>  <span class="c1"># macOS/Linux</span>
+<span class="n">venv</span>\<span class="n">Scripts</span>\<span class="n">activate</span>     <span class="c1"># Windows</span>
+</pre></div>
+</div>
+<p><strong>Problem: “No such file or directory: requirements.txt”</strong></p>
+<p><em>Solution:</em> Make sure you’re in the repository root directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">sdk</span>
+<span class="n">pwd</span>  <span class="c1"># Should end with &quot;/sdk&quot;</span>
+</pre></div>
+</div>
+<p><strong>Problem: “Command ‘python3’ not found”</strong></p>
+<p><em>Solution:</em> Try <code class="docutils literal notranslate"><span class="pre">python</span></code> instead of <code class="docutils literal notranslate"><span class="pre">python3</span></code>, or install Python from python.org</p>
+<p><strong>Problem: “Permission denied”</strong></p>
+<p><em>Solution:</em> On macOS/Linux, you might need to make scripts executable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">tests</span><span class="o">/</span><span class="n">quick_run</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p><strong>Problem: Agent fails with “MODEL_DIR not set”</strong></p>
+<p><em>Solution:</em> Some agents need a model directory. Set it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">MODEL_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">Model</span>
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Choose your path:</p>
+<dl class="simple">
+<dt><strong>🎓 Learn By Doing (Recommended)</strong></dt><dd><p>Follow the step-by-step tutorials:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="../tutorials/01_new_agent.html"><span class="doc">Create a New Agent (10 minutes)</span></a> - Build a calculator agent</p></li>
+<li><p><a class="reference internal" href="../tutorials/02_add_tool.html"><span class="doc">Add a Custom Tool (8 minutes)</span></a> - Add a custom tool</p></li>
+<li><p><a class="reference internal" href="../tutorials/03_llm_routing.html"><span class="doc">Add Natural Language Routing (7 minutes)</span></a> - Accept natural language input</p></li>
+<li><p><a class="reference internal" href="../tutorials/04_deploy.html"><span class="doc">Deploy the Agent API (5 minutes)</span></a> - Production deployment</p></li>
+</ol>
+</dd>
+<dt><strong>📖 Deep Dive</strong></dt><dd><p>Understand the architecture:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="execution_framework.html"><span class="doc">Execution Framework</span></a> - How agents work internally</p></li>
+<li><p><a class="reference internal" href="deployment_layer.html"><span class="doc">Deployment Layer</span></a> - YAML → Agent conversion</p></li>
+<li><p><a class="reference internal" href="chat_driven_architecture.html"><span class="doc">Chat-Driven Architecture</span></a> - LLM-powered agents</p></li>
+</ul>
+</dd>
+<dt><strong>🔧 Extend the Framework</strong></dt><dd><p>Build custom components:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="creating_a_custom_tool.html"><span class="doc">Creating a Custom Tool</span></a> - Add new capabilities</p></li>
+<li><p><a class="reference internal" href="defining_agents_with_yaml.html"><span class="doc">Defining Agents with YAML (v1)</span></a> - YAML configuration</p></li>
+<li><p><a class="reference internal" href="agent_config_schema.html"><span class="doc">Agent Config Schema (v1)</span></a> - Complete schema reference</p></li>
+</ul>
+</dd>
+<dt><strong>🚀 Use Case Specific</strong></dt><dd><ul class="simple">
+<li><p>TMDL/BI Model Management → <a class="reference internal" href="chat_driven_architecture.html"><span class="doc">Chat-Driven Architecture</span></a></p></li>
+<li><p>API Integration → <code class="docutils literal notranslate"><span class="pre">examples/calculator_server.py</span></code></p></li>
+<li><p>Testing &amp; QA → <a class="reference internal" href="tests_and_examples.html"><span class="doc">Tests and Examples</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
+<p>If you get stuck:</p>
+<ol class="arabic simple">
+<li><p><strong>Search the docs</strong>: Use the search box (top left)</p></li>
+<li><p><strong>View examples</strong>: Look in <code class="docutils literal notranslate"><span class="pre">configs/agents/</span></code> and <code class="docutils literal notranslate"><span class="pre">tests/</span></code></p></li>
+<li><p><strong>Read the source</strong>: Code is well-documented with docstrings</p></li>
+</ol>
+</section>
+<section id="community-resources">
+<h2>Community Resources<a class="headerlink" href="#community-resources" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Documentation</strong>: <a class="reference external" href="http://127.0.0.1:8002">http://127.0.0.1:8002</a> (when docs server is running)</p></li>
+<li><p><strong>Example Agents</strong>: <code class="docutils literal notranslate"><span class="pre">configs/agents/</span></code> directory</p></li>
+<li><p><strong>Test Scripts</strong>: <code class="docutils literal notranslate"><span class="pre">tests/</span></code> directory</p></li>
+<li><p><strong>Architecture Docs</strong>: <a class="reference internal" href="execution_framework.html"><span class="doc">Execution Framework</span></a></p></li>
+</ul>
+<p>—</p>
+<p><strong>Ready to build your first agent?</strong> Continue to <a class="reference internal" href="../tutorials/01_new_agent.html"><span class="doc">Create a New Agent (10 minutes)</span></a>!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Guides" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Quickstart (5 minutes)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

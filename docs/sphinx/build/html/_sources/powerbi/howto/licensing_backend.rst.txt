@@ -1,0 +1,23 @@
+Licensing Backend (Overview)
+============================
+
+Goal
+----
+Implement backend endpoints and storage for license issuance/validation.
+
+Checklist
+---------
+- Issue licenses with signed payloads and expirations.
+- Validate signatures server‑side on each request.
+- Provide endpoints for status check and refresh.
+- Log attempts and anomalies for audits.
+
+Best Practices
+--------------
+- Rotate signing keys and use strong algorithms.
+- Store minimal PII; conform to privacy requirements.
+- Time‑box licenses and enforce grace periods.
+
+Supersedes
+----------
+- docs/licensing_implementation.md

@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Analytics Playbook &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Document Processing Playbook" href="document_processing.html" />
+    <link rel="prev" title="Domain Playbooks Overview" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 6 - Domain Playbooks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Domain Playbooks Overview</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Analytics Playbook</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#use-cases">Use Cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#agent-hierarchy">Agent Hierarchy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tool-categories">Tool Categories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#schema-tools">Schema Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#query-tools">Query Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metric-tools">Metric Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#connection-tools">Connection Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#policy-patterns">Policy Patterns</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#access-control">Access Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hitl-for-writes">HITL for Writes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#validation-before-write">Validation Before Write</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#context-services">Context Services</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#data-model-service">Data Model Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#manifest-export">Manifest Export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#schema-awareness-in-prompts">Schema Awareness in Prompts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#reference-implementation">Reference Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="document_processing.html">Document Processing Playbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_assistant.html">Code Assistant Playbook</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 6 - Domain Playbooks</a></li>
+      <li class="breadcrumb-item active">Data Analytics Playbook</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part6_playbooks/data_analytics.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-analytics-playbook">
+<h1>Data Analytics Playbook<a class="headerlink" href="#data-analytics-playbook" title="Link to this heading"></a></h1>
+<p>Pattern for building agent systems that interact with data models, BI tools, and analytics platforms.</p>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Power BI model management</p></li>
+<li><p>Tableau dashboard authoring</p></li>
+<li><p>Looker LookML editing</p></li>
+<li><p>dbt model generation</p></li>
+<li><p>Data catalog navigation</p></li>
+</ul>
+</section>
+<section id="agent-hierarchy">
+<h2>Agent Hierarchy<a class="headerlink" href="#agent-hierarchy" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────┐
+│ ANALYTICS ORCHESTRATOR                                      │
+│ - Natural language intent clarification                     │
+│ - Route to analysis or authoring managers                   │
+│ - Maintain data model awareness                             │
+└─────────────────────────────────────────────────────────────┘
+         │
+         ├──────────────────────────────────────────┐
+         │                                          │
+         ▼                                          ▼
+┌─────────────────────────────┐    ┌─────────────────────────────┐
+│ ANALYSIS MANAGER            │    │ AUTHORING MANAGER           │
+│ - Schema exploration        │    │ - Metric creation           │
+│ - Query analysis            │    │ - Relationship editing      │
+│ - Validation                │    │ - Schema modifications      │
+└─────────────────────────────┘    └─────────────────────────────┘
+         │                                          │
+         ▼                                          ▼
+┌─────────────────────────────┐    ┌─────────────────────────────┐
+│ Read-only Workers           │    │ Write-capable Workers       │
+│ - list_tables               │    │ - add_measure               │
+│ - get_column_stats          │    │ - update_relationship       │
+│ - validate_query            │    │ - modify_schema             │
+└─────────────────────────────┘    └─────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="tool-categories">
+<h2>Tool Categories<a class="headerlink" href="#tool-categories" title="Link to this heading"></a></h2>
+<section id="schema-tools">
+<h3>Schema Tools<a class="headerlink" href="#schema-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">list_tables</span></code> / <code class="docutils literal notranslate"><span class="pre">list_columns</span></code> / <code class="docutils literal notranslate"><span class="pre">list_relationships</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_table_metadata</span></code> / <code class="docutils literal notranslate"><span class="pre">get_column_stats</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_diff</span></code> / <code class="docutils literal notranslate"><span class="pre">validate_schema</span></code></p></li>
+</ul>
+</section>
+<section id="query-tools">
+<h3>Query Tools<a class="headerlink" href="#query-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_query_definition</span></code> / <code class="docutils literal notranslate"><span class="pre">analyze_query</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_query_syntax</span></code> / <code class="docutils literal notranslate"><span class="pre">optimize_query</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">execute_query</span></code> (with HITL)</p></li>
+</ul>
+</section>
+<section id="metric-tools">
+<h3>Metric Tools<a class="headerlink" href="#metric-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">list_measures</span></code> / <code class="docutils literal notranslate"><span class="pre">get_measure_expression</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_measure</span></code> / <code class="docutils literal notranslate"><span class="pre">update_measure</span></code> / <code class="docutils literal notranslate"><span class="pre">remove_measure</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_measure</span></code> / <code class="docutils literal notranslate"><span class="pre">format_measure</span></code></p></li>
+</ul>
+</section>
+<section id="connection-tools">
+<h3>Connection Tools<a class="headerlink" href="#connection-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">list_data_sources</span></code> / <code class="docutils literal notranslate"><span class="pre">get_connection_string</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_connection</span></code> / <code class="docutils literal notranslate"><span class="pre">refresh_metadata</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="policy-patterns">
+<h2>Policy Patterns<a class="headerlink" href="#policy-patterns" title="Link to this heading"></a></h2>
+<section id="access-control">
+<h3>Access Control<a class="headerlink" href="#access-control" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Analysis workers: read-only tools</span>
+<span class="nt">analysis_worker</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">list_tables</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">list_columns</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">validate_query</span><span class="p p-Indicator">]</span>
+
+<span class="c1"># Authoring workers: read + write tools</span>
+<span class="nt">authoring_worker</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">list_tables</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">add_measure</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">update_measure</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="hitl-for-writes">
+<h3>HITL for Writes<a class="headerlink" href="#hitl-for-writes" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">hitl</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultHITLPolicy</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">writes</span>
+<span class="w">      </span><span class="nt">write_tools</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">add_measure</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update_relationship</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">modify_schema</span>
+</pre></div>
+</div>
+</section>
+<section id="validation-before-write">
+<h3>Validation Before Write<a class="headerlink" href="#validation-before-write" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># In planning prompt</span>
+<span class="s">&quot;Before</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">write</span><span class="nv"> </span><span class="s">operation,</span><span class="nv"> </span><span class="s">always</span><span class="nv"> </span><span class="s">validate:</span>
+<span class="s">1.</span><span class="nv"> </span><span class="s">Check</span><span class="nv"> </span><span class="s">existing</span><span class="nv"> </span><span class="s">schema</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">conflicts</span>
+<span class="s">2.</span><span class="nv"> </span><span class="s">Validate</span><span class="nv"> </span><span class="s">syntax</span><span class="nv"> </span><span class="s">(DAX/SQL/M</span><span class="nv"> </span><span class="s">Query)</span>
+<span class="s">3.</span><span class="nv"> </span><span class="s">Confirm</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">breaking</span><span class="nv"> </span><span class="s">changes&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="context-services">
+<h2>Context Services<a class="headerlink" href="#context-services" title="Link to this heading"></a></h2>
+<section id="data-model-service">
+<h3>Data Model Service<a class="headerlink" href="#data-model-service" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Provides current schema state</p></li>
+<li><p>Request-scoped via context manager</p></li>
+<li><p>Caches metadata for efficiency</p></li>
+</ul>
+</section>
+<section id="manifest-export">
+<h3>Manifest Export<a class="headerlink" href="#manifest-export" title="Link to this heading"></a></h3>
+<p>Generate AI-optimized summaries:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>=== Analytics Model Manifest ===
+Tables: 12 (5 facts, 7 dimensions)
+Measures: 45
+Relationships: 11
+
+TABLES:
+- FactSales (fact, 15 columns, 12 measures)
+- DimCustomer (dimension, 8 columns)
+...
+</pre></div>
+</div>
+</section>
+<section id="schema-awareness-in-prompts">
+<h3>Schema Awareness in Prompts<a class="headerlink" href="#schema-awareness-in-prompts" title="Link to this heading"></a></h3>
+<p>Include manifest in orchestrator prompt:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">planning_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no">You have access to the current data model:</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="no">{{ MODEL_MANIFEST }}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="no">Use this to avoid redundant operations and </span>
+<span class="w">  </span><span class="no">ensure compatibility with existing schema.</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="reference-implementation">
+<h2>Reference Implementation<a class="headerlink" href="#reference-implementation" title="Link to this heading"></a></h2>
+<p>For a complete example, see the <a class="reference internal" href="../powerbi_impl/index.html"><span class="doc std std-doc">Power BI Dashboard Editor Implementation</span></a>:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../powerbi_impl/runtime_integration.html"><span class="doc std std-doc">Runtime Integration</span></a> — FastAPI, context setup</p></li>
+<li><p><a class="reference internal" href="../powerbi_impl/agent_stack.html"><span class="doc std std-doc">Agent Stack</span></a> — Full hierarchy configuration</p></li>
+<li><p><a class="reference internal" href="../powerbi_impl/data_services.html"><span class="doc std std-doc">Data Services</span></a> — KG integration</p></li>
+<li><p><a class="reference internal" href="../powerbi_impl/tools_coverage.html"><span class="doc std std-doc">Tool Coverage</span></a> — Complete tool inventory</p></li>
+<li><p><a class="reference internal" href="../powerbi_impl/observability_approvals.html"><span class="doc std std-doc">Observability</span></a> — Tracing and HITL flows</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="Domain Playbooks Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="document_processing.html" class="btn btn-neutral float-right" title="Document Processing Playbook" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

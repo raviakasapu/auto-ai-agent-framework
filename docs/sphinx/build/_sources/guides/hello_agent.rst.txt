@@ -1,0 +1,120 @@
+Hello Agent (5 minutes)
+=======================
+
+Goal
+----
+Create a minimal calculator tool, wire it into an agent via YAML, run it, and see it in the docs.
+
+1) Define a tool
+----------------
+Create ``examples/calculator_tool.py``:
+
+.. code-block:: python
+
+   from pydantic import BaseModel, Field
+   from typing import Any, Dict
+   from agent_framework import BaseTool
+
+   class CalcArgs(BaseModel):
+       a: float = Field(..., description="first number")
+       b: float = Field(..., description="second number")
+
+   class CalcOut(BaseModel):
+       result: float
+
+   class AddTool(BaseTool):
+       _name = "calc.add"
+       _description = "Add two numbers"
+
+       @property
+       def name(self) -> str:
+           return self._name
+
+       @property
+       def description(self) -> str:
+           return self._description
+
+       @property
+       def args_schema(self):
+           return CalcArgs
+
+       @property
+       def output_schema(self):
+           return CalcOut
+
+       def execute(self, a: float, b: float) -> Dict[str, Any]:
+           return {"result": a + b}
+
+2) Register the tool
+--------------------
+Create ``configs/tools/calc_tool.yaml``:
+
+.. code-block:: yaml
+
+   name: AddTool
+   class: examples.calculator_tool.AddTool
+
+3) Create YAML
+--------------
+Create ``configs/agents/hello_calc.yaml``:
+
+.. code-block:: yaml
+
+   apiVersion: agent.framework/v1
+   kind: Agent
+   metadata:
+     name: hello-calc
+     description: Minimal calculator agent
+   resources:
+     inference_gateways:
+       - name: mock-llm
+         type: MockInferenceGateway
+         config: {}
+     tools:
+       - name: calc.add
+         type: AddTool
+         config: {}
+   spec:
+     planner:
+       type: SingleActionPlanner
+       config:
+         tool_name: calc.add
+         tool_args: { a: 2, b: 3 }
+     memory:
+       type: InMemoryMemory
+       config: {}
+     tools:
+       - calc.add
+
+4) Run it
+---------
+
+.. code-block:: bash
+
+   python generate_manifest.py --config configs/agents/hello_calc.yaml --output docs/agent_manifest.json
+   AGENT_MANIFEST_PATH=docs/agent_manifest.json \
+   AGENT_DOCS_DIR=docs/sphinx/build/html \
+   uvicorn docs_server.main:app --reload --port 8002
+
+Open http://127.0.0.1:8002/ and http://127.0.0.1:8002/reference
+
+5) Call the agent
+-----------------
+
+.. code-block:: python
+
+   from deployment.factory import AgentFactory
+   import asyncio
+
+   async def main():
+       agent = AgentFactory.create_from_yaml("configs/agents/hello_calc.yaml")
+       out = await agent.run("Add two numbers")
+       print(out)  # SingleActionPlanner will call calc.add with tool_args
+
+   asyncio.run(main())
+
+Next
+----
+- Route with LLM: switch planner to LLM router
+- Add memory: enable conversation history
+- Harden: add validation and error handling

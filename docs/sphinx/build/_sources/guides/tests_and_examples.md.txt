@@ -1,0 +1,22 @@
+# Tests and Examples
+
+Quick demos live under `tests/` and `examples/`.
+
+## CLI quick run
+
+- Loads the agent from YAML (or falls back to direct assembly if PyYAML missing)
+- Runs the task and prints events, result, and memory
+- Run: `python tests/quick_run.py`
+
+## Simple web app
+
+- Minimal FastAPI app that exposes POST `/run`
+- Open `http://127.0.0.1:8000` for a small UI, `/docs` for Swagger UI
+- Run: `uvicorn tests.simple_app:app --reload`
+
+## Custom calculator example
+
+- `examples/custom_tool.py` defines `MyCalcTool` and `CalcPlanner`
+- YAML config: `examples/configs/calc_agent.yaml`
+- Runner registers components and executes task: `examples/run_calc_agent.py`
+

@@ -1,0 +1,575 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conceptual Model &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Part 2: Runtime Building Blocks" href="../part2_runtime/index.html" />
+    <link rel="prev" title="Quickstart (5 minutes)" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 1: Orientation &amp; Quick Wins</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Product Overview &amp; Capabilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Quickstart (5 minutes)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conceptual Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-philosophy">Core Philosophy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-agent-loop">The Agent Loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#core-components">Core Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#planner">1. Planner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tool">2. Tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memory">3. Memory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gateway-llm-provider">4. Gateway (LLM Provider)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#policy">5. Policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eventbus">6. EventBus</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hierarchical-architecture">Hierarchical Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#agent-vs-manageragent">Agent vs ManagerAgent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#data-flow">Data Flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#action">Action</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#finalresponse">FinalResponse</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#message-types">Message Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-s-next">What’s Next?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+      <li class="breadcrumb-item active">Conceptual Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part1_orientation/conceptual_model.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="conceptual-model">
+<h1>Conceptual Model<a class="headerlink" href="#conceptual-model" title="Link to this heading"></a></h1>
+<p>This chapter explains the mental model of the framework before diving into code. Understanding these concepts will make everything else click.</p>
+<section id="core-philosophy">
+<h2>Core Philosophy<a class="headerlink" href="#core-philosophy" title="Link to this heading"></a></h2>
+<p>The framework follows a <strong>policy-driven, event-based architecture</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Planners decide</strong> what to do next</p></li>
+<li><p><strong>Tools execute</strong> domain operations</p></li>
+<li><p><strong>Memory persists</strong> context and history</p></li>
+<li><p><strong>Policies control</strong> behavior (completion, loops, HITL)</p></li>
+<li><p><strong>Events enable</strong> observability and streaming</p></li>
+</ol>
+</section>
+<section id="the-agent-loop">
+<h2>The Agent Loop<a class="headerlink" href="#the-agent-loop" title="Link to this heading"></a></h2>
+<p>Every agent follows this execution loop:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────┐
+│                 AGENT LOOP                  │
+├─────────────────────────────────────────────┤
+│                                             │
+│  1. Receive Task                            │
+│       ↓                                     │
+│  2. Get History from Memory                 │
+│       ↓                                     │
+│  3. Planner.plan(task, history)             │
+│       ↓                                     │
+│  ┌─────────────────────────────────────┐    │
+│  │ Returns one of:                     │    │
+│  │ • Action → execute tool             │    │
+│  │ • List[Action] → parallel execution │    │
+│  │ • FinalResponse → done, return      │    │
+│  └─────────────────────────────────────┘    │
+│       ↓                                     │
+│  4. Execute Action(s)                       │
+│       ↓                                     │
+│  5. Add Result to Memory                    │
+│       ↓                                     │
+│  6. Check Completion Policy                 │
+│       ↓                                     │
+│  ┌─────────────────────────────────────┐    │
+│  │ If complete → return result         │    │
+│  │ If not → go to step 2               │    │
+│  └─────────────────────────────────────┘    │
+│                                             │
+└─────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="core-components">
+<h2>Core Components<a class="headerlink" href="#core-components" title="Link to this heading"></a></h2>
+<section id="planner">
+<h3>1. Planner<a class="headerlink" href="#planner" title="Link to this heading"></a></h3>
+<p><strong>What it does</strong>: Decides the next action(s) based on task and history.</p>
+<p><strong>Base class</strong>: <code class="docutils literal notranslate"><span class="pre">BasePlanner</span></code></p>
+<p><strong>Return types</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Action</span></code> — Single tool to execute</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">List[Action]</span></code> — Multiple tools to execute in parallel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FinalResponse</span></code> — Task complete, return structured result</p></li>
+</ul>
+<p><strong>Implementations</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Planner</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StaticPlanner</span></code></p></td>
+<td><p>Always returns the same tool</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ReActPlanner</span></code></p></td>
+<td><p>LLM-based reasoning with tool selection</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StrategicPlanner</span></code></p></td>
+<td><p>Multi-phase planning for orchestrators</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StrategicDecomposerPlanner</span></code></p></td>
+<td><p>Step-by-step planning for managers</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">WorkerRouterPlanner</span></code></p></td>
+<td><p>Routes to worker agents</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ChatPlanner</span></code></p></td>
+<td><p>Conversational responses</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tool">
+<h3>2. Tool<a class="headerlink" href="#tool" title="Link to this heading"></a></h3>
+<p><strong>What it does</strong>: Executes a specific operation (API call, calculation, file read, etc.)</p>
+<p><strong>Base class</strong>: <code class="docutils literal notranslate"><span class="pre">BaseTool</span></code></p>
+<p><strong>Properties</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> — Unique identifier</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code> — Human-readable explanation (used by LLM)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args_schema</span></code> — Pydantic model for input validation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_schema</span></code> — Optional Pydantic model for output</p></li>
+</ul>
+<p><strong>Creation methods</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method 1: @tool decorator (recommended)</span>
+<span class="nd">@tool</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Add two numbers&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="c1"># Method 2: Class-based (for complex tools)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTool</span><span class="p">(</span><span class="n">BaseTool</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;my_tool&quot;</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Does something useful&quot;</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">args_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">MyArgsModel</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="c1"># Implementation</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="memory">
+<h3>3. Memory<a class="headerlink" href="#memory" title="Link to this heading"></a></h3>
+<p><strong>What it does</strong>: Stores conversation history and execution traces.</p>
+<p><strong>Base class</strong>: <code class="docutils literal notranslate"><span class="pre">BaseMemory</span></code></p>
+<p><strong>Methods</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">add(message)</span></code> — Add a message to history</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_history()</span></code> — Retrieve all history</p></li>
+</ul>
+<p><strong>Implementations</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Memory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SimpleMemory</span></code></p></td>
+<td><p>In-memory list (development)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code></p></td>
+<td><p>Namespace-isolated shared memory</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MessageStoreMemory</span></code></p></td>
+<td><p>Reads from <code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HierarchicalMessageStoreMemory</span></code></p></td>
+<td><p>Manager memory with subordinate visibility</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gateway-llm-provider">
+<h3>4. Gateway (LLM Provider)<a class="headerlink" href="#gateway-llm-provider" title="Link to this heading"></a></h3>
+<p><strong>What it does</strong>: Abstracts LLM API calls.</p>
+<p><strong>Base class</strong>: <code class="docutils literal notranslate"><span class="pre">BaseInferenceGateway</span></code></p>
+<p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">invoke(prompt)</span> <span class="pre">→</span> <span class="pre">str</span></code></p>
+<p><strong>Implementations</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Gateway</p></th>
+<th class="head"><p>Provider</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OpenAIGateway</span></code></p></td>
+<td><p>OpenAI (GPT-4, etc.)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GoogleAIGateway</span></code></p></td>
+<td><p>Google Generative AI</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MockGateway</span></code></p></td>
+<td><p>Testing/development</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="policy">
+<h3>5. Policy<a class="headerlink" href="#policy" title="Link to this heading"></a></h3>
+<p><strong>What it does</strong>: Controls agent behavior at runtime.</p>
+<p><strong>Policy types</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Policy</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CompletionDetector</span></code></p></td>
+<td><p>Determines when task is complete</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TerminationPolicy</span></code></p></td>
+<td><p>Max iterations, timeout</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LoopPreventionPolicy</span></code></p></td>
+<td><p>Detects repeated actions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HITLPolicy</span></code></p></td>
+<td><p>Human-in-the-loop approval</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CheckpointPolicy</span></code></p></td>
+<td><p>Save/restore execution state</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Using presets</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_preset</span>
+
+<span class="c1"># Get default policies</span>
+<span class="n">policies</span> <span class="o">=</span> <span class="n">get_preset</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="c1"># Returns: completion_detector, termination_policy, loop_prevention_policy, ...</span>
+</pre></div>
+</div>
+</section>
+<section id="eventbus">
+<h3>6. EventBus<a class="headerlink" href="#eventbus" title="Link to this heading"></a></h3>
+<p><strong>What it does</strong>: Publishes events for observability and streaming.</p>
+<p><strong>Core events</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_start</span></code> / <code class="docutils literal notranslate"><span class="pre">agent_end</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">action_planned</span></code> / <code class="docutils literal notranslate"><span class="pre">action_executed</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manager_start</span></code> / <code class="docutils literal notranslate"><span class="pre">manager_end</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delegation_chosen</span></code> / <code class="docutils literal notranslate"><span class="pre">delegation_executed</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error</span></code> / <code class="docutils literal notranslate"><span class="pre">policy_denied</span></code></p></li>
+</ul>
+<p><strong>Subscribers</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LoggingSubscriber</span></code> — Logs events</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PhoenixSubscriber</span></code> — OpenTelemetry traces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LangfuseSubscriber</span></code> — Langfuse integration</p></li>
+</ul>
+</section>
+</section>
+<section id="hierarchical-architecture">
+<h2>Hierarchical Architecture<a class="headerlink" href="#hierarchical-architecture" title="Link to this heading"></a></h2>
+<p>The framework supports multi-level agent hierarchies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>User Request
+    ↓
+┌─────────────────────────────────────┐
+│ ORCHESTRATOR (ManagerAgent)         │
+│ - StrategicPlanner                  │
+│ - Creates multi-phase plans         │
+│ - Delegates to domain managers      │
+└─────────────────────────────────────┘
+    ↓
+┌─────────────────────────────────────┐
+│ MANAGER (ManagerAgent)              │
+│ - StrategicDecomposerPlanner        │
+│ - Breaks phases into steps          │
+│ - Delegates to worker agents        │
+└─────────────────────────────────────┘
+    ↓
+┌─────────────────────────────────────┐
+│ WORKER (Agent)                      │
+│ - ReActPlanner                      │
+│ - Executes tools                    │
+│ - Returns results                   │
+└─────────────────────────────────────┘
+</pre></div>
+</div>
+<section id="agent-vs-manageragent">
+<h3>Agent vs ManagerAgent<a class="headerlink" href="#agent-vs-manageragent" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspect</p></th>
+<th class="head"><p>Agent</p></th>
+<th class="head"><p>ManagerAgent</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Purpose</strong></p></td>
+<td><p>Execute tools</p></td>
+<td><p>Coordinate subordinates</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Planner</strong></p></td>
+<td><p>ReActPlanner, StaticPlanner</p></td>
+<td><p>StrategicPlanner, WorkerRouterPlanner</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Execution</strong></p></td>
+<td><p>Runs tools directly</p></td>
+<td><p>Delegates to other agents</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Synthesis</strong></p></td>
+<td><p>None</p></td>
+<td><p>Aggregates subordinate results</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="data-flow">
+<h2>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading"></a></h2>
+<section id="action">
+<h3>Action<a class="headerlink" href="#action" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Action</span></code> dataclass represents a tool invocation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Action</span><span class="p">:</span>
+    <span class="n">tool_name</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># Which tool to call</span>
+    <span class="n">tool_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>   <span class="c1"># Arguments for the tool</span>
+</pre></div>
+</div>
+</section>
+<section id="finalresponse">
+<h3>FinalResponse<a class="headerlink" href="#finalresponse" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">FinalResponse</span></code> model represents task completion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FinalResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># Frontend operation (e.g., &quot;display_message&quot;)</span>
+    <span class="n">payload</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>     <span class="c1"># Data for the operation</span>
+    <span class="n">human_readable_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># Chat-friendly summary</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="message-types">
+<h2>Message Types<a class="headerlink" href="#message-types" title="Link to this heading"></a></h2>
+<p>History entries use standardized types (from <code class="docutils literal notranslate"><span class="pre">agent_framework.constants</span></code>):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">user_message</span></code></p></td>
+<td><p>User input</p></td>
+<td><p>“List all tables”</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">assistant_message</span></code></p></td>
+<td><p>Assistant response</p></td>
+<td><p>“Found 5 tables…”</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">task</span></code></p></td>
+<td><p>Task assignment</p></td>
+<td><p>“Analyze the model”</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">action</span></code></p></td>
+<td><p>Tool call</p></td>
+<td><p>{“tool”: “list_tables”, “args”: {…}}</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">observation</span></code></p></td>
+<td><p>Tool result</p></td>
+<td><p>{“tables”: […]}</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">error</span></code></p></td>
+<td><p>Error occurred</p></td>
+<td><p>{“error”: “Connection failed”}</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">final</span></code></p></td>
+<td><p>Completion signal</p></td>
+<td><p>{“summary”: “Done”}</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">synthesis</span></code></p></td>
+<td><p>Manager summary</p></td>
+<td><p>{“aggregated”: “…”}</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<p>Agents can be configured:</p>
+<ol class="arabic simple">
+<li><p><strong>Programmatically</strong> — Python code</p></li>
+<li><p><strong>Declaratively</strong> — YAML files with factory pattern</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/my_agent.yaml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_agent</span>
+<span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">calculator</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CalculatorTool</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-main</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SimpleMemory</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">calculator</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="what-s-next">
+<h2>What’s Next?<a class="headerlink" href="#what-s-next" title="Link to this heading"></a></h2>
+<p>Now that you understand the mental model:</p>
+<ul class="simple">
+<li><p><strong><a class="reference internal" href="../part2_runtime/index.html"><span class="std std-doc">Part 2: Runtime Building Blocks</span></a></strong> — Deep dive into each component</p></li>
+<li><p><strong><a class="reference internal" href="../tutorials/index.html"><span class="std std-doc">Tutorials</span></a></strong> — Hands-on exercises</p></li>
+<li><p><strong><a class="reference internal" href="../part3_solutions/index.html"><span class="std std-doc">Part 3: Building Solutions</span></a></strong> — Configuration, flows, deployment</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart (5 minutes)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../part2_runtime/index.html" class="btn btn-neutral float-right" title="Part 2: Runtime Building Blocks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

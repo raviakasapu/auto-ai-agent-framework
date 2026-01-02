@@ -1,0 +1,27 @@
+# Manifest and Docs Server
+
+## Manifest
+
+- A machine-readable “capabilities spec” for an assembled Agent
+- Generated from a live Agent instance: metadata + tools with input and output schemas
+- Generator: `agent_framework/utils/manifest_generator.py`
+
+### Generate
+```
+python generate_manifest.py --config configs/agents/research_assistant.yaml --output docs/agent_manifest.json
+```
+
+## Docs Server
+
+- Minimal FastAPI server under `docs_server/`
+- Serves:
+  - `/` Manifest view (tools, params, returns)
+  - `/reference` Static Sphinx HTML (set `AGENT_DOCS_DIR`)
+  - `/examples` Links to example scripts and configs
+
+### Start
+```
+AGENT_MANIFEST_PATH=docs/agent_manifest.json \
+AGENT_DOCS_DIR=docs/sphinx/build/html \
+uvicorn docs_server.main:app --reload
+```

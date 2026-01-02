@@ -1,0 +1,7 @@
+---
+title: Message Store Format
+---
+
+```{include} ../../../MESSAGE_STORE_FORMAT.md
+:relative-images:
+```

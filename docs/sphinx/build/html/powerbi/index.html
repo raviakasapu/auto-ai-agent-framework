@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Power BI Domain Example &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Power BI Domain Example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/powerbi/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="power-bi-domain-example">
+<h1>Power BI Domain Example<a class="headerlink" href="#power-bi-domain-example" title="Link to this heading"></a></h1>
+<p>This section demonstrates how to use the Agent Framework for Power BI model management.
+It serves as a <strong>reference implementation</strong> showing how to build domain-specific tools
+on top of the generic framework library.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Library Structure:</strong></p>
+<ul class="simple">
+<li><p>Generic framework code lives in <code class="docutils literal notranslate"><span class="pre">agent-framework-pypi/src/agent_framework/</span></code></p></li>
+<li><p>Power BI specific code is in <code class="docutils literal notranslate"><span class="pre">bi_tools/</span></code></p></li>
+</ul>
+<p>This separation allows the framework to be reused for other domains while keeping
+Power BI specific logic isolated.</p>
+</div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Use the framework to:</p>
+<ul class="simple">
+<li><p>Read and write Power BI Tabular Model Definition Language (TMDL)</p></li>
+<li><p>Manage model relationships via natural language</p></li>
+<li><p>Execute DAX and SQL operations</p></li>
+<li><p>Synchronize with external Knowledge Graph services</p></li>
+</ul>
+</section>
+<section id="key-components">
+<h2>Key Components<a class="headerlink" href="#key-components" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>bi_tools/services/</strong></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DataModelService</span></code> - Central data model CRUD operations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KGDataModelService</span></code> - Knowledge Graph backed service</p></li>
+</ul>
+</dd>
+<dt><strong>bi_tools/tools/</strong></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">column/</span></code> - Column management tools</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">measure/</span></code> - DAX measure tools</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">relationship/</span></code> - Relationship tools</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table/</span></code> - Table operations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sql/</span></code> - SQL query tools</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">partition/</span></code> - Partition management</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mquery/</span></code> - M Query tools</p></li>
+</ul>
+</dd>
+</dl>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Power BI Setup (TMDL Model)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Power BI Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flows.html">Power BI Agent Flows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_structure.html">Power BI Agent Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tool_access_restriction.html">Tool Access Restriction Strategy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kg_tools_alignment.html">Knowledge Graph Tools Alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howto/index.html">How‑To (Power BI with Agent Framework)</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

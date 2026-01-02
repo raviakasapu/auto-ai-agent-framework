@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge Graph Tools Alignment &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Knowledge Graph Tools Alignment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/powerbi/kg_tools_alignment.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="knowledge-graph-tools-alignment">
+<h1>Knowledge Graph Tools Alignment<a class="headerlink" href="#knowledge-graph-tools-alignment" title="Link to this heading"></a></h1>
+<p>This document describes how Power BI tools align with the Knowledge Graph (KG) API endpoints. The Knowledge Graph service provides a structured backend for Power BI data model operations.</p>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>All Power BI tools are now aligned with KG API endpoints. Tools use the <code class="docutils literal notranslate"><span class="pre">KGDataModelService</span></code> which provides methods that map to KG API endpoints.</p>
+</section>
+<section id="aligned-sql-tools">
+<h2>✅ <strong>ALIGNED</strong> - SQL Tools<a class="headerlink" href="#aligned-sql-tools" title="Link to this heading"></a></h2>
+<section id="update-sql-query-py">
+<h3><code class="docutils literal notranslate"><span class="pre">update_sql_query.py</span></code><a class="headerlink" href="#update-sql-query-py" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Status</strong>: ✅ Aligned</p></li>
+<li><p><strong>KG Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/kg/{job_id}/tables/{table}/sql</span></code></p></li>
+<li><p><strong>Request Format</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;text&quot;:</span> <span class="pre">sql_text}</span></code> ✅</p></li>
+<li><p><strong>Implementation</strong>: Calls <code class="docutils literal notranslate"><span class="pre">service.put_table_sql(table,</span> <span class="pre">sql_query)</span></code> correctly</p></li>
+<li><p><strong>Note</strong>: Also calls <code class="docutils literal notranslate"><span class="pre">patch_table_mquery</span></code> to update M Query wrapper (good practice)</p></li>
+</ul>
+</section>
+<section id="get-sql-query-py">
+<h3><code class="docutils literal notranslate"><span class="pre">get_sql_query.py</span></code><a class="headerlink" href="#get-sql-query-py" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Status</strong>: ✅ Aligned</p></li>
+<li><p><strong>KG Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/source</span></code> (via <code class="docutils literal notranslate"><span class="pre">get_table_source</span></code>)</p></li>
+<li><p><strong>Response</strong>: Returns <code class="docutils literal notranslate"><span class="pre">m_query.expression</span></code> and <code class="docutils literal notranslate"><span class="pre">m_query.sql</span></code> ✅</p></li>
+<li><p><strong>Implementation</strong>: Uses <code class="docutils literal notranslate"><span class="pre">service.get_table_source(table)</span></code> correctly</p></li>
+</ul>
+</section>
+</section>
+<section id="aligned-m-query-tools">
+<h2>✅ <strong>ALIGNED</strong> - M-Query Tools<a class="headerlink" href="#aligned-m-query-tools" title="Link to this heading"></a></h2>
+<section id="add-mquery-py">
+<h3><code class="docutils literal notranslate"><span class="pre">add_mquery.py</span></code><a class="headerlink" href="#add-mquery-py" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Status</strong>: ✅ Aligned</p></li>
+<li><p><strong>KG Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/kg/{job_id}/tables/{table}/mquery</span></code></p></li>
+<li><p><strong>Request Format</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;expression&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;sql&quot;:</span> <span class="pre">&quot;...&quot;}</span></code> ✅</p></li>
+<li><p><strong>Implementation</strong>: Calls <code class="docutils literal notranslate"><span class="pre">service.put_table_mquery(table,</span> <span class="pre">expression=expression,</span> <span class="pre">sql=sql)</span></code> correctly</p></li>
+</ul>
+</section>
+<section id="update-mquery-py">
+<h3><code class="docutils literal notranslate"><span class="pre">update_mquery.py</span></code><a class="headerlink" href="#update-mquery-py" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Status</strong>: ✅ Aligned</p></li>
+<li><p><strong>KG Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/kg/{job_id}/tables/{table}/mquery</span></code></p></li>
+<li><p><strong>Request Format</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;expression&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;sql&quot;:</span> <span class="pre">&quot;...&quot;}</span></code> ✅</p></li>
+<li><p><strong>Implementation</strong>: Calls <code class="docutils literal notranslate"><span class="pre">service.patch_table_mquery(table,</span> <span class="pre">expression=expression,</span> <span class="pre">sql=sql)</span></code> correctly</p></li>
+</ul>
+</section>
+<section id="list-mquery-py">
+<h3><code class="docutils literal notranslate"><span class="pre">list_mquery.py</span></code><a class="headerlink" href="#list-mquery-py" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Status</strong>: ✅ Aligned</p></li>
+<li><p><strong>KG Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}</span></code> (via <code class="docutils literal notranslate"><span class="pre">get_partition</span></code>)</p></li>
+<li><p><strong>Implementation</strong>: Uses <code class="docutils literal notranslate"><span class="pre">service.get_partition(table)</span></code> to retrieve partition data with M Query expressions</p></li>
+<li><p><strong>Note</strong>: Now uses KG partition endpoint for consistency</p></li>
+</ul>
+</section>
+</section>
+<section id="aligned-partition-tools">
+<h2>✅ <strong>ALIGNED</strong> - Partition Tools<a class="headerlink" href="#aligned-partition-tools" title="Link to this heading"></a></h2>
+<section id="update-partition-source-py">
+<h3><code class="docutils literal notranslate"><span class="pre">update_partition_source.py</span></code><a class="headerlink" href="#update-partition-source-py" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Status</strong>: ✅ Aligned</p></li>
+<li><p><strong>KG Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/kg/{job_id}/tables/{table}/partition</span></code></p></li>
+<li><p><strong>Request Format</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;source&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;sqlQuery&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;mode&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">...}</span></code> ✅</p></li>
+<li><p><strong>Implementation</strong>:</p>
+<ul>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">service.patch_table_partition(table,</span> <span class="pre">updates)</span></code> correctly</p></li>
+<li><p>Extracts SQL from M Query expression if present (via <code class="docutils literal notranslate"><span class="pre">_extract_sql_from_m_query()</span></code>)</p></li>
+<li><p>Includes SQL in updates dict when available</p></li>
+<li><p>Handles both M Query and SQL expressions</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="list-partitions-py">
+<h3><code class="docutils literal notranslate"><span class="pre">list_partitions.py</span></code><a class="headerlink" href="#list-partitions-py" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Status</strong>: ✅ Aligned</p></li>
+<li><p><strong>KG Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/partition</span></code> (via <code class="docutils literal notranslate"><span class="pre">get_partition</span></code>)</p></li>
+<li><p><strong>Implementation</strong>: Uses <code class="docutils literal notranslate"><span class="pre">service.get_partition(table)</span></code> to retrieve partition data</p></li>
+<li><p><strong>Note</strong>: Now uses KG partition endpoint exclusively</p></li>
+</ul>
+</section>
+<section id="get-partition-source-py">
+<h3><code class="docutils literal notranslate"><span class="pre">get_partition_source.py</span></code><a class="headerlink" href="#get-partition-source-py" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Status</strong>: ✅ Aligned</p></li>
+<li><p><strong>KG Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/partition</span></code> (via <code class="docutils literal notranslate"><span class="pre">get_partition</span></code>)</p></li>
+<li><p><strong>Implementation</strong>: Uses <code class="docutils literal notranslate"><span class="pre">service.get_partition(table)</span></code> to retrieve partition source expressions</p></li>
+<li><p><strong>Note</strong>: Now uses KG partition endpoint exclusively</p></li>
+</ul>
+</section>
+</section>
+<section id="kg-api-endpoint-reference">
+<h2>📋 <strong>KG API Endpoint Reference</strong><a class="headerlink" href="#kg-api-endpoint-reference" title="Link to this heading"></a></h2>
+<section id="sql-endpoints">
+<h3>SQL Endpoints<a class="headerlink" href="#sql-endpoints" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/sql</span></code> → Returns <code class="docutils literal notranslate"><span class="pre">{&quot;table&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;sql&quot;:</span> <span class="pre">&quot;...&quot;}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/kg/{job_id}/tables/{table}/sql</span></code> → Expects <code class="docutils literal notranslate"><span class="pre">{&quot;text&quot;:</span> <span class="pre">&quot;...&quot;}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/kg/{job_id}/tables/{table}/sql</span></code> → Expects <code class="docutils literal notranslate"><span class="pre">{&quot;text&quot;:</span> <span class="pre">&quot;...&quot;}</span></code></p></li>
+</ul>
+</section>
+<section id="m-query-endpoints">
+<h3>M-Query Endpoints<a class="headerlink" href="#m-query-endpoints" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/mquery</span></code> → Returns <code class="docutils literal notranslate"><span class="pre">{&quot;table&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;m_query&quot;:</span> <span class="pre">{&quot;id&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;expression&quot;:</span> <span class="pre">&quot;...&quot;}}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/kg/{job_id}/tables/{table}/mquery</span></code> → Expects <code class="docutils literal notranslate"><span class="pre">{&quot;expression&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;sql&quot;:</span> <span class="pre">&quot;...&quot;}</span></code> (sql optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/kg/{job_id}/tables/{table}/mquery</span></code> → Expects <code class="docutils literal notranslate"><span class="pre">{&quot;expression&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;sql&quot;:</span> <span class="pre">&quot;...&quot;}</span></code> (sql optional)</p></li>
+</ul>
+</section>
+<section id="partition-endpoints">
+<h3>Partition Endpoints<a class="headerlink" href="#partition-endpoints" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/partition</span></code> → Returns <code class="docutils literal notranslate"><span class="pre">{&quot;partition&quot;:</span> <span class="pre">{&quot;table_name&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;mode&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;source&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;sqlQuery&quot;:</span> <span class="pre">&quot;...&quot;}}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/kg/{job_id}/tables/{table}/partition</span></code> → Expects <code class="docutils literal notranslate"><span class="pre">{&quot;source&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;sqlQuery&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;mode&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">...}</span></code></p></li>
+</ul>
+</section>
+<section id="table-source-endpoints">
+<h3>Table/Source Endpoints<a class="headerlink" href="#table-source-endpoints" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}</span></code> → Returns <code class="docutils literal notranslate"><span class="pre">{&quot;name&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;path&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;partitions&quot;:</span> <span class="pre">[...],</span> <span class="pre">&quot;m_query&quot;:</span> <span class="pre">{...}}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/source</span></code> → Returns <code class="docutils literal notranslate"><span class="pre">{&quot;table&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;m_query&quot;:</span> <span class="pre">{...},</span> <span class="pre">&quot;source_table&quot;:</span> <span class="pre">{...},</span> <span class="pre">&quot;data_source&quot;:</span> <span class="pre">{...}}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/kg/{job_id}/tables</span></code> → Expects <code class="docutils literal notranslate"><span class="pre">{&quot;name&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;path&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;partitions&quot;:</span> <span class="pre">[...]}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/kg/{job_id}/tables/{table}</span></code> → Expects <code class="docutils literal notranslate"><span class="pre">{&quot;path&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;partitions&quot;:</span> <span class="pre">[...]}</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="implementation-details">
+<h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading"></a></h2>
+<section id="service-layer">
+<h3>Service Layer<a class="headerlink" href="#service-layer" title="Link to this heading"></a></h3>
+<p>All tools use <code class="docutils literal notranslate"><span class="pre">get_datamodel_service()</span></code> which returns either:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">KGDataModelService</span></code></strong>: When Knowledge Graph backend is available (uses KG API endpoints)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">DataModelService</span></code></strong>: Legacy service (uses JSON file operations)</p></li>
+</ul>
+<p>Tools check for KG service methods using <code class="docutils literal notranslate"><span class="pre">hasattr()</span></code> and gracefully handle both backends.</p>
+</section>
+<section id="partition-tools-pattern">
+<h3>Partition Tools Pattern<a class="headerlink" href="#partition-tools-pattern" title="Link to this heading"></a></h3>
+<p>Partition tools follow this pattern:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bi_tools.services.datamodel_service</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datamodel_service</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">get_datamodel_service</span><span class="p">()</span>
+
+<span class="c1"># Check for KG partition endpoint</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="s2">&quot;get_partition&quot;</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Knowledge Graph partition endpoint not available.&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use KG partition endpoint</span>
+<span class="n">partition_payload</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_partition</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
+<span class="n">partition_obj</span> <span class="o">=</span> <span class="p">(</span><span class="n">partition_payload</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sql-extraction">
+<h3>SQL Extraction<a class="headerlink" href="#sql-extraction" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">update_partition_source</span></code> tool extracts SQL from M Query expressions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_extract_sql_from_m_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract SQL from Value.NativeQuery in M Query expression.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">expression</span> <span class="ow">or</span> <span class="s2">&quot;Value.NativeQuery&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">expression</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Value\.NativeQuery\s*\([^,]+,\s*&quot;([\s\S]*?)&quot;&#39;</span><span class="p">,</span> <span class="n">expression</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="k">else</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>The extracted SQL is included in the updates dict when updating partitions.</p>
+</section>
+</section>
+<section id="tool-locations">
+<h2>Tool Locations<a class="headerlink" href="#tool-locations" title="Link to this heading"></a></h2>
+<p>All Power BI tools are located in <code class="docutils literal notranslate"><span class="pre">bi_tools/tools/</span></code>:</p>
+<ul class="simple">
+<li><p><strong>SQL Tools</strong>: <code class="docutils literal notranslate"><span class="pre">bi_tools/tools/sql/</span></code></p></li>
+<li><p><strong>M Query Tools</strong>: <code class="docutils literal notranslate"><span class="pre">bi_tools/tools/mquery/</span></code></p></li>
+<li><p><strong>Partition Tools</strong>: <code class="docutils literal notranslate"><span class="pre">bi_tools/tools/partition/</span></code></p></li>
+</ul>
+</section>
+<section id="service-implementation">
+<h2>Service Implementation<a class="headerlink" href="#service-implementation" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">KGDataModelService</span></code> (<code class="docutils literal notranslate"><span class="pre">bi_tools/services/kg_datamodel_service.py</span></code>) provides methods that map to KG API endpoints:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_table_source()</span></code> → <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/source</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">put_table_sql()</span></code> → <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/kg/{job_id}/tables/{table}/sql</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">put_table_mquery()</span></code> → <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/kg/{job_id}/tables/{table}/mquery</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">patch_table_mquery()</span></code> → <code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/kg/{job_id}/tables/{table}/mquery</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_partition()</span></code> → <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/kg/{job_id}/tables/{table}/partition</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">patch_table_partition()</span></code> → <code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/kg/{job_id}/tables/{table}/partition</span></code></p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>Summary<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>✅ <strong>All tools are aligned with KG API endpoints</strong>
+✅ <strong>Partition tools use KG partition endpoints exclusively</strong>
+✅ <strong>SQL extraction from M Query expressions is implemented</strong>
+✅ <strong>Tools gracefully handle both KG and legacy backends</strong></p>
+<p>The Power BI implementation provides a consistent interface to the Knowledge Graph service through the <code class="docutils literal notranslate"><span class="pre">KGDataModelService</span></code>, ensuring all tools work seamlessly with the KG backend.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

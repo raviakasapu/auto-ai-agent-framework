@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Troubleshooting &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Part 6 - Domain Playbooks" href="../part6_playbooks/index.html" />
+    <link rel="prev" title="Security &amp; Guardrails" href="security.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 5: Operating the Framework</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html">Monitoring &amp; Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security.html">Security &amp; Guardrails</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#agent-not-completing">Agent Not Completing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#symptom">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#causes-solutions">Causes &amp; Solutions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#previous-turn-completion-detected">Previous Turn Completion Detected</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solution">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tool-not-found">Tool Not Found</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#context-not-available">Context Not Available</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#llm-timeout">LLM Timeout</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-not-shared">Memory Not Shared</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#events-not-received">Events Not Received</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id10">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#policies-not-provided">Policies Not Provided</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id12">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-variable-not-expanded">YAML Variable Not Expanded</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id14">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#debug-logging">Debug Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#phoenix-connection-failed">Phoenix Connection Failed</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id16">Symptom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 5: Operating the Framework</a></li>
+      <li class="breadcrumb-item active">Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part5_operations/troubleshooting.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h1>
+<p>Common issues and solutions.</p>
+<section id="agent-not-completing">
+<h2>Agent Not Completing<a class="headerlink" href="#agent-not-completing" title="Link to this heading"></a></h2>
+<section id="symptom">
+<h3>Symptom<a class="headerlink" href="#symptom" title="Link to this heading"></a></h3>
+<p>Agent runs but never returns a result.</p>
+</section>
+<section id="causes-solutions">
+<h3>Causes &amp; Solutions<a class="headerlink" href="#causes-solutions" title="Link to this heading"></a></h3>
+<p><strong>1. Completion not detected</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check completion detector configuration</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">DefaultCompletionDetector</span><span class="p">(</span>
+    <span class="n">indicators</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;completed&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="s2">&quot;success&quot;</span><span class="p">],</span>
+    <span class="n">check_history_depth</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Ensure tools return completion indicators</span>
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_tool</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+        <span class="s2">&quot;human_readable_summary&quot;</span><span class="p">:</span> <span class="s2">&quot;Task completed successfully&quot;</span>  <span class="c1"># Include this!</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>2. Max iterations reached</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Increase max iterations</span>
+<span class="n">termination</span> <span class="o">=</span> <span class="n">DefaultTerminationPolicy</span><span class="p">(</span>
+    <span class="n">max_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># Default is 10</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>3. Loop detected</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Tune loop prevention</span>
+<span class="n">loop_prevention</span> <span class="o">=</span> <span class="n">DefaultLoopPreventionPolicy</span><span class="p">(</span>
+    <span class="n">repetition_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>  <span class="c1"># Allow more retries</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="previous-turn-completion-detected">
+<h2>Previous Turn Completion Detected<a class="headerlink" href="#previous-turn-completion-detected" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Symptom<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Agent immediately returns, detecting completion from previous turn.</p>
+</section>
+<section id="solution">
+<h3>Solution<a class="headerlink" href="#solution" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">DefaultCompletionDetector</span></code> now only checks current turn history:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is handled automatically</span>
+<span class="c1"># The detector finds the last &quot;task&quot; entry and only checks history after it</span>
+</pre></div>
+</div>
+<p>If you have a custom detector, implement turn-scoping:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_get_current_turn_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">history</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;task&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">history</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">history</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="tool-not-found">
+<h2>Tool Not Found<a class="headerlink" href="#tool-not-found" title="Link to this heading"></a></h2>
+<section id="id2">
+<h3>Symptom<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Error</span><span class="p">:</span> <span class="n">Tool</span> <span class="s1">&#39;my_tool&#39;</span> <span class="ow">not</span> <span class="n">found</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>Solution<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Ensure tool is registered and included:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Register the tool</span>
+<span class="n">register_tool</span><span class="p">(</span><span class="s2">&quot;MyTool&quot;</span><span class="p">,</span> <span class="n">MyTool</span><span class="p">)</span>
+
+<span class="c1"># 2. Include in agent config</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">my_tool</span><span class="p">],</span>  <span class="c1"># Tool instance here</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>In YAML:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_tool</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyTool</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">my_tool</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># Reference by name</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="context-not-available">
+<h2>Context Not Available<a class="headerlink" href="#context-not-available" title="Link to this heading"></a></h2>
+<section id="id4">
+<h3>Symptom<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_from_context</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">)</span> <span class="n">returns</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>Solution<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>Set context before agent execution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.services.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_request_context</span>
+
+<span class="c1"># Set BEFORE creating agent</span>
+<span class="n">set_request_context</span><span class="p">({</span>
+    <span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="s2">&quot;123&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;JOB_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;123&quot;</span><span class="p">,</span>  <span class="c1"># For YAML expansion</span>
+<span class="p">})</span>
+
+<span class="n">agent</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span><span class="s2">&quot;config.yaml&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="llm-timeout">
+<h2>LLM Timeout<a class="headerlink" href="#llm-timeout" title="Link to this heading"></a></h2>
+<section id="id6">
+<h3>Symptom<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">httpx</span><span class="o">.</span><span class="n">ReadTimeout</span><span class="p">:</span> <span class="n">timed</span> <span class="n">out</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3>Solution<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gateway</span> <span class="o">=</span> <span class="n">OpenAIGateway</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>  <span class="c1"># Increase timeout</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Or in environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">OPENAI_TIMEOUT</span><span class="o">=</span><span class="m">120</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="memory-not-shared">
+<h2>Memory Not Shared<a class="headerlink" href="#memory-not-shared" title="Link to this heading"></a></h2>
+<section id="id8">
+<h3>Symptom<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<p>Agents don’t see each other’s history.</p>
+</section>
+<section id="id9">
+<h3>Solution<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<p>Use same namespace:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Same namespace = shared context</span>
+<span class="n">memory1</span> <span class="o">=</span> <span class="n">SharedInMemoryMemory</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;job_123&quot;</span><span class="p">,</span> <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;worker_1&quot;</span><span class="p">)</span>
+<span class="n">memory2</span> <span class="o">=</span> <span class="n">SharedInMemoryMemory</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;job_123&quot;</span><span class="p">,</span> <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;worker_2&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For managers, use hierarchical memory:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">memory</span> <span class="o">=</span> <span class="n">HierarchicalMessageStoreMemory</span><span class="p">(</span>
+    <span class="n">message_store</span><span class="o">=</span><span class="n">store</span><span class="p">,</span>
+    <span class="n">location</span><span class="o">=</span><span class="s2">&quot;job_123&quot;</span><span class="p">,</span>
+    <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;manager&quot;</span><span class="p">,</span>
+    <span class="n">subordinates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;worker_1&quot;</span><span class="p">,</span> <span class="s2">&quot;worker_2&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="events-not-received">
+<h2>Events Not Received<a class="headerlink" href="#events-not-received" title="Link to this heading"></a></h2>
+<section id="id10">
+<h3>Symptom<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<p>Phoenix/WebSocket not receiving events.</p>
+</section>
+<section id="id11">
+<h3>Solution<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p><strong>1. Ensure EventBus is shared</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">event_bus</span> <span class="o">=</span> <span class="n">EventBus</span><span class="p">()</span>
+<span class="n">event_bus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">phoenix_subscriber</span><span class="p">)</span>
+
+<span class="c1"># Pass to ALL agents in hierarchy</span>
+<span class="n">orchestrator</span> <span class="o">=</span> <span class="n">ManagerAgent</span><span class="p">(</span><span class="n">event_bus</span><span class="o">=</span><span class="n">event_bus</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="n">worker</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">event_bus</span><span class="o">=</span><span class="n">event_bus</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>2. Check event allowlist</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allow all events</span>
+<span class="nv">FRONTEND_EVENT_ALLOWLIST</span><span class="o">=</span><span class="s2">&quot;*&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="policies-not-provided">
+<h2>Policies Not Provided<a class="headerlink" href="#policies-not-provided" title="Link to this heading"></a></h2>
+<section id="id12">
+<h3>Symptom<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">ValueError</span><span class="p">:</span> <span class="n">Required</span> <span class="n">policy</span> <span class="s1">&#39;completion&#39;</span> <span class="ow">not</span> <span class="n">provided</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h3>Solution<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<p>Policies are required. Use a preset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_preset</span>
+
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="n">planner</span><span class="o">=</span><span class="n">planner</span><span class="p">,</span>
+    <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="n">tools</span><span class="p">,</span>
+    <span class="n">policies</span><span class="o">=</span><span class="n">get_preset</span><span class="p">(</span><span class="s2">&quot;simple&quot;</span><span class="p">),</span>  <span class="c1"># Required!</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="yaml-variable-not-expanded">
+<h2>YAML Variable Not Expanded<a class="headerlink" href="#yaml-variable-not-expanded" title="Link to this heading"></a></h2>
+<section id="id14">
+<h3>Symptom<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${JOB_ID}</span><span class="w">  </span><span class="c1"># Stays as literal &quot;${JOB_ID}&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id15">
+<h3>Solution<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<p>Set context before loading:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.services.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_request_context</span>
+
+<span class="n">set_request_context</span><span class="p">({</span>
+    <span class="s2">&quot;JOB_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;job_123&quot;</span><span class="p">,</span>  <span class="c1"># Must match variable name</span>
+<span class="p">})</span>
+
+<span class="n">agent</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span><span class="s2">&quot;config.yaml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="debug-logging">
+<h2>Debug Logging<a class="headerlink" href="#debug-logging" title="Link to this heading"></a></h2>
+<p>Enable detailed logging:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="c1"># Enable framework debug logs</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;agent_framework&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="c1"># Enable HTTP debug logs</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;httpx&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or via environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">LOG_LEVEL</span><span class="o">=</span>DEBUG
+</pre></div>
+</div>
+</section>
+<section id="phoenix-connection-failed">
+<h2>Phoenix Connection Failed<a class="headerlink" href="#phoenix-connection-failed" title="Link to this heading"></a></h2>
+<section id="id16">
+<h3>Symptom<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Connection</span> <span class="n">refused</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">6006</span>
+</pre></div>
+</div>
+</section>
+<section id="id17">
+<h3>Solution<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<p><strong>1. Start Phoenix</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">6006</span>:6006<span class="w"> </span>arizephoenix/phoenix
+</pre></div>
+</div>
+<p><strong>2. Check endpoint</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PHOENIX_ENDPOINT</span><span class="o">=</span>http://your-phoenix-server:6006/v1/traces
+</pre></div>
+</div>
+<p><strong>3. Disable if not needed</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Don&#39;t subscribe Phoenix if not available</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PHOENIX_ENDPOINT&quot;</span><span class="p">):</span>
+    <span class="n">event_bus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">PhoenixSubscriber</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Check logs</strong> — Enable DEBUG level</p></li>
+<li><p><strong>Check Phoenix traces</strong> — Look for errors in spans</p></li>
+<li><p><strong>Verify configuration</strong> — Ensure all required fields</p></li>
+<li><p><strong>Check environment</strong> — Verify env vars are set</p></li>
+<li><p><strong>Test isolation</strong> — Run minimal example</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="security.html" class="btn btn-neutral float-left" title="Security &amp; Guardrails" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../part6_playbooks/index.html" class="btn btn-neutral float-right" title="Part 6 - Domain Playbooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

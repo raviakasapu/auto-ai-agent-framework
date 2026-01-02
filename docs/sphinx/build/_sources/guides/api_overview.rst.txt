@@ -1,0 +1,24 @@
+API Overview
+============
+
+This guide summarizes the API surface exposed by the docs server and example app patterns.
+
+Docs Server (FastAPI)
+---------------------
+- ``GET /``: Render agent manifest (tools, parameters, returns).
+- ``GET /reference``: Static Sphinx site (if built).
+- ``GET /pages``: List Markdown docs under ``docs/`` (legacy).
+- ``GET /examples``: Browse example scripts and YAML configs.
+- ``GET /raw?base=...&path=...``: Fetch raw files (examples, configs, docs).
+
+Example App Patterns
+--------------------
+- Minimal run endpoint: ``POST /run`` to invoke an agent created from YAML.
+- Health and readiness endpoints for deployment.
+- Secure configuration via environment variables and secrets.
+
+Next
+----
+- Full reference: :doc:`../api/index`
+- Deployment: :doc:`deployment_layer`
+

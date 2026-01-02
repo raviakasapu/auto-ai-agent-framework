@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent &amp; Policy Stack &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data &amp; Context Services" href="data_services.html" />
+    <link rel="prev" title="Runtime Integration" href="runtime_integration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Power BI Dashboard Editor Implementation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="runtime_integration.html">Runtime Integration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Agent &amp; Policy Stack</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#architecture-overview">Architecture Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#orchestrator">Orchestrator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-highlights">Configuration Highlights</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbi-analysis-manager">PBI Analysis Manager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Configuration Highlights</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#worker-agents">Worker Agents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#model-structure-analyzer">Model Structure Analyzer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dax-analyzer-read-only">DAX Analyzer (Read-Only)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dax-editor-read-write">DAX Editor (Read+Write)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tool-access-restriction">Tool Access Restriction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#policies">Policies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#orchestrator-policies">Orchestrator Policies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#worker-policies">Worker Policies</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-configuration">Memory Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#subscribers">Subscribers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data_services.html">Data &amp; Context Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_coverage.html">Tool Implementation Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="observability_approvals.html">Observability &amp; Approvals</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Power BI Dashboard Editor Implementation</a></li>
+      <li class="breadcrumb-item active">Agent &amp; Policy Stack</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/powerbi_impl/agent_stack.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="agent-policy-stack">
+<h1>Agent &amp; Policy Stack<a class="headerlink" href="#agent-policy-stack" title="Link to this heading"></a></h1>
+<p>This chapter details the Power BI agent hierarchy: orchestrator, managers, and workers.</p>
+<section id="architecture-overview">
+<h2>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>User Request
+    │
+    ▼
+┌─────────────────────────────────────────────────────────────┐
+│ ORCHESTRATOR (ManagerAgent)                                 │
+│ configs/agents/orchestrator.yaml                            │
+│                                                             │
+│ Planner: StrategicPlanner                                   │
+│ Model: gpt-5.1 (strategic)                                  │
+│ Workers: [powerbi-chat, powerbi-analysis, powerbi-designer] │
+└─────────────────────────────────────────────────────────────┘
+    │
+    ├─────────────────────────────────────────────────────────┐
+    │                                                         │
+    ▼                                                         ▼
+┌─────────────────────────────────┐  ┌─────────────────────────────────┐
+│ PBI Analysis Manager            │  │ PBI Designer Manager            │
+│ pbi_analysis_manager.yaml       │  │ pbi_designer_manager.yaml       │
+│                                 │  │                                 │
+│ Planner: ManagerScriptPlanner   │  │ Planner: ManagerScriptPlanner   │
+│ Model: gpt-4o-mini              │  │ Model: gpt-4o-mini              │
+│ Workers:                        │  │ Workers:                        │
+│  - model-structure-analyzer     │  │  - model-structure-editor       │
+│  - sql-analyzer                 │  │  - dax-editor                   │
+│  - validator                    │  │  - mquery-editor                │
+│  - dax-analyzer                 │  │  - sql-editor                   │
+│  - mquery-analyzer              │  │  - validator                    │
+└─────────────────────────────────┘  └─────────────────────────────────┘
+    │                                         │
+    ▼                                         ▼
+┌─────────────────────────────────┐  ┌─────────────────────────────────┐
+│ WORKER AGENTS (Agent)           │  │ WORKER AGENTS (Agent)           │
+│ ReActPlanner + Domain Tools     │  │ ReActPlanner + Domain Tools     │
+└─────────────────────────────────┘  └─────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="orchestrator">
+<h2>Orchestrator<a class="headerlink" href="#orchestrator" title="Link to this heading"></a></h2>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">configs/agents/orchestrator.yaml</span></code></p>
+<section id="configuration-highlights">
+<h3>Configuration Highlights<a class="headerlink" href="#configuration-highlights" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Orchestrator</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Top-level orchestrator that routes user intent to specialized workers.</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Strategic planning - powerful model</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-strategic</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_STRATEGIC_MODEL:-gpt-5.1}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+<span class="w">    </span><span class="nt">follow_up</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">max_phases</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">StrategicPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-strategic</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">powerbi-chat</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">powerbi-analysis</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">powerbi-designer</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">planning_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are Clarifier + Orchestrator...</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="no">Available workers:</span>
+<span class="w">        </span><span class="no">- powerbi-chat: General-purpose chat (NOT data model questions)</span>
+<span class="w">        </span><span class="no">- powerbi-analysis: Read-only analysis of the CURRENT data model</span>
+<span class="w">        </span><span class="no">- powerbi-designer: Model authoring (tables, columns, measures, DAX)</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="no">WORKER SELECTION RUBRIC:</span>
+<span class="w">        </span><span class="no">- powerbi-chat → Off-topic, general Power BI concepts</span>
+<span class="w">        </span><span class="no">- powerbi-analysis → ALL data model questions</span>
+<span class="w">        </span><span class="no">- powerbi-designer → Any authoring or change</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SharedInMemoryMemory</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${JOB_ID}</span>
+<span class="w">      </span><span class="nt">agent_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">orchestrator</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">powerbi-chat</span>
+<span class="w">      </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/chat_assistant.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">powerbi-analysis</span>
+<span class="w">      </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/pbi_analysis_manager.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">powerbi-designer</span>
+<span class="w">      </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/pbi_designer_manager.yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Strategic Planning</strong>: Uses <code class="docutils literal notranslate"><span class="pre">StrategicPlanner</span></code> with powerful model</p></li>
+<li><p><strong>Data Model Context</strong>: Receives KG manifest for informed planning</p></li>
+<li><p><strong>Worker Routing</strong>: Routes to chat, analysis, or designer managers</p></li>
+<li><p><strong>Proportional Planning</strong>: Matches plan complexity to question complexity</p></li>
+</ol>
+</section>
+</section>
+<section id="pbi-analysis-manager">
+<h2>PBI Analysis Manager<a class="headerlink" href="#pbi-analysis-manager" title="Link to this heading"></a></h2>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">configs/agents/pbi_analysis_manager.yaml</span></code></p>
+<section id="id1">
+<h3>Configuration Highlights<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PBI_Analysis_Manager</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Comprehensive</span><span class="nv"> </span><span class="s">analysis</span><span class="nv"> </span><span class="s">manager</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">Power</span><span class="nv"> </span><span class="s">BI</span><span class="nv"> </span><span class="s">models&quot;</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerScriptPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">default_worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">model-structure-analyzer</span>
+<span class="w">      </span><span class="nt">manager_worker_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">powerbi-analysis</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-manager</span>
+<span class="w">      </span><span class="nt">worker_specs</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">model-structure-analyzer</span>
+<span class="w">          </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Read-only</span><span class="nv"> </span><span class="s">model</span><span class="nv"> </span><span class="s">structure</span><span class="nv"> </span><span class="s">explorer&quot;</span>
+<span class="w">          </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_tables</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_columns</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_relationships</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_partitions</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get_partition_source</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_measures</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-analyzer</span>
+<span class="w">          </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SQL</span><span class="nv"> </span><span class="s">analysis</span><span class="nv"> </span><span class="s">specialist&quot;</span>
+<span class="w">          </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_sql_sources</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get_sql_query</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql_analyzer</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_sql</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validator</span>
+<span class="w">          </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Model</span><span class="nv"> </span><span class="s">validation</span><span class="nv"> </span><span class="s">expert&quot;</span>
+<span class="w">          </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_relationships</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_dax</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_mquery</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dax-analyzer</span>
+<span class="w">          </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Read-only</span><span class="nv"> </span><span class="s">DAX</span><span class="nv"> </span><span class="s">analysis&quot;</span>
+<span class="w">          </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_measures</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get_measure_expression</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_dax</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mquery-analyzer</span>
+<span class="w">          </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Read-only</span><span class="nv"> </span><span class="s">M</span><span class="nv"> </span><span class="s">Query</span><span class="nv"> </span><span class="s">analyst&quot;</span>
+<span class="w">          </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_mquery</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_mquery</span>
+
+<span class="w">  </span><span class="nt">synthesizer_agent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/pbi/synthesizer_agent.yaml</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">model-structure-analyzer</span>
+<span class="w">      </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/pbi/model_structure_analyzer.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql-analyzer</span>
+<span class="w">      </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/pbi/sql_analyzer.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validator</span>
+<span class="w">      </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/pbi/validator.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dax-analyzer</span>
+<span class="w">      </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/pbi/dax_analyzer.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mquery-analyzer</span>
+<span class="w">      </span><span class="nt">agent_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/pbi/mquery_analyzer.yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>Key Features<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Script Planning</strong>: Creates deterministic tool scripts for workers</p></li>
+<li><p><strong>Worker Catalog</strong>: Explicit tool specs for each worker</p></li>
+<li><p><strong>Read-Only Workers</strong>: Analysis workers have no write tools</p></li>
+<li><p><strong>Synthesizer</strong>: Separate agent for result aggregation</p></li>
+</ol>
+</section>
+</section>
+<section id="worker-agents">
+<h2>Worker Agents<a class="headerlink" href="#worker-agents" title="Link to this heading"></a></h2>
+<section id="model-structure-analyzer">
+<h3>Model Structure Analyzer<a class="headerlink" href="#model-structure-analyzer" title="Link to this heading"></a></h3>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">configs/agents/pbi/model_structure_analyzer.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ModelStructureAnalyzer</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Read-only analysis of Power BI model structure</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+<span class="w">    </span><span class="nt">termination</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">        </span><span class="nt">terminal_tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">complete_task</span><span class="p p-Indicator">]</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-structure</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">max_parallel_tool_calls</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">      </span><span class="nt">terminal_tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">complete_task</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a Power BI model structure analyzer.</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="no">IMMEDIATE COMPLETION RULE:</span>
+<span class="w">        </span><span class="no">Once you receive a tool result that answers the user&#39;s question,</span>
+<span class="w">        </span><span class="no">IMMEDIATELY call complete_task.</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="no">SIMPLE TASK PATTERNS (1 tool + complete_task):</span>
+<span class="w">        </span><span class="no">- &quot;list tables&quot; → list_tables → complete_task</span>
+<span class="w">        </span><span class="no">- &quot;list columns for X&quot; → list_columns(table=X) → complete_task</span>
+<span class="w">        </span><span class="no">- &quot;show relationships&quot; → list_relationships → complete_task</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_tables</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_columns</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_relationships</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_partitions</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_measures</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">complete_task</span>
+</pre></div>
+</div>
+</section>
+<section id="dax-analyzer-read-only">
+<h3>DAX Analyzer (Read-Only)<a class="headerlink" href="#dax-analyzer-read-only" title="Link to this heading"></a></h3>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">configs/agents/pbi/dax_analyzer.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DAXAnalyzer</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Read-only DAX analysis and optimization advisor</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a DAX analysis expert.</span>
+<span class="w">        </span><span class="no">Focus on reading and analyzing measures, NOT modifying.</span>
+
+<span class="w">  </span><span class="c1"># READ-ONLY tools only - no add_measure or update_measure</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_measures</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get_measure_expression</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_dax</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">convert_dax</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">complete_task</span>
+</pre></div>
+</div>
+</section>
+<section id="dax-editor-read-write">
+<h3>DAX Editor (Read+Write)<a class="headerlink" href="#dax-editor-read-write" title="Link to this heading"></a></h3>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">configs/agents/pbi/dax_editor.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DAXEditor</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DAX authoring with read+write capabilities</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_measures</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get_measure_expression</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">add_measure</span><span class="w">         </span><span class="c1"># Write capability</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update_measure</span><span class="w">      </span><span class="c1"># Write capability</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remove_measure</span><span class="w">      </span><span class="c1"># Write capability</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_dax</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">convert_dax</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">complete_task</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="tool-access-restriction">
+<h2>Tool Access Restriction<a class="headerlink" href="#tool-access-restriction" title="Link to this heading"></a></h2>
+<p>The implementation uses <strong>separate worker configurations</strong> for access control:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Manager</p></th>
+<th class="head"><p>Worker</p></th>
+<th class="head"><p>Access</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pbi-analysis</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dax-analyzer</span></code></p></td>
+<td><p>Read-only</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pbi-designer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dax-editor</span></code></p></td>
+<td><p>Read+write</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pbi-analysis</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model-structure-analyzer</span></code></p></td>
+<td><p>Read-only</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pbi-designer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model-structure-editor</span></code></p></td>
+<td><p>Read+write</p></td>
+</tr>
+</tbody>
+</table>
+<p>This ensures that the analysis manager cannot accidentally modify the data model.</p>
+</section>
+<section id="policies">
+<h2>Policies<a class="headerlink" href="#policies" title="Link to this heading"></a></h2>
+<section id="orchestrator-policies">
+<h3>Orchestrator Policies<a class="headerlink" href="#orchestrator-policies" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+<span class="w">  </span><span class="nt">follow_up</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultFollowUpPolicy</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">max_phases</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">stop_on_completion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</section>
+<section id="worker-policies">
+<h3>Worker Policies<a class="headerlink" href="#worker-policies" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+<span class="w">  </span><span class="nt">termination</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultTerminationPolicy</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">terminal_tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">complete_task</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">on_max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="memory-configuration">
+<h2>Memory Configuration<a class="headerlink" href="#memory-configuration" title="Link to this heading"></a></h2>
+<p>All agents share the same namespace for context propagation:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SharedInMemoryMemory</span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${JOB_ID}</span><span class="w">        </span><span class="c1"># Same for all agents</span>
+<span class="w">    </span><span class="nt">agent_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;unique_key&gt;</span><span class="w">     </span><span class="c1"># Different per agent</span>
+</pre></div>
+</div>
+<p>This enables:</p>
+<ul class="simple">
+<li><p>Conversation history sharing</p></li>
+<li><p>Global updates visibility</p></li>
+<li><p>Cross-agent context awareness</p></li>
+</ul>
+</section>
+<section id="subscribers">
+<h2>Subscribers<a class="headerlink" href="#subscribers" title="Link to this heading"></a></h2>
+<p>All agents include Phoenix for observability:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">phoenix</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PhoenixSubscriber</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${PHOENIX_ENDPOINT:-http://localhost:6006/v1/traces}</span>
+<span class="w">      </span><span class="nt">service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;agent_name&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>The Power BI implementation demonstrates:</p>
+<ul class="simple">
+<li><p>✅ <strong>Hierarchical agents</strong>: Orchestrator → Manager → Worker</p></li>
+<li><p>✅ <strong>Strategic planning</strong>: Powerful model for routing</p></li>
+<li><p>✅ <strong>Script planning</strong>: Deterministic worker execution</p></li>
+<li><p>✅ <strong>Access control</strong>: Separate read/write workers</p></li>
+<li><p>✅ <strong>Shared memory</strong>: Context propagation via namespace</p></li>
+<li><p>✅ <strong>Observability</strong>: Phoenix tracing on all agents</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="runtime_integration.html" class="btn btn-neutral float-left" title="Runtime Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_services.html" class="btn btn-neutral float-right" title="Data &amp; Context Services" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

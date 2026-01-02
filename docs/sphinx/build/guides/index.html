@@ -1,0 +1,241 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guides &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting Started (Complete Guide)" href="00_getting_started.html" />
+    <link rel="prev" title="AI Agent Framework Documentation" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#start-here">Start Here</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="00_getting_started.html">Getting Started (Complete Guide)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html">Quickstart (5 minutes)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="v2_features.html">What’s New in v2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hello_agent.html">Hello Agent (5 minutes)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#howto">How‑To</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="defining_agents_with_yaml.html">Defining Agents with YAML (v1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creating_a_custom_tool.html">Creating a Custom Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="using_docs_server.html">Using the Docs Server</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="execution_framework.html">Execution Framework</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framwrok.html">Framework Integration Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chat_driven_architecture.html">Chat-Driven Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deployment_layer.html">Deployment Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flows.html">Flow Orchestration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="manifest_and_docs_server.html">Manifest and Docs Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="phoenix_tracing.html">Phoenix Tracing (Arize)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-guides">Additional Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="frontend_chat_integration.html">Frontend Chat Integration Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_optimization_strategy.html">Model Optimization Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_interpreter_debugging.html">Python Interpreter Tool - Debugging &amp; Logging Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="strategic_planning_architecture.html">Strategic Planning Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-and-examples">Reference and Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_overview.html">API Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_documentation_notes.html">API Documentation (Legacy Notes)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_config_schema.html">Agent Config Schema (v1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests_and_examples.html">Tests and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sdk_analysis.html">SDK Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guides</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guides">
+<h1>Guides<a class="headerlink" href="#guides" title="Link to this heading"></a></h1>
+<section id="start-here">
+<h2>Start Here<a class="headerlink" href="#start-here" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="00_getting_started.html">Getting Started (Complete Guide)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart (5 minutes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v2_features.html">What’s New in v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hello_agent.html">Hello Agent (5 minutes)</a></li>
+</ul>
+</div>
+</section>
+<section id="howto">
+<h2>How‑To<a class="headerlink" href="#howto" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="defining_agents_with_yaml.html">Defining Agents with YAML (v1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creating_a_custom_tool.html">Creating a Custom Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_docs_server.html">Using the Docs Server</a></li>
+</ul>
+</div>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="execution_framework.html">Execution Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framwrok.html">Framework Integration Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chat_driven_architecture.html">Chat-Driven Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_layer.html">Deployment Layer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flows.html">Flow Orchestration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manifest_and_docs_server.html">Manifest and Docs Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phoenix_tracing.html">Phoenix Tracing (Arize)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structured_final_response.html">Structured Final Response Pattern</a></li>
+</ul>
+</div>
+</section>
+<section id="additional-guides">
+<h2>Additional Guides<a class="headerlink" href="#additional-guides" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="frontend_chat_integration.html">Frontend Chat Integration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_optimization_strategy.html">Model Optimization Strategy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_interpreter_debugging.html">Python Interpreter Tool - Debugging &amp; Logging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategic_planning_architecture.html">Strategic Planning Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_integration.html">Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+</div>
+</section>
+<section id="reference-and-examples">
+<h2>Reference and Examples<a class="headerlink" href="#reference-and-examples" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_overview.html">API Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_documentation_notes.html">API Documentation (Legacy Notes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_config_schema.html">Agent Config Schema (v1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests_and_examples.html">Tests and Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sdk_analysis.html">SDK Analysis</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="AI Agent Framework Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="00_getting_started.html" class="btn btn-neutral float-right" title="Getting Started (Complete Guide)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

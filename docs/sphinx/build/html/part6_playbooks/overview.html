@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Domain Playbooks Overview &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Analytics Playbook" href="data_analytics.html" />
+    <link rel="prev" title="Part 6 - Domain Playbooks" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 6 - Domain Playbooks</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Domain Playbooks Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-a-domain-playbook">What is a Domain Playbook?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pattern-template">Pattern Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-playbooks">Available Playbooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cross-cutting-concerns">Cross-Cutting Concerns</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#observability">Observability</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multi-turn-context">Multi-Turn Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#access-control">Access Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#structured-output">Structured Output</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#building-your-own-playbook">Building Your Own Playbook</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data_analytics.html">Data Analytics Playbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_processing.html">Document Processing Playbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_assistant.html">Code Assistant Playbook</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 6 - Domain Playbooks</a></li>
+      <li class="breadcrumb-item active">Domain Playbooks Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part6_playbooks/overview.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="domain-playbooks-overview">
+<h1>Domain Playbooks Overview<a class="headerlink" href="#domain-playbooks-overview" title="Link to this heading"></a></h1>
+<p>This section provides architectural patterns for building agent systems across different verticals.</p>
+<section id="what-is-a-domain-playbook">
+<h2>What is a Domain Playbook?<a class="headerlink" href="#what-is-a-domain-playbook" title="Link to this heading"></a></h2>
+<p>A Domain Playbook is a recipe for structuring agents, tools, and policies for a specific use case:</p>
+<ul class="simple">
+<li><p><strong>Agent Hierarchy</strong>: How to structure orchestrator, managers, and workers</p></li>
+<li><p><strong>Tool Categories</strong>: What types of tools the domain requires</p></li>
+<li><p><strong>Policy Patterns</strong>: Common HITL, validation, and access control needs</p></li>
+<li><p><strong>Integration Points</strong>: External services and data sources</p></li>
+</ul>
+</section>
+<section id="pattern-template">
+<h2>Pattern Template<a class="headerlink" href="#pattern-template" title="Link to this heading"></a></h2>
+<p>Each playbook follows this structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────┐
+│ ORCHESTRATOR                                                │
+│ - Intent clarification                                      │
+│ - Strategic planning                                        │
+│ - Worker routing                                            │
+└─────────────────────────────────────────────────────────────┘
+         │
+         ├──────────────────────────────────────────┐
+         │                                          │
+         ▼                                          ▼
+┌─────────────────────────────┐    ┌─────────────────────────────┐
+│ DOMAIN MANAGER (Read)       │    │ DOMAIN MANAGER (Write)      │
+│ - Analysis tasks            │    │ - Authoring tasks           │
+│ - Read-only workers         │    │ - Write-capable workers     │
+└─────────────────────────────┘    └─────────────────────────────┘
+         │                                          │
+         ▼                                          ▼
+┌─────────────────────────────┐    ┌─────────────────────────────┐
+│ SPECIALIZED WORKERS         │    │ SPECIALIZED WORKERS         │
+│ - Domain-specific tools     │    │ - Domain-specific tools     │
+│ - ReAct planning            │    │ - HITL for writes           │
+└─────────────────────────────┘    └─────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="available-playbooks">
+<h2>Available Playbooks<a class="headerlink" href="#available-playbooks" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Playbook</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Reference Implementation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="data_analytics.html"><span class="std std-doc">Data Analytics</span></a></p></td>
+<td><p>BI dashboards, data models</p></td>
+<td><p><a class="reference internal" href="../powerbi_impl/index.html"><span class="doc std std-doc">Power BI Implementation</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="document_processing.html"><span class="std std-doc">Document Processing</span></a></p></td>
+<td><p>Document analysis, extraction</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="code_assistant.html"><span class="std std-doc">Code Assistant</span></a></p></td>
+<td><p>Code analysis, refactoring</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cross-cutting-concerns">
+<h2>Cross-Cutting Concerns<a class="headerlink" href="#cross-cutting-concerns" title="Link to this heading"></a></h2>
+<p>All playbooks share these framework capabilities:</p>
+<section id="observability">
+<h3>Observability<a class="headerlink" href="#observability" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Phoenix tracing for all spans</p></li>
+<li><p>Hierarchical event streaming</p></li>
+<li><p>LLM cost tracking</p></li>
+</ul>
+</section>
+<section id="multi-turn-context">
+<h3>Multi-Turn Context<a class="headerlink" href="#multi-turn-context" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>SharedInMemoryMemory for context sharing</p></li>
+<li><p>MessageStoreMemory for persistence</p></li>
+<li><p>Hierarchical history filtering</p></li>
+</ul>
+</section>
+<section id="access-control">
+<h3>Access Control<a class="headerlink" href="#access-control" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Separate read/write workers</p></li>
+<li><p>HITL policies for writes</p></li>
+<li><p>Tool-level permissions</p></li>
+</ul>
+</section>
+<section id="structured-output">
+<h3>Structured Output<a class="headerlink" href="#structured-output" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>FinalResponse contract</p></li>
+<li><p>Machine-readable operation + payload</p></li>
+<li><p>Human-readable summary</p></li>
+</ul>
+</section>
+</section>
+<section id="building-your-own-playbook">
+<h2>Building Your Own Playbook<a class="headerlink" href="#building-your-own-playbook" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Identify the domain</strong> — What problem space?</p></li>
+<li><p><strong>Define operations</strong> — Read vs write capabilities</p></li>
+<li><p><strong>Design tool set</strong> — Domain-specific actions</p></li>
+<li><p><strong>Structure hierarchy</strong> — Orchestrator → Manager → Worker</p></li>
+<li><p><strong>Configure policies</strong> — HITL, termination, follow-ups</p></li>
+<li><p><strong>Set up context</strong> — Data services and manifests</p></li>
+<li><p><strong>Wire observability</strong> — Phoenix + event streaming</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Part 6 - Domain Playbooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_analytics.html" class="btn btn-neutral float-right" title="Data Analytics Playbook" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

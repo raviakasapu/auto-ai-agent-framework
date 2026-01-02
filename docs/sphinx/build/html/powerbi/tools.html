@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Power BI Tools &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Power BI Tools</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/powerbi/tools.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="power-bi-tools">
+<h1>Power BI Tools<a class="headerlink" href="#power-bi-tools" title="Link to this heading"></a></h1>
+<p>These domain-specific tools are located in <strong><code class="docutils literal notranslate"><span class="pre">bi_tools/tools/</span></code></strong> and operate on Power BI data models.</p>
+<blockquote>
+<div><p><strong>Note:</strong> These tools demonstrate how to extend the generic framework with domain-specific functionality.</p>
+</div></blockquote>
+<section id="tool-categories">
+<h2>Tool Categories<a class="headerlink" href="#tool-categories" title="Link to this heading"></a></h2>
+<section id="column-tools-bi-tools-tools-column">
+<h3>Column Tools (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/column/</span></code>)<a class="headerlink" href="#column-tools-bi-tools-tools-column" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AddColumnTool</span></code></p></td>
+<td><p>Add a new column to a table</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ListColumnsTool</span></code></p></td>
+<td><p>List columns in a table</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ListCalculatedColumnsTool</span></code></p></td>
+<td><p>List calculated columns</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RenameColumnTool</span></code></p></td>
+<td><p>Rename a column</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RemoveColumnTool</span></code></p></td>
+<td><p>Remove a column</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UpdateCalculatedColumnTool</span></code></p></td>
+<td><p>Update calculated column expression</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="measure-tools-bi-tools-tools-measure">
+<h3>Measure Tools (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/measure/</span></code>)<a class="headerlink" href="#measure-tools-bi-tools-tools-measure" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AddMeasureTool</span></code></p></td>
+<td><p>Add a DAX measure</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ListMeasuresTool</span></code></p></td>
+<td><p>List measures in a table</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GetMeasureExpressionTool</span></code></p></td>
+<td><p>Get measure DAX expression ✨</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UpdateMeasureTool</span></code></p></td>
+<td><p>Update measure expression ✨</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RemoveMeasureTool</span></code></p></td>
+<td><p>Remove a measure</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ValidateDAXTool</span></code></p></td>
+<td><p>Validate DAX syntax</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ConvertDAXTool</span></code></p></td>
+<td><p>Convert DAX expressions</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>New Tools Added (v2.3)</strong>:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">GetMeasureExpressionTool</span></code></strong>: Retrieve the DAX formula for a specific measure</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">UpdateMeasureTool</span></code></strong>: Edit existing DAX measure expressions or rename measures</p></li>
+</ul>
+</section>
+<section id="relationship-tools-bi-tools-tools-relationship">
+<h3>Relationship Tools (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/relationship/</span></code>)<a class="headerlink" href="#relationship-tools-bi-tools-tools-relationship" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AddRelationshipTool</span></code></p></td>
+<td><p>Create a relationship between columns</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ListRelationshipsTool</span></code></p></td>
+<td><p>List all relationships</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UpdateRelationshipTool</span></code></p></td>
+<td><p>Modify relationship properties</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RemoveRelationshipTool</span></code></p></td>
+<td><p>Remove a relationship</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ValidateRelationshipsTool</span></code></p></td>
+<td><p>Validate relationship integrity</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="table-tools-bi-tools-tools-table">
+<h3>Table Tools (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/table/</span></code>)<a class="headerlink" href="#table-tools-bi-tools-tools-table" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AddTableTool</span></code></p></td>
+<td><p>Add a new table</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ListTablesTool</span></code></p></td>
+<td><p>List all tables in the model</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sql-tools-bi-tools-tools-sql">
+<h3>SQL Tools (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/sql/</span></code>)<a class="headerlink" href="#sql-tools-bi-tools-tools-sql" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GetSqlQueryTool</span></code></p></td>
+<td><p>Get SQL source query</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UpdateSqlQueryTool</span></code></p></td>
+<td><p>Update SQL query</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ListSqlSourcesTool</span></code></p></td>
+<td><p>List SQL sources</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ValidateSqlTool</span></code></p></td>
+<td><p>Validate SQL syntax</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PrepareSqlTool</span></code></p></td>
+<td><p>Prepare SQL for execution</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SqlAnalyzerTool</span></code></p></td>
+<td><p>Analyze SQL structure</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="partition-tools-bi-tools-tools-partition">
+<h3>Partition Tools (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/partition/</span></code>) ✨<a class="headerlink" href="#partition-tools-bi-tools-tools-partition" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ListPartitionsTool</span></code></p></td>
+<td><p>List all partitions with their source type (M Query, SQL, etc.)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GetPartitionSourceTool</span></code></p></td>
+<td><p>Retrieve M Query, SQL, or other source expression for a partition</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UpdatePartitionSourceTool</span></code></p></td>
+<td><p>Update M Query, SQL, or other source expressions for partitions</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Features</strong>:</p>
+<ul class="simple">
+<li><p>✅ Full M Query support (view and edit Power Query expressions)</p></li>
+<li><p>✅ Full SQL support (view and edit SQL queries in DirectQuery scenarios)</p></li>
+<li><p>✅ Auto-detects source type (M Query, SQL, Expression)</p></li>
+<li><p>✅ Validates table and partition existence</p></li>
+</ul>
+</section>
+<section id="other-tools">
+<h3>Other Tools<a class="headerlink" href="#other-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>M Query Tools</strong> (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/mquery/</span></code>) - Power Query M operations</p></li>
+<li><p><strong>Metadata Tools</strong> (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/metadata/</span></code>) - Model metadata access</p></li>
+<li><p><strong>Model Tools</strong> (<code class="docutils literal notranslate"><span class="pre">bi_tools/tools/model/</span></code>) - Schema sync and diff</p></li>
+</ul>
+</section>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentFactory</span>
+
+<span class="c1"># Create agent from YAML config</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/schema_editor.yaml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run with natural language</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="s2">&quot;Create a relationship between &#39;SALES&#39;[CustomerId] and &#39;CUSTOMERS&#39;[Id]&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="code-locations">
+<h2>Code Locations<a class="headerlink" href="#code-locations" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Location</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bi_tools/tools/</span></code></p></td>
+<td><p>Tool implementations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bi_tools/services/</span></code></p></td>
+<td><p>DataModelService, KGDataModelService</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">configs/tools/</span></code></p></td>
+<td><p>YAML tool registration configs</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">configs/agents/</span></code></p></td>
+<td><p>Agent YAML configurations</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

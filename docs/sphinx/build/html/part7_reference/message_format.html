@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Format Specification &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Environment Variables" href="env_variables.html" />
+    <link rel="prev" title="API Reference" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 7: Reference &amp; Appendices</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Message Format Specification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#message-structure">Message Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#type-constants">Type Constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#message-types">Message Types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#user-message">user_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#assistant-message">assistant_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#task">task</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#action">action</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#observation">observation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#error">error</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#final">final</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#synthesis">synthesis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strategic-plan">strategic_plan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#suggested-plan">suggested_plan</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#type-collections">Type Collections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#message-builder">Message Builder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="env_variables.html">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 7: Reference &amp; Appendices</a></li>
+      <li class="breadcrumb-item active">Message Format Specification</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part7_reference/message_format.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="message-format-specification">
+<h1>Message Format Specification<a class="headerlink" href="#message-format-specification" title="Link to this heading"></a></h1>
+<p>Complete reference for message formats used by the framework.</p>
+<section id="message-structure">
+<h2>Message Structure<a class="headerlink" href="#message-structure" title="Link to this heading"></a></h2>
+<p>All messages must include:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>        <span class="c1"># Required: Message type constant</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>     <span class="c1"># Required: Message content</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>   <span class="c1"># Optional: ISO timestamp</span>
+    <span class="s2">&quot;agent_key&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>   <span class="c1"># Optional: Agent identifier</span>
+    <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>   <span class="c1"># Optional: Additional metadata</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="type-constants">
+<h2>Type Constants<a class="headerlink" href="#type-constants" title="Link to this heading"></a></h2>
+<p>Import from <code class="docutils literal notranslate"><span class="pre">agent_framework.constants</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="c1"># Conversation</span>
+    <span class="n">USER_MESSAGE</span><span class="p">,</span>           <span class="c1"># &quot;user_message&quot;</span>
+    <span class="n">ASSISTANT_MESSAGE</span><span class="p">,</span>      <span class="c1"># &quot;assistant_message&quot;</span>
+    
+    <span class="c1"># Execution Trace</span>
+    <span class="n">TASK</span><span class="p">,</span>                   <span class="c1"># &quot;task&quot;</span>
+    <span class="n">ACTION</span><span class="p">,</span>                 <span class="c1"># &quot;action&quot;</span>
+    <span class="n">OBSERVATION</span><span class="p">,</span>            <span class="c1"># &quot;observation&quot;</span>
+    <span class="n">ERROR</span><span class="p">,</span>                  <span class="c1"># &quot;error&quot;</span>
+    
+    <span class="c1"># Completion</span>
+    <span class="n">FINAL</span><span class="p">,</span>                  <span class="c1"># &quot;final&quot;</span>
+    <span class="n">SYNTHESIS</span><span class="p">,</span>              <span class="c1"># &quot;synthesis&quot;</span>
+    
+    <span class="c1"># Planning</span>
+    <span class="n">STRATEGIC_PLAN</span><span class="p">,</span>         <span class="c1"># &quot;strategic_plan&quot;</span>
+    <span class="n">SUGGESTED_PLAN</span><span class="p">,</span>         <span class="c1"># &quot;suggested_plan&quot;</span>
+    <span class="n">SCRIPT_PLAN</span><span class="p">,</span>            <span class="c1"># &quot;script_plan&quot;</span>
+    <span class="n">DIRECTOR_CONTEXT</span><span class="p">,</span>       <span class="c1"># &quot;director_context&quot;</span>
+    <span class="n">INJECTED_CONTEXT</span><span class="p">,</span>       <span class="c1"># &quot;injected_context&quot;</span>
+    <span class="n">DELEGATION</span><span class="p">,</span>             <span class="c1"># &quot;delegation&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="message-types">
+<h2>Message Types<a class="headerlink" href="#message-types" title="Link to this heading"></a></h2>
+<section id="user-message">
+<h3>user_message<a class="headerlink" href="#user-message" title="Link to this heading"></a></h3>
+<p>User input in conversation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;user_message&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;List all tables in the model&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00Z&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;user_123&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="assistant-message">
+<h3>assistant_message<a class="headerlink" href="#assistant-message" title="Link to this heading"></a></h3>
+<p>Assistant response to user.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant_message&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Found 5 tables: Users, Orders, Products, Categories, Reviews&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:05Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="task">
+<h3>task<a class="headerlink" href="#task" title="Link to this heading"></a></h3>
+<p>Task assignment to agent.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;task&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Analyze the data model structure&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;agent_key&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="action">
+<h3>action<a class="headerlink" href="#action" title="Link to this heading"></a></h3>
+<p>Tool invocation request.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;list_tables&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;public&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;agent_key&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:01Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="observation">
+<h3>observation<a class="headerlink" href="#observation" title="Link to this heading"></a></h3>
+<p>Tool execution result.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;observation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;tables&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Users&quot;</span><span class="p">,</span> <span class="s2">&quot;Orders&quot;</span><span class="p">,</span> <span class="s2">&quot;Products&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;human_readable_summary&quot;</span><span class="p">:</span> <span class="s2">&quot;Found 3 tables&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;agent_key&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:02Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="error">
+<h3>error<a class="headerlink" href="#error" title="Link to this heading"></a></h3>
+<p>Error during execution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="s2">&quot;Connection refused&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;error_type&quot;</span><span class="p">:</span> <span class="s2">&quot;ConnectionError&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;database_query&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;agent_key&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:02Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="final">
+<h3>final<a class="headerlink" href="#final" title="Link to this heading"></a></h3>
+<p>Task completion signal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;final&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="s2">&quot;display_message&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;payload&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Analysis complete&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;human_readable_summary&quot;</span><span class="p">:</span> <span class="s2">&quot;Successfully analyzed 3 tables&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;agent_key&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:03Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="synthesis">
+<h3>synthesis<a class="headerlink" href="#synthesis" title="Link to this heading"></a></h3>
+<p>Manager aggregation of worker results.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;synthesis&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Combined analysis from 3 workers: found 5 tables, 25 columns, 3 relationships&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;phase_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;from_manager&quot;</span><span class="p">:</span> <span class="s2">&quot;analysis_manager&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:10Z&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_global&quot;</span><span class="p">:</span> <span class="n">true</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="strategic-plan">
+<h3>strategic_plan<a class="headerlink" href="#strategic-plan" title="Link to this heading"></a></h3>
+<p>Orchestrator’s execution plan.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;strategic_plan&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;refined_intent&quot;</span><span class="p">:</span> <span class="s2">&quot;Analyze model structure and validate relationships&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;plan&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;phases&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Analyze&quot;</span><span class="p">,</span> <span class="s2">&quot;worker&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span> <span class="s2">&quot;goals&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Validate&quot;</span><span class="p">,</span> <span class="s2">&quot;worker&quot;</span><span class="p">:</span> <span class="s2">&quot;validator&quot;</span><span class="p">,</span> <span class="s2">&quot;goals&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">}</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;primary_worker&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;rationale&quot;</span><span class="p">:</span> <span class="s2">&quot;Analysis before validation&quot;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="suggested-plan">
+<h3>suggested_plan<a class="headerlink" href="#suggested-plan" title="Link to this heading"></a></h3>
+<p>Plan suggested to worker.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;suggested_plan&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;steps&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;List tables&quot;</span><span class="p">,</span> <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;list_tables&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Get columns&quot;</span><span class="p">,</span> <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;list_columns&quot;</span><span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;agent_key&quot;</span><span class="p">:</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="type-collections">
+<h2>Type Collections<a class="headerlink" href="#type-collections" title="Link to this heading"></a></h2>
+<p>For filtering:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CONVERSATION_TYPES</span><span class="p">,</span>      <span class="c1"># [USER_MESSAGE, ASSISTANT_MESSAGE]</span>
+    <span class="n">EXECUTION_TRACE_TYPES</span><span class="p">,</span>   <span class="c1"># [TASK, ACTION, OBSERVATION, ERROR]</span>
+    <span class="n">COMPLETION_TYPES</span><span class="p">,</span>        <span class="c1"># [FINAL, SYNTHESIS]</span>
+    <span class="n">PLANNING_TYPES</span><span class="p">,</span>          <span class="c1"># [STRATEGIC_PLAN, SUGGESTED_PLAN, SCRIPT_PLAN]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="message-builder">
+<h2>Message Builder<a class="headerlink" href="#message-builder" title="Link to this heading"></a></h2>
+<p>Use utilities for consistent formatting:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.utils.message_builder</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_user_message</span><span class="p">,</span>
+    <span class="n">create_assistant_message</span><span class="p">,</span>
+    <span class="n">create_task_entry</span><span class="p">,</span>
+    <span class="n">create_action</span><span class="p">,</span>
+    <span class="n">create_observation</span><span class="p">,</span>
+    <span class="n">create_error</span><span class="p">,</span>
+    <span class="n">create_final</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Examples</span>
+<span class="n">msg</span> <span class="o">=</span> <span class="n">create_user_message</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;123&quot;</span><span class="p">})</span>
+<span class="n">task</span> <span class="o">=</span> <span class="n">create_task_entry</span><span class="p">(</span><span class="s2">&quot;Analyze data&quot;</span><span class="p">,</span> <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;worker_1&quot;</span><span class="p">)</span>
+<span class="n">obs</span> <span class="o">=</span> <span class="n">create_observation</span><span class="p">({</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">},</span> <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;worker_1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="validation">
+<h2>Validation<a class="headerlink" href="#validation" title="Link to this heading"></a></h2>
+<p>Messages are validated by the framework. Ensure:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> is a valid constant</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">content</span></code> is appropriate for the type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_key</span></code> is provided for execution traces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code> is ISO format if provided</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="env_variables.html" class="btn btn-neutral float-right" title="Environment Variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

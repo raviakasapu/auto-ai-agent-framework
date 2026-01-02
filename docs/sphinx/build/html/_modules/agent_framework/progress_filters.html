@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>agent_framework.progress_filters &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/index.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/observability.html">Observability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/message_store_integration.html">Implementation Guide: Message Store Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/message_store_format.html">Message Store Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/message_store_implementation.html">Message Store Implementation Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">agent_framework.progress_filters</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for agent_framework.progress_filters</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="n">DEFAULT_FRONTEND_EVENTS</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;connected&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;request_start&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;orchestrator_start&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;orchestrator_phase_start&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;orchestrator_phase_end&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;orchestrator_end&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;synthesis_start&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;synthesis_end&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;manager_start&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;manager_script_planned&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;manager_step_start&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;manager_step_end&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;manager_end&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;delegation_planned&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;delegation_chosen&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;delegation_executed&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;agent_start&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;agent_end&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;worker_tool_call&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;worker_tool_result&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;action_planned&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;action_executed&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;policy_denied&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="normalize_event_names">
+<a class="viewcode-back" href="../../api/index.html#agent_framework.progress_filters.normalize_event_names">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_event_names</span><span class="p">(</span><span class="n">events</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize a collection of event names for filtering.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        - None if &quot;*&quot; is present (treat as allow all)</span>
+<span class="sd">        - Empty set if there were no usable entries</span>
+<span class="sd">        - Otherwise a normalized set of names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">normalized</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">evt</span> <span class="ow">in</span> <span class="n">events</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">normalized</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">&quot;*&quot;</span> <span class="ow">in</span> <span class="n">normalized</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">normalized</span></div>
+
+
+
+<div class="viewcode-block" id="resolve_frontend_allowlist">
+<a class="viewcode-back" href="../../api/index.html#agent_framework.progress_filters.resolve_frontend_allowlist">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">resolve_frontend_allowlist</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolve optional FRONTEND_EVENT_ALLOWLIST override from environment.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (has_override, normalized_events_or_none)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;FRONTEND_EVENT_ALLOWLIST&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">normalize_event_names</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

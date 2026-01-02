@@ -1,0 +1,1267 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>framework.core.agent &mdash; AI Agent Framework 2.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=20623aea"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/index.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Domain Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../powerbi/index.html">Power BI Domain Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../framework_guide.html">Framework Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">AI Agent Framework (Overview)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/library_architecture.html">Library Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/structured_final_response.html">Structured Final Response Pattern</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/runtime_loop_stagnation.html">Runtime Loop &amp; Stagnation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/observability.html">Observability</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">framework.core.agent</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for framework.core.agent</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Agent class v2 - Policy-driven execution engine.</span>
+
+<span class="sd">This version replaces all hardcoded behavior with configurable policies.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Action</span><span class="p">,</span> <span class="n">FinalResponse</span><span class="p">,</span> <span class="n">BasePlanner</span><span class="p">,</span> <span class="n">BaseTool</span><span class="p">,</span> <span class="n">BaseMemory</span><span class="p">,</span> <span class="n">BaseProgressHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">EventBus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.event_payloads</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">build_action_executed_event</span><span class="p">,</span>
+    <span class="n">build_action_planned_event</span><span class="p">,</span>
+    <span class="n">build_agent_end_event</span><span class="p">,</span>
+    <span class="n">build_agent_start_event</span><span class="p">,</span>
+    <span class="n">build_error_event</span><span class="p">,</span>
+    <span class="n">build_policy_denied_event</span><span class="p">,</span>
+    <span class="n">build_worker_tool_call_event</span><span class="p">,</span>
+    <span class="n">build_worker_tool_result_event</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..policies.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CompletionDetector</span><span class="p">,</span>
+    <span class="n">TerminationPolicy</span><span class="p">,</span>
+    <span class="n">LoopPreventionPolicy</span><span class="p">,</span>
+    <span class="n">HITLPolicy</span><span class="p">,</span>
+    <span class="n">CheckpointPolicy</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..policies.default</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DefaultCompletionDetector</span><span class="p">,</span>
+    <span class="n">DefaultTerminationPolicy</span><span class="p">,</span>
+    <span class="n">DefaultLoopPreventionPolicy</span><span class="p">,</span>
+    <span class="n">DefaultHITLPolicy</span><span class="p">,</span>
+    <span class="n">DefaultCheckpointPolicy</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..services.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">update_request_context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
+
+
+<div class="viewcode-block" id="Agent">
+<a class="viewcode-back" href="../../../api/index.html#framework.core.agent.Agent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Agent</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Policy-driven agent with explicit behavior control.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">planner</span><span class="p">:</span> <span class="n">BasePlanner</span><span class="p">,</span>
+        <span class="n">memory</span><span class="p">:</span> <span class="n">BaseMemory</span><span class="p">,</span>
+        <span class="n">tools</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseTool</span><span class="p">]</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseTool</span><span class="p">],</span>
+        <span class="n">policies</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>  <span class="c1"># REQUIRED - no defaults</span>
+        <span class="n">event_bus</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EventBus</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">framework.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">policies</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Policies are required. Use preset or define explicitly.&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Validate required policies</span>
+        <span class="n">required_policies</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;completion&quot;</span><span class="p">,</span> <span class="s2">&quot;termination&quot;</span><span class="p">,</span> <span class="s2">&quot;loop_prevention&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">policy_name</span> <span class="ow">in</span> <span class="n">required_policies</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">policy_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">policies</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Required policy &#39;</span><span class="si">{</span><span class="n">policy_name</span><span class="si">}</span><span class="s2">&#39; not provided.&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Initialize components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">planner</span> <span class="o">=</span> <span class="n">planner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tools</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseTool</span><span class="p">]</span> <span class="o">=</span> <span class="n">tools</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span> <span class="o">=</span> <span class="n">event_bus</span> <span class="ow">or</span> <span class="n">EventBus</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;Agent&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span> <span class="ow">or</span> <span class="s2">&quot;An AI agent.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="s2">&quot;2.0.0&quot;</span>
+        
+        <span class="c1"># Initialize policies (REQUIRED)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completion_detector</span><span class="p">:</span> <span class="n">CompletionDetector</span> <span class="o">=</span> <span class="n">policies</span><span class="p">[</span><span class="s2">&quot;completion&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">termination_policy</span><span class="p">:</span> <span class="n">TerminationPolicy</span> <span class="o">=</span> <span class="n">policies</span><span class="p">[</span><span class="s2">&quot;termination&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop_prevention</span><span class="p">:</span> <span class="n">LoopPreventionPolicy</span> <span class="o">=</span> <span class="n">policies</span><span class="p">[</span><span class="s2">&quot;loop_prevention&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hitl_policy</span><span class="p">:</span> <span class="n">HITLPolicy</span> <span class="o">=</span> <span class="n">policies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hitl&quot;</span><span class="p">,</span> <span class="n">DefaultHITLPolicy</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_policy</span><span class="p">:</span> <span class="n">CheckpointPolicy</span> <span class="o">=</span> <span class="n">policies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">,</span> <span class="n">DefaultCheckpointPolicy</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Agent.run">
+<a class="viewcode-back" href="../../../api/index.html#framework.core.agent.Agent.run">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">script</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">script_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">execution_context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">suggested_plan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute task with policy-driven behavior control.&quot;&quot;&quot;</span>
+        <span class="n">normalized_exec_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_execution_context</span><span class="p">(</span><span class="n">execution_context</span><span class="p">)</span>
+        <span class="c1"># Start event</span>
+        <span class="n">start_data</span> <span class="o">=</span> <span class="n">build_agent_start_event</span><span class="p">(</span>
+            <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span>
+            <span class="n">agent_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">agent_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">prompt</span><span class="o">=</span><span class="p">(</span><span class="n">normalized_exec_context</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;assembled_context&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalized_exec_context</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">manager_context</span><span class="o">=</span><span class="n">normalized_exec_context</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;agent_start&quot;</span><span class="p">,</span> <span class="n">start_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;agent_start&quot;</span><span class="p">,</span> <span class="n">start_data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">task</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">script</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;script_instruction&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">script_metadata</span> <span class="ow">or</span> <span class="p">{},</span>
+                    <span class="s2">&quot;steps&quot;</span><span class="p">:</span> <span class="n">script</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">})</span>
+        <span class="n">planner_task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="k">if</span> <span class="n">suggested_plan</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">script</span><span class="p">:</span>
+            <span class="n">plan_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_suggested_plan</span><span class="p">(</span><span class="n">suggested_plan</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;suggested_plan&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">suggested_plan</span><span class="p">})</span>
+            <span class="n">planner_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_augment_task_with_plan</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">plan_text</span><span class="p">)</span>
+
+        <span class="n">ctx_for_application</span> <span class="o">=</span> <span class="n">normalized_exec_context</span> <span class="k">if</span> <span class="n">normalized_exec_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">execution_context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_execution_context</span><span class="p">(</span><span class="n">ctx_for_application</span><span class="p">)</span>
+
+        <span class="c1"># Build context for policies</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">..services.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_from_context</span> <span class="k">as</span> <span class="n">_get_ctx</span>
+            <span class="n">job_id</span> <span class="o">=</span> <span class="n">_get_ctx</span><span class="p">(</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_get_ctx</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">)</span>
+            <span class="n">approvals</span> <span class="o">=</span> <span class="n">_get_ctx</span><span class="p">(</span><span class="s2">&quot;approvals&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">job_id</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">approvals</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="n">policy_context</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="n">task</span><span class="p">,</span>
+            <span class="s2">&quot;agent_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">,</span>
+            <span class="s2">&quot;approvals&quot;</span><span class="p">:</span> <span class="n">approvals</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Script execution mode bypasses planner/LLM reasoning</span>
+        <span class="k">if</span> <span class="n">script</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_script_mode</span><span class="p">(</span>
+                <span class="n">task</span><span class="p">,</span>
+                <span class="n">script</span><span class="p">,</span>
+                <span class="n">script_metadata</span> <span class="ow">or</span> <span class="p">{},</span>
+                <span class="n">progress_handler</span><span class="p">,</span>
+                <span class="n">policy_context</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Iterative plan-act-observe loop</span>
+        <span class="n">iteration_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">action_history</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop_prevention</span><span class="o">.</span><span class="n">action_window</span><span class="p">)</span>
+        <span class="n">observation_history</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop_prevention</span><span class="o">.</span><span class="n">observation_window</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">iteration_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+            <span class="c1"># Check if last action was complete_task (before planning new actions)</span>
+            <span class="c1"># FIX: Skip on iteration 1 - on first iteration, we haven&#39;t executed anything</span>
+            <span class="c1"># for THIS task yet. Any completed observations are from PREVIOUS agent runs</span>
+            <span class="c1"># in the same job and should not cause early termination.</span>
+            <span class="k">if</span> <span class="n">iteration_count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get_history</span><span class="p">():</span>
+                <span class="n">last_action</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get_history</span><span class="p">())</span> <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;action&quot;</span><span class="p">),</span>
+                    <span class="kc">None</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">last_action</span> <span class="ow">and</span> <span class="n">last_action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;complete_task&quot;</span><span class="p">:</span>
+                    <span class="c1"># Last action was complete_task - check if we have a final result</span>
+                    <span class="n">last_obs</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get_history</span><span class="p">())</span> <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
+                        <span class="kc">None</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">last_obs</span><span class="p">:</span>
+                        <span class="n">obs_content</span> <span class="o">=</span> <span class="n">last_obs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs_content</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">obs_content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;completed&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="c1"># Extract final response from observation</span>
+                            <span class="k">if</span> <span class="s2">&quot;operation&quot;</span> <span class="ow">in</span> <span class="n">obs_content</span> <span class="ow">and</span> <span class="s2">&quot;payload&quot;</span> <span class="ow">in</span> <span class="n">obs_content</span><span class="p">:</span>
+                                <span class="n">final_response</span> <span class="o">=</span> <span class="n">FinalResponse</span><span class="p">(</span>
+                                    <span class="n">operation</span><span class="o">=</span><span class="n">obs_content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation&quot;</span><span class="p">,</span> <span class="s2">&quot;display_message&quot;</span><span class="p">),</span>
+                                    <span class="n">payload</span><span class="o">=</span><span class="n">obs_content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;payload&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+                                    <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">obs_content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">obs_content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;summary&quot;</span><span class="p">,</span> <span class="s2">&quot;Task completed.&quot;</span><span class="p">)</span>
+                                <span class="p">)</span>
+                                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_final_response</span><span class="p">(</span><span class="n">final_response</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+            
+            <span class="c1"># Plan next action</span>
+            <span class="n">plan_outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">planner</span><span class="o">.</span><span class="n">plan</span><span class="p">(</span><span class="n">planner_task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get_history</span><span class="p">())</span>
+            
+            <span class="c1"># Check termination policy (includes max_iterations, FinalResponse, completion)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">termination_policy</span><span class="o">.</span><span class="n">should_terminate</span><span class="p">(</span>
+                <span class="n">iteration_count</span><span class="p">,</span> <span class="n">plan_outcome</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get_history</span><span class="p">(),</span> <span class="n">policy_context</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plan_outcome</span><span class="p">,</span> <span class="n">FinalResponse</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_final_response</span><span class="p">(</span><span class="n">plan_outcome</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Termination policy detected completion via other means</span>
+                    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_completion_response</span><span class="p">(</span>
+                        <span class="s2">&quot;Task completed (detected by termination policy).&quot;</span><span class="p">,</span>
+                        <span class="n">progress_handler</span>
+                    <span class="p">)</span>
+            
+            <span class="c1"># Normalize to list of actions</span>
+            <span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="n">plan_outcome</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plan_outcome</span><span class="p">,</span> <span class="n">Action</span><span class="p">)</span> <span class="k">else</span> <span class="n">plan_outcome</span>
+            
+            <span class="c1"># Check if planner is trying to plan complete_task again (shouldn&#39;t happen, but safety check)</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Action</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;complete_task&quot;</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">):</span>
+                <span class="c1"># If we already executed complete_task, don&#39;t execute it again</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;complete_task&quot;</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get_history</span><span class="p">()</span> <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;action&quot;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_completion_response</span><span class="p">(</span>
+                        <span class="s2">&quot;Task already completed. Stopping execution.&quot;</span><span class="p">,</span>
+                        <span class="n">progress_handler</span>
+                    <span class="p">)</span>
+            
+            <span class="c1"># Check loop prevention BEFORE execution (to catch repeated planning)</span>
+            <span class="n">stagnation_reason</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop_prevention</span><span class="o">.</span><span class="n">detect_stagnation</span><span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">action_history</span><span class="p">),</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">observation_history</span><span class="p">),</span>
+                <span class="n">policy_context</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">stagnation_reason</span><span class="p">:</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_error_response</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Loop detected: </span><span class="si">{</span><span class="n">stagnation_reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">progress_handler</span><span class="p">,</span>
+                    <span class="n">stagnation</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+            
+            <span class="c1"># Create action signature for loop prevention</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">make_hashable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Convert an object to a hashable representation.&quot;&quot;&quot;</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">make_hashable</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">make_hashable</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">make_hashable</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">obj</span>
+            
+            <span class="n">action_signature</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span> <span class="n">make_hashable</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tool_args</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tool_args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">make_hashable</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tool_args</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actions</span>
+            <span class="p">)</span>
+            <span class="n">action_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action_signature</span><span class="p">)</span>
+            
+            <span class="c1"># Emit action_planned events</span>
+            <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+                <span class="n">tool_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">)</span>
+                <span class="n">tool_description</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tool_obj</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">tool_obj</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">tool_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tool_label</span><span class="p">(</span><span class="n">tool_obj</span><span class="p">,</span> <span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">)</span>
+                <span class="n">planned_data</span> <span class="o">=</span> <span class="n">build_action_planned_event</span><span class="p">(</span>
+                    <span class="n">actor_role</span><span class="o">=</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span>
+                    <span class="n">actor_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">actor_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                    <span class="n">tool_name</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">tool_args</span><span class="p">,</span>
+                    <span class="n">tool_label</span><span class="o">=</span><span class="n">tool_label</span><span class="p">,</span>
+                    <span class="n">tool_description</span><span class="o">=</span><span class="n">tool_description</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;action_planned&quot;</span><span class="p">,</span> <span class="n">planned_data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;action_planned&quot;</span><span class="p">,</span> <span class="n">planned_data</span><span class="p">)</span>
+
+            <span class="c1"># Check HITL before execution</span>
+            <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hitl_policy</span><span class="o">.</span><span class="n">requires_approval</span><span class="p">(</span>
+                    <span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span>
+                    <span class="n">action</span><span class="o">.</span><span class="n">tool_args</span><span class="p">,</span>
+                    <span class="n">policy_context</span>
+                <span class="p">):</span>
+                    <span class="n">approval_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hitl_policy</span><span class="o">.</span><span class="n">create_approval_request</span><span class="p">(</span>
+                        <span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span>
+                        <span class="n">action</span><span class="o">.</span><span class="n">tool_args</span><span class="p">,</span>
+                        <span class="n">policy_context</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_approval_request</span><span class="p">(</span><span class="n">approval_request</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+
+            <span class="c1"># Execute actions</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute_actions</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">,</span> <span class="n">policy_context</span><span class="p">)</span>
+            
+            <span class="c1"># Check for execution errors</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">):</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_execution_errors</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+            
+            <span class="c1"># Record actions and observations</span>
+            <span class="k">for</span> <span class="n">action</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span>
+                    <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">action</span><span class="o">.</span><span class="n">tool_args</span>
+                <span class="p">})</span>
+                
+                <span class="c1"># Format observation</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">):</span>
+                    <span class="n">error_obs</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;❌ ERROR: Tool &#39;</span><span class="si">{</span><span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">&#39; failed!</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;error_message&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Unknown error&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;observation&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">error_obs</span><span class="p">})</span>
+                    <span class="n">observation_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error_obs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;observation&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">})</span>
+                    <span class="n">observation_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+                
+                <span class="c1"># Special handling: complete_task tool should immediately terminate</span>
+                <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;complete_task&quot;</span><span class="p">:</span>
+                    <span class="c1"># Extract final response from complete_task result if available</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="c1"># Check for completion flag (primary indicator)</span>
+                        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;completed&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="c1"># Check if result already has FinalResponse structure</span>
+                            <span class="k">if</span> <span class="s2">&quot;operation&quot;</span> <span class="ow">in</span> <span class="n">result</span> <span class="ow">and</span> <span class="s2">&quot;payload&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                                <span class="n">final_response</span> <span class="o">=</span> <span class="n">FinalResponse</span><span class="p">(</span>
+                                    <span class="n">operation</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation&quot;</span><span class="p">,</span> <span class="s2">&quot;display_message&quot;</span><span class="p">),</span>
+                                    <span class="n">payload</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;payload&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+                                    <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;summary&quot;</span><span class="p">,</span> <span class="s2">&quot;Task completed.&quot;</span><span class="p">)</span>
+                                <span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="c1"># Convert tool results to appropriate FinalResponse format</span>
+                                <span class="kn">from</span><span class="w"> </span><span class="nn">..utils.result_formatter</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+                                    <span class="n">convert_get_tool_result_to_message</span>
+                                <span class="p">)</span>
+                                <span class="n">final_response</span> <span class="o">=</span> <span class="n">convert_get_tool_result_to_message</span><span class="p">(</span>
+                                    <span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span>
+                                    <span class="n">result</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">.</span><span class="n">tool_args</span>
+                                <span class="p">)</span>
+                            <span class="c1"># CRITICAL: Return immediately to stop the loop - this prevents any further iterations</span>
+                            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_final_response</span><span class="p">(</span><span class="n">final_response</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+            
+            <span class="c1"># Check completion after observation (this is the right place to check)</span>
+            <span class="n">last_result</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">results</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">last_result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">completion_detector</span><span class="o">.</span><span class="n">is_complete</span><span class="p">(</span>
+                <span class="n">last_result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get_history</span><span class="p">(),</span> <span class="n">policy_context</span>
+            <span class="p">):</span>
+                <span class="c1"># Convert tool results to appropriate FinalResponse format</span>
+                <span class="n">last_action</span> <span class="o">=</span> <span class="n">actions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">actions</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">last_action</span><span class="p">:</span>
+                    <span class="kn">from</span><span class="w"> </span><span class="nn">..utils.result_formatter</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+                        <span class="n">should_convert_to_display_table</span><span class="p">,</span>
+                        <span class="n">should_convert_to_display_message</span><span class="p">,</span>
+                        <span class="n">convert_list_tool_result_to_display_table</span><span class="p">,</span>
+                        <span class="n">convert_get_tool_result_to_message</span><span class="p">,</span>
+                        <span class="n">convert_any_tool_result</span>
+                    <span class="p">)</span>
+                    <span class="c1"># Try specific converters first</span>
+                    <span class="k">if</span> <span class="n">should_convert_to_display_table</span><span class="p">(</span><span class="n">last_action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">):</span>
+                        <span class="n">final_response</span> <span class="o">=</span> <span class="n">convert_list_tool_result_to_display_table</span><span class="p">(</span>
+                            <span class="n">last_action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span>
+                            <span class="n">last_result</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">last_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{},</span>
+                            <span class="n">last_action</span><span class="o">.</span><span class="n">tool_args</span>
+                        <span class="p">)</span>
+                        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_final_response</span><span class="p">(</span><span class="n">final_response</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">should_convert_to_display_message</span><span class="p">(</span><span class="n">last_action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">last_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="n">final_response</span> <span class="o">=</span> <span class="n">convert_get_tool_result_to_message</span><span class="p">(</span>
+                            <span class="n">last_action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span>
+                            <span class="n">last_result</span><span class="p">,</span>
+                            <span class="n">last_action</span><span class="o">.</span><span class="n">tool_args</span>
+                        <span class="p">)</span>
+                        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_final_response</span><span class="p">(</span><span class="n">final_response</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Try generic converter for any tool result</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">final_response</span> <span class="o">=</span> <span class="n">convert_any_tool_result</span><span class="p">(</span>
+                                <span class="n">last_action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span>
+                                <span class="n">last_result</span><span class="p">,</span>
+                                <span class="n">last_action</span><span class="o">.</span><span class="n">tool_args</span>
+                            <span class="p">)</span>
+                            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_final_response</span><span class="p">(</span><span class="n">final_response</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="c1"># If conversion fails, fall through to default</span>
+                            <span class="k">pass</span>
+                
+                <span class="c1"># Task complete - create final response</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_completion_response</span><span class="p">(</span>
+                    <span class="s2">&quot;Task completed successfully.&quot;</span><span class="p">,</span>
+                    <span class="n">progress_handler</span><span class="p">,</span>
+                    <span class="n">result</span><span class="o">=</span><span class="n">last_result</span>
+                <span class="p">)</span>
+            
+            <span class="c1"># Check loop prevention AFTER execution (to catch repeated actions with same results)</span>
+            <span class="n">stagnation_reason</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop_prevention</span><span class="o">.</span><span class="n">detect_stagnation</span><span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">action_history</span><span class="p">),</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">observation_history</span><span class="p">),</span>
+                <span class="n">policy_context</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">stagnation_reason</span><span class="p">:</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_error_response</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Loop detected: </span><span class="si">{</span><span class="n">stagnation_reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">progress_handler</span><span class="p">,</span>
+                    <span class="n">stagnation</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+            
+            <span class="c1"># Check for checkpoint after execution</span>
+            <span class="k">if</span> <span class="n">last_result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_policy</span><span class="o">.</span><span class="n">should_checkpoint</span><span class="p">(</span>
+                <span class="n">last_result</span><span class="p">,</span>
+                <span class="n">iteration_count</span><span class="p">,</span>
+                <span class="p">{</span><span class="s2">&quot;last_tool&quot;</span><span class="p">:</span> <span class="n">actions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tool_name</span> <span class="k">if</span> <span class="n">actions</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">policy_context</span><span class="p">}</span>
+            <span class="p">):</span>
+                <span class="n">checkpoint_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_policy</span><span class="o">.</span><span class="n">create_checkpoint_response</span><span class="p">(</span>
+                    <span class="n">last_result</span><span class="p">,</span>
+                    <span class="n">policy_context</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_checkpoint</span><span class="p">(</span><span class="n">checkpoint_response</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+            
+            <span class="c1"># Check for approval requests (from tools)</span>
+            <span class="n">awaiting</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;await_approval&quot;</span><span class="p">)),</span>
+                <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">awaiting</span><span class="p">:</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_approval_request</span><span class="p">(</span><span class="n">awaiting</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span></div>
+
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_handle_final_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">final_response</span><span class="p">:</span> <span class="n">FinalResponse</span><span class="p">,</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle FinalResponse from planner.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;final&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">final_response</span><span class="o">.</span><span class="n">human_readable_summary</span><span class="p">})</span>
+        
+        <span class="n">end_data</span> <span class="o">=</span> <span class="n">build_agent_end_event</span><span class="p">(</span>
+            <span class="n">agent_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">agent_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">result</span><span class="o">=</span><span class="n">final_response</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="n">end_data</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;worker&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">final_response</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_completion_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">],</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create completion response.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># Use result structure if available</span>
+            <span class="n">final_response</span> <span class="o">=</span> <span class="n">FinalResponse</span><span class="p">(</span>
+                <span class="n">operation</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation&quot;</span><span class="p">,</span> <span class="s2">&quot;display_message&quot;</span><span class="p">),</span>
+                <span class="n">payload</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;payload&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}),</span>
+                <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">final_response</span> <span class="o">=</span> <span class="n">FinalResponse</span><span class="p">(</span>
+                <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;display_message&quot;</span><span class="p">,</span>
+                <span class="n">payload</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">},</span>
+                <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">message</span>
+            <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_final_response</span><span class="p">(</span><span class="n">final_response</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_error_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">],</span>
+        <span class="n">stagnation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create error response.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">})</span>
+        
+        <span class="n">error_response</span> <span class="o">=</span> <span class="n">FinalResponse</span><span class="p">(</span>
+            <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;display_message&quot;</span><span class="p">,</span>
+            <span class="n">payload</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;stagnation&quot;</span><span class="p">:</span> <span class="n">stagnation</span><span class="p">},</span>
+            <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">message</span>
+        <span class="p">)</span>
+        
+        <span class="n">end_data</span> <span class="o">=</span> <span class="n">build_agent_end_event</span><span class="p">(</span>
+            <span class="n">agent_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">agent_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">result</span><span class="o">=</span><span class="n">error_response</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span>
+            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="n">error_message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">end_data</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;worker&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">error_response</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_execution_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">execution_context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize execution context payloads to a dict structure.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">execution_context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">execution_context</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">execution_context</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">execution_context</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;assembled_context&quot;</span><span class="p">:</span> <span class="n">execution_context</span><span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;assembled_context&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">execution_context</span><span class="p">)}</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;assembled_context&quot;</span><span class="p">:</span> <span class="s2">&quot;Context provided but could not be serialized.&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_execution_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">execution_context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Persist injected execution context for planners and tools.&quot;&quot;&quot;</span>
+        <span class="n">normalized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_execution_context</span><span class="p">(</span><span class="n">execution_context</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">normalized</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;injected_context&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">normalized</span><span class="p">})</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">assembled</span> <span class="o">=</span> <span class="n">normalized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;assembled_context&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">assembled</span><span class="p">:</span>
+            <span class="n">update_request_context</span><span class="p">(</span><span class="n">worker_context</span><span class="o">=</span><span class="n">assembled</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">assembled</span><span class="p">,</span> <span class="n">director_context</span><span class="o">=</span><span class="n">assembled</span><span class="p">)</span>
+
+        <span class="n">manifest_text</span> <span class="o">=</span> <span class="n">normalized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;schema_manifest&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">manifest_text</span><span class="p">:</span>
+            <span class="n">update_request_context</span><span class="p">(</span><span class="n">data_model_context</span><span class="o">=</span><span class="n">manifest_text</span><span class="p">)</span>
+
+        <span class="n">director_goal</span> <span class="o">=</span> <span class="n">normalized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;director_goal&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">director_goal</span><span class="p">:</span>
+            <span class="n">update_request_context</span><span class="p">(</span><span class="n">director_goal</span><span class="o">=</span><span class="n">director_goal</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_suggested_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suggested_plan</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize suggested plans for planner context.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">suggested_plan</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">suggested_plan</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_augment_task_with_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plan_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append suggested-plan instructions to the planner task text.&quot;&quot;&quot;</span>
+        <span class="n">base_task</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;(no task provided)&quot;</span>
+        <span class="n">plan_block</span> <span class="o">=</span> <span class="n">plan_text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">sections</span> <span class="o">=</span> <span class="p">[</span><span class="n">base_task</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">plan_block</span><span class="p">:</span>
+            <span class="n">sections</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;== Manager Suggested Plan ==&quot;</span><span class="p">,</span> <span class="n">plan_block</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sections</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_run_script_mode</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">script</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">script_metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">],</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute a scripted list of tool calls sequentially.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">script</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_error_response</span><span class="p">(</span>
+                <span class="s2">&quot;Script execution requested but no steps were provided&quot;</span><span class="p">,</span>
+                <span class="n">progress_handler</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">overall_status</span> <span class="o">=</span> <span class="s2">&quot;SUCCESS&quot;</span>
+        <span class="n">step_records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">goal_text</span> <span class="o">=</span> <span class="n">script_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;goal&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">task</span>
+        <span class="n">thought</span> <span class="o">=</span> <span class="n">script_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;thought&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">raw_step</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">worker_hint</span> <span class="o">=</span> <span class="n">raw_step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;worker&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">raw_step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;worker_key&quot;</span><span class="p">)</span>
+            <span class="n">tool_name</span> <span class="o">=</span> <span class="n">raw_step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_name&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">raw_step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool&quot;</span><span class="p">)</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">raw_step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">step_name</span> <span class="o">=</span> <span class="n">raw_step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">raw_step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;Step </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">notes</span> <span class="o">=</span> <span class="n">raw_step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;notes&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tool_name</span><span class="p">:</span>
+                <span class="n">overall_status</span> <span class="o">=</span> <span class="s2">&quot;FAILED&quot;</span>
+                <span class="n">step_records</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">idx</span><span class="p">,</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">step_name</span><span class="p">,</span>
+                    <span class="s2">&quot;worker&quot;</span><span class="p">:</span> <span class="n">worker_hint</span><span class="p">,</span>
+                    <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;failed&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Missing tool_name in script step&quot;</span><span class="p">,</span>
+                <span class="p">})</span>
+                <span class="k">break</span>
+
+            <span class="n">planned_data</span> <span class="o">=</span> <span class="n">build_action_planned_event</span><span class="p">(</span>
+                <span class="n">actor_role</span><span class="o">=</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span>
+                <span class="n">actor_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">actor_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                <span class="n">tool_name</span><span class="o">=</span><span class="n">tool_name</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;script&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+            <span class="p">)</span>
+            <span class="n">planned_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s2">&quot;script_step&quot;</span><span class="p">:</span> <span class="n">step_name</span><span class="p">,</span>
+                <span class="s2">&quot;script_index&quot;</span><span class="p">:</span> <span class="n">idx</span><span class="p">,</span>
+                <span class="s2">&quot;script_goal&quot;</span><span class="p">:</span> <span class="n">goal_text</span><span class="p">,</span>
+            <span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;action_planned&quot;</span><span class="p">,</span> <span class="n">planned_data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;action_planned&quot;</span><span class="p">,</span> <span class="n">planned_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">tool_name</span><span class="p">,</span>
+                <span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="n">step_name</span><span class="p">,</span>
+                <span class="s2">&quot;script&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">,</span>
+            <span class="p">})</span>
+
+            <span class="n">action</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span><span class="n">tool_name</span><span class="o">=</span><span class="n">tool_name</span><span class="p">,</span> <span class="n">tool_args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute_actions</span><span class="p">([</span><span class="n">action</span><span class="p">],</span> <span class="n">progress_handler</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">results</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="n">failure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_script_step_failure</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+                <span class="n">result_payload</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_payload</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;observation&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">result_payload</span><span class="p">,</span>
+                <span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="n">step_name</span><span class="p">,</span>
+                <span class="s2">&quot;script&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">})</span>
+
+            <span class="n">step_records</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">idx</span><span class="p">,</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">step_name</span><span class="p">,</span>
+                <span class="s2">&quot;worker&quot;</span><span class="p">:</span> <span class="n">worker_hint</span><span class="p">,</span>
+                <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">tool_name</span><span class="p">,</span>
+                <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="n">notes</span><span class="p">,</span>
+                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;failed&quot;</span> <span class="k">if</span> <span class="n">failure</span> <span class="k">else</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">,</span>
+                <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">result_payload</span><span class="p">,</span>
+            <span class="p">})</span>
+
+            <span class="k">if</span> <span class="n">failure</span><span class="p">:</span>
+                <span class="n">overall_status</span> <span class="o">=</span> <span class="s2">&quot;FAILED&quot;</span>
+                <span class="k">break</span>
+
+        <span class="n">summary</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Executed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">step_records</span><span class="p">)</span><span class="si">}</span><span class="s2"> scripted step(s) (</span><span class="si">{</span><span class="n">overall_status</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">summary</span><span class="p">,</span>
+            <span class="s2">&quot;overall_status&quot;</span><span class="p">:</span> <span class="n">overall_status</span><span class="p">,</span>
+            <span class="s2">&quot;script_goal&quot;</span><span class="p">:</span> <span class="n">goal_text</span><span class="p">,</span>
+            <span class="s2">&quot;script_steps&quot;</span><span class="p">:</span> <span class="n">step_records</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">thought</span><span class="p">:</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;script_thought&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">thought</span>
+        <span class="k">if</span> <span class="n">script_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;notes&quot;</span><span class="p">):</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;script_notes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">script_metadata</span><span class="p">[</span><span class="s2">&quot;notes&quot;</span><span class="p">]</span>
+
+        <span class="n">script_response</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="s2">&quot;display_message&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;payload&quot;</span><span class="p">:</span> <span class="n">payload</span><span class="p">,</span>
+            <span class="s2">&quot;human_readable_summary&quot;</span><span class="p">:</span> <span class="n">summary</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_completion_response</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">,</span> <span class="n">script_response</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_script_step_failure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if a scripted tool call failed.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;payload&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_handle_execution_errors</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle execution errors.&quot;&quot;&quot;</span>
+        <span class="n">error_msgs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)]</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Errors during execution: </span><span class="si">{</span><span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_msgs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">err_data</span> <span class="o">=</span> <span class="n">build_error_event</span><span class="p">(</span>
+            <span class="n">actor_role</span><span class="o">=</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span>
+            <span class="n">actor_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">actor_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">err_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">err_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">})</span>
+        
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_error_response</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_handle_approval_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">approval_request</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle approval request.&quot;&quot;&quot;</span>
+        <span class="c1"># Convert to FinalResponse if needed</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">approval_request</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;operation&quot;</span> <span class="ow">in</span> <span class="n">approval_request</span><span class="p">:</span>
+            <span class="n">final_response</span> <span class="o">=</span> <span class="n">FinalResponse</span><span class="p">(</span>
+                <span class="n">operation</span><span class="o">=</span><span class="n">approval_request</span><span class="p">[</span><span class="s2">&quot;operation&quot;</span><span class="p">],</span>
+                <span class="n">payload</span><span class="o">=</span><span class="n">approval_request</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;payload&quot;</span><span class="p">,</span> <span class="n">approval_request</span><span class="p">),</span>
+                <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">approval_request</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">,</span> <span class="s2">&quot;Awaiting approval&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">final_response</span> <span class="o">=</span> <span class="n">FinalResponse</span><span class="p">(</span>
+                <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;await_approval&quot;</span><span class="p">,</span>
+                <span class="n">payload</span><span class="o">=</span><span class="n">approval_request</span><span class="p">,</span>
+                <span class="n">human_readable_summary</span><span class="o">=</span><span class="n">approval_request</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;Awaiting approval&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        
+        <span class="n">end_data</span> <span class="o">=</span> <span class="n">build_agent_end_event</span><span class="p">(</span>
+            <span class="n">agent_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">agent_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">result</span><span class="o">=</span><span class="n">final_response</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span>
+            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;pending&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">end_data</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;worker&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">final_response</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_handle_checkpoint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">checkpoint_response</span><span class="p">:</span> <span class="n">FinalResponse</span><span class="p">,</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle checkpoint response.&quot;&quot;&quot;</span>
+        <span class="n">end_data</span> <span class="o">=</span> <span class="n">build_agent_end_event</span><span class="p">(</span>
+            <span class="n">agent_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">agent_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">result</span><span class="o">=</span><span class="n">checkpoint_response</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">end_data</span><span class="p">[</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">end_data</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;worker&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="n">end_data</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">checkpoint_response</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_execute_actions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">actions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Action</span><span class="p">],</span>
+        <span class="n">progress_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseProgressHandler</span><span class="p">],</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute a list of actions in parallel using asyncio.gather.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            actions: List of Action objects to execute</span>
+<span class="sd">            progress_handler: Optional progress handler for emitting events</span>
+<span class="sd">            context: Execution context (for job store, etc.)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of results (or Exceptions if execution failed)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate and prepare all tools</span>
+        <span class="n">tool_calls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+            <span class="n">tool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tool</span><span class="p">:</span>
+                <span class="n">available</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="n">tool_calls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tool not found: </span><span class="si">{</span><span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">. Available: [</span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">))</span>
+                <span class="k">continue</span>
+            
+            <span class="c1"># Validate args using Pydantic schema</span>
+            <span class="n">tool_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">tool_args</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="s2">&quot;args_schema&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">model</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">args_schema</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">tool_kwargs</span><span class="p">)</span>
+                    <span class="n">tool_kwargs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+                <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
+                    <span class="n">tool_calls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation failed for </span><span class="si">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ve</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+                    <span class="k">continue</span>
+            
+            <span class="n">tool_calls</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">tool</span><span class="p">,</span> <span class="n">tool_kwargs</span><span class="p">))</span>
+        
+        <span class="c1"># Execute all tools in parallel</span>
+        <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute_tool</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">action_idx</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Helper to execute a single tool and emit events&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">item</span>
+            
+            <span class="n">tool</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">actions</span><span class="p">[</span><span class="n">action_idx</span><span class="p">]</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">call_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+                <span class="n">tool_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tool_label</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_publish_worker_tool_result</span><span class="p">(</span>
+                    <span class="n">result_payload</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+                    <span class="o">*</span><span class="p">,</span>
+                    <span class="n">success_override</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">error_message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">execution_time_ms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_success_result</span><span class="p">(</span><span class="n">result_payload</span><span class="p">)</span> <span class="k">if</span> <span class="n">success_override</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">success_override</span>
+                    <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summarize_result</span><span class="p">(</span><span class="n">result_payload</span><span class="p">)</span>
+                    <span class="n">event_payload</span> <span class="o">=</span> <span class="n">build_worker_tool_result_event</span><span class="p">(</span>
+                        <span class="n">worker_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">worker_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                        <span class="n">call_id</span><span class="o">=</span><span class="n">call_id</span><span class="p">,</span>
+                        <span class="n">tool_name</span><span class="o">=</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">tool_label</span><span class="o">=</span><span class="n">tool_label</span><span class="p">,</span>
+                        <span class="n">tool_description</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                        <span class="n">args</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
+                        <span class="n">result_payload</span><span class="o">=</span><span class="n">result_payload</span><span class="p">,</span>
+                        <span class="n">success</span><span class="o">=</span><span class="n">success</span><span class="p">,</span>
+                        <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span>
+                        <span class="n">error_message</span><span class="o">=</span><span class="n">error_message</span><span class="p">,</span>
+                        <span class="n">action_index</span><span class="o">=</span><span class="n">action_idx</span><span class="p">,</span>
+                        <span class="n">execution_time_ms</span><span class="o">=</span><span class="n">execution_time_ms</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;worker_tool_result&quot;</span><span class="p">,</span> <span class="n">event_payload</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;worker_tool_result&quot;</span><span class="p">,</span> <span class="n">event_payload</span><span class="p">)</span>
+
+                <span class="n">call_event</span> <span class="o">=</span> <span class="n">build_worker_tool_call_event</span><span class="p">(</span>
+                    <span class="n">worker_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">worker_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                    <span class="n">call_id</span><span class="o">=</span><span class="n">call_id</span><span class="p">,</span>
+                    <span class="n">tool_name</span><span class="o">=</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">tool_label</span><span class="o">=</span><span class="n">tool_label</span><span class="p">,</span>
+                    <span class="n">tool_description</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                    <span class="n">args</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="n">action_index</span><span class="o">=</span><span class="n">action_idx</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;worker_tool_call&quot;</span><span class="p">,</span> <span class="n">call_event</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;worker_tool_call&quot;</span><span class="p">,</span> <span class="n">call_event</span><span class="p">)</span>
+
+                <span class="c1"># Central policy evaluation before running tool</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="kn">from</span><span class="w"> </span><span class="nn">..services.policy</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolicyEngine</span>
+                    <span class="n">allowed</span><span class="p">,</span> <span class="n">deny_msg</span> <span class="o">=</span> <span class="n">PolicyEngine</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">allowed</span><span class="p">,</span> <span class="n">deny_msg</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">allowed</span><span class="p">:</span>
+                    <span class="c1"># Emit policy_denied event and short-circuit via error path</span>
+                    <span class="n">policy_event</span> <span class="o">=</span> <span class="n">build_policy_denied_event</span><span class="p">(</span>
+                        <span class="n">actor_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">actor_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                        <span class="n">tool_name</span><span class="o">=</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">reason</span><span class="o">=</span><span class="n">deny_msg</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;policy_denied&quot;</span><span class="p">,</span> <span class="n">policy_event</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;policy_denied&quot;</span><span class="p">,</span> <span class="n">policy_event</span><span class="p">)</span>
+                    <span class="k">await</span> <span class="n">_publish_worker_tool_result</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="n">deny_msg</span><span class="p">,</span>
+                            <span class="s2">&quot;policy_denied&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="n">success_override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">error_message</span><span class="o">=</span><span class="n">deny_msg</span><span class="p">,</span>
+                        <span class="n">execution_time_ms</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Policy denied for </span><span class="si">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">deny_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Execute tool (synchronous tools run in thread pool to avoid blocking)</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">aio</span>
+                <span class="n">loop</span> <span class="o">=</span> <span class="n">aio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+                <span class="c1"># Optional OTel span around tool execution for Phoenix hierarchy</span>
+                <span class="n">tracer</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="kn">from</span><span class="w"> </span><span class="nn">opentelemetry</span><span class="w"> </span><span class="kn">import</span> <span class="n">trace</span>  <span class="c1"># type: ignore</span>
+                    <span class="n">tracer</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">get_tracer</span><span class="p">(</span><span class="s2">&quot;agent-framework.tool&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">tracer</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="c1"># CRITICAL: Capture context before executor to ensure it propagates to thread</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">contextvars</span>
+                <span class="n">ctx</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">copy_context</span><span class="p">()</span>
+                
+                <span class="c1"># Create a proper callable for executor that preserves context</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">run_tool</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="n">tool</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+                <span class="n">execution_time_ms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="n">tracer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">tracer</span><span class="o">.</span><span class="n">start_as_current_span</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tool.</span><span class="si">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">span</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.name&quot;</span><span class="p">,</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                            <span class="c1"># Capture structured input (args) as proper JSON</span>
+                            <span class="kn">import</span><span class="w"> </span><span class="nn">json</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_json</span>
+                            <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">args_json</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+                                <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.input.args_json&quot;</span><span class="p">,</span> <span class="n">args_json</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                                <span class="c1"># Also add pretty version if enabled</span>
+                                <span class="k">try</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PHOENIX_PRETTY_JSON&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">}:</span>
+                                        <span class="n">args_pretty</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+                                        <span class="n">max_chars</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PHOENIX_MAX_ATTR_CHARS&quot;</span><span class="p">,</span> <span class="s2">&quot;4000&quot;</span><span class="p">))</span>
+                                        <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.input.args.pretty&quot;</span><span class="p">,</span> <span class="n">args_pretty</span><span class="p">[:</span><span class="n">max_chars</span><span class="p">])</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                                    <span class="k">pass</span>
+                            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                                <span class="c1"># Fallback to string if JSON serialization fails</span>
+                                <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.input.args&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                        <span class="n">start_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+                        <span class="c1"># Run in executor with explicit context propagation</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">run_tool</span><span class="p">)</span>
+                        <span class="n">end_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+                        <span class="n">execution_time_ms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">end_ts</span> <span class="o">-</span> <span class="n">start_ts</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.latency_ms&quot;</span><span class="p">,</span> <span class="n">execution_time_ms</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                            <span class="c1"># Capture structured output (result)</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+                                <span class="n">max_chars</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PHOENIX_MAX_ATTR_CHARS&quot;</span><span class="p">,</span> <span class="s2">&quot;4000&quot;</span><span class="p">))</span>
+                                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                                    <span class="c1"># Extract summary for quick reference</span>
+                                    <span class="n">result_summary</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">)</span> <span class="ow">or</span> 
+                                                        <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;summary&quot;</span><span class="p">)</span> <span class="ow">or</span> 
+                                                        <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">)</span> <span class="ow">or</span>
+                                                        <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)[:</span><span class="mi">200</span><span class="p">])</span>
+                                    <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.output.result_summary&quot;</span><span class="p">,</span> <span class="n">result_summary</span><span class="p">[:</span><span class="n">max_chars</span><span class="p">])</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                                    <span class="c1"># Also add full result as JSON if not too large</span>
+                                    <span class="k">try</span><span class="p">:</span>
+                                        <span class="n">result_json</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+                                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_json</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_chars</span><span class="p">:</span>
+                                            <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.output.result_json&quot;</span><span class="p">,</span> <span class="n">result_json</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                                        <span class="c1"># Pretty version if enabled</span>
+                                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PHOENIX_PRETTY_JSON&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">}:</span>
+                                            <span class="n">result_pretty</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+                                            <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.output.result.pretty&quot;</span><span class="p">,</span> <span class="n">result_pretty</span><span class="p">[:</span><span class="n">max_chars</span><span class="p">])</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                                        <span class="k">pass</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="c1"># Non-dict result - convert to string</span>
+                                    <span class="n">result_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                                    <span class="n">span</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="s2">&quot;tool.output.result&quot;</span><span class="p">,</span> <span class="n">result_str</span><span class="p">[:</span><span class="n">max_chars</span><span class="p">])</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                                <span class="k">pass</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">start_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+                    <span class="c1"># Run in executor with explicit context propagation</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">run_tool</span><span class="p">)</span>
+                    <span class="n">end_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+                    <span class="n">execution_time_ms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">end_ts</span> <span class="o">-</span> <span class="n">start_ts</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+                
+                <span class="k">await</span> <span class="n">_publish_worker_tool_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">execution_time_ms</span><span class="o">=</span><span class="n">execution_time_ms</span><span class="p">)</span>
+
+                <span class="c1"># Emit action_executed event</span>
+                <span class="n">executed_data</span> <span class="o">=</span> <span class="n">build_action_executed_event</span><span class="p">(</span>
+                    <span class="n">actor_role</span><span class="o">=</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span>
+                    <span class="n">actor_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">actor_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                    <span class="n">tool_name</span><span class="o">=</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">tool_args</span><span class="p">,</span>
+                    <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+                    <span class="n">execution_time_ms</span><span class="o">=</span><span class="n">execution_time_ms</span><span class="p">,</span>
+                    <span class="n">tool_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tool_label</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;action_executed&quot;</span><span class="p">,</span> <span class="n">executed_data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;action_executed&quot;</span><span class="p">,</span> <span class="n">executed_data</span><span class="p">)</span>
+
+                <span class="c1"># Record successful execution signature to job store for future HITL bypass</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># Treat as success unless explicit error structure</span>
+                    <span class="n">is_error</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">or</span> 
+                        <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> 
+                        <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_message&quot;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_error</span><span class="p">:</span>
+                        <span class="n">job_id</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">job_id</span><span class="p">:</span>
+                            <span class="kn">import</span><span class="w"> </span><span class="nn">json</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_json</span>
+                            <span class="n">sig</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span><span class="w"> </span><span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="w"> </span><span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="kn">from</span><span class="w"> </span><span class="nn">..state.job_store</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_job_store</span>
+                            <span class="n">get_job_store</span><span class="p">()</span><span class="o">.</span><span class="n">add_executed_action</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">job_id</span><span class="p">),</span> <span class="n">sig</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">return</span> <span class="n">result</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># Emit error event but don&#39;t crash - return structured error</span>
+                <span class="n">error_message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">err_data</span> <span class="o">=</span> <span class="n">build_error_event</span><span class="p">(</span>
+                    <span class="n">actor_role</span><span class="o">=</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span>
+                    <span class="n">actor_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">actor_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Tool </span><span class="si">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">details</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">},</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">err_data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">progress_handler</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">progress_handler</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">err_data</span><span class="p">)</span>
+                
+                <span class="n">error_payload</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="n">error_message</span><span class="p">,</span>
+                    <span class="s2">&quot;error_type&quot;</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                    <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;❌ ERROR: </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">}</span>
+                <span class="k">await</span> <span class="n">_publish_worker_tool_result</span><span class="p">(</span><span class="n">error_payload</span><span class="p">,</span> <span class="n">success_override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="n">error_message</span><span class="p">)</span>
+                
+                <span class="c1"># Return structured error dict that the planner can understand</span>
+                <span class="k">return</span> <span class="n">error_payload</span>
+        
+        <span class="c1"># Execute all tools concurrently</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">aio</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">aio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span><span class="n">execute_tool</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tool_calls</span><span class="p">)],</span>
+            <span class="n">return_exceptions</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_success_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_message&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;payload&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_summarize_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;human_readable_summary&quot;</span><span class="p">,</span> <span class="s2">&quot;summary&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)[:</span><span class="mi">500</span><span class="p">]</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;payload&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;summary&quot;</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)[:</span><span class="mi">500</span><span class="p">]</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)[:</span><span class="mi">500</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)[:</span><span class="mi">500</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tool_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseTool</span><span class="p">],</span> <span class="n">fallback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">tool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;display_name&quot;</span><span class="p">,</span> <span class="s2">&quot;short_description&quot;</span><span class="p">):</span>
+                <span class="n">candidate</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">candidate</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="n">candidate</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">break</span>
+        <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">label</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">tool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">fallback</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">cleaned</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">cleaned</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">cleaned</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">fallback</span> <span class="ow">or</span> <span class="s2">&quot;Tool&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_aggregate_parallel_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Action</span><span class="p">],</span> <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Aggregate results from multiple parallel tool executions.</span>
+<span class="sd">        </span>
+<span class="sd">        This method is kept for backward compatibility with terminal tools logic,</span>
+<span class="sd">        but in v2, termination is handled by policies.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Group actions by tool type</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+        <span class="n">tool_groups</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">action</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">actions</span><span class="p">):</span>
+            <span class="n">tool_groups</span><span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">tool_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">action</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+        
+        <span class="c1"># Check if all tools are the same type</span>
+        <span class="n">unique_tools</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tool_groups</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">is_homogeneous</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_tools</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        
+        <span class="k">if</span> <span class="n">is_homogeneous</span><span class="p">:</span>
+            <span class="n">tool_name</span> <span class="o">=</span> <span class="n">unique_tools</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            
+            <span class="c1"># Handle list_columns specially</span>
+            <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;list_columns&quot;</span><span class="p">:</span>
+                <span class="n">all_tables_data</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">total_columns</span> <span class="o">=</span> <span class="mi">0</span>
+                
+                <span class="k">for</span> <span class="n">action</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="n">table_name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">action</span><span class="o">.</span><span class="n">tool_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">)</span>
+                        <span class="n">columns</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="p">[])</span>
+                        <span class="n">total_columns</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+                        <span class="n">all_tables_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                            <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="n">table_name</span><span class="p">,</span>
+                            <span class="s2">&quot;columns&quot;</span><span class="p">:</span> <span class="n">columns</span><span class="p">,</span>
+                            <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+                        <span class="p">})</span>
+                
+                <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">table_data</span> <span class="ow">in</span> <span class="n">all_tables_data</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">table_data</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]:</span>
+                        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span>
+                            <span class="n">table_data</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">],</span>
+                            <span class="n">col</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                            <span class="n">col</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataType&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                        <span class="p">])</span>
+                
+                <span class="k">return</span> <span class="p">{</span>
+                    <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="s2">&quot;display_table&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;payload&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Columns from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_tables_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> Tables&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Table&quot;</span><span class="p">,</span> <span class="s2">&quot;Column Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Type&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;rows&quot;</span><span class="p">:</span> <span class="n">rows</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">total_columns</span><span class="si">}</span><span class="s2"> columns across </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_tables_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> tables&quot;</span>
+                <span class="p">}</span>
+            
+            <span class="c1"># Other homogeneous tools</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span>
+                    <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="s2">&quot;display_message&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;payload&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Executed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2"> calls in parallel&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)]</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Completed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2"> executions&quot;</span>
+                <span class="p">}</span>
+        
+        <span class="c1"># Heterogeneous tools</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="s2">&quot;display_message&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;payload&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Executed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span><span class="si">}</span><span class="s2"> parallel tool calls&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)]</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Completed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span><span class="si">}</span><span class="s2"> parallel tool executions&quot;</span>
+            <span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

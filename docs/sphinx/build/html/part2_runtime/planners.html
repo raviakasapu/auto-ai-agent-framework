@@ -1,0 +1,579 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planners &amp; Gateways &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Policies &amp; Presets" href="policies.html" />
+    <link rel="prev" title="Tools &amp; Decorators" href="tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 2: Runtime Building Blocks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agents.html">Agents &amp; Manager Stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">Memory &amp; Message Stores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools.html">Tools &amp; Decorators</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Planners &amp; Gateways</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#baseplanner-interface">BasePlanner Interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#return-types">Return Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#planner-implementations">Planner Implementations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#staticplanner">StaticPlanner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#singleactionplanner">SingleActionPlanner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#llmrouterplanner">LLMRouterPlanner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactplanner">ReActPlanner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chatplanner">ChatPlanner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strategicplanner">StrategicPlanner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strategicdecomposerplanner">StrategicDecomposerPlanner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#workerrouterplanner">WorkerRouterPlanner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#managerscriptplanner">ManagerScriptPlanner</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#history-filtering">History Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inference-gateways">Inference Gateways</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#baseinferencegateway">BaseInferenceGateway</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#openaigateway">OpenAIGateway</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#googleaigateway">GoogleAIGateway</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mockgateway">MockGateway</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-configuration">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-planner-example">Custom Planner Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="policies.html">Policies &amp; Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context_services.html">Context &amp; Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="observability.html">Observability &amp; Streaming</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 2: Runtime Building Blocks</a></li>
+      <li class="breadcrumb-item active">Planners &amp; Gateways</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part2_runtime/planners.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="planners-gateways">
+<h1>Planners &amp; Gateways<a class="headerlink" href="#planners-gateways" title="Link to this heading"></a></h1>
+<p>This chapter covers planner implementations and LLM gateways.</p>
+<section id="baseplanner-interface">
+<h2>BasePlanner Interface<a class="headerlink" href="#baseplanner-interface" title="Link to this heading"></a></h2>
+<p>All planners implement the <code class="docutils literal notranslate"><span class="pre">BasePlanner</span></code> interface:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePlanner</span><span class="p">,</span> <span class="n">Action</span><span class="p">,</span> <span class="n">FinalResponse</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BasePlanner</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plan</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">task_description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">history</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Action</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Action</span><span class="p">],</span> <span class="n">FinalResponse</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plan the next step(s) for the agent.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<section id="return-types">
+<h3>Return Types<a class="headerlink" href="#return-types" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Return Type</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Action</span></code></p></td>
+<td><p>Execute one tool, then re-plan</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">List[Action]</span></code></p></td>
+<td><p>Execute multiple tools in parallel, then re-plan</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FinalResponse</span></code></p></td>
+<td><p>Task complete, stop execution</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="planner-implementations">
+<h2>Planner Implementations<a class="headerlink" href="#planner-implementations" title="Link to this heading"></a></h2>
+<section id="staticplanner">
+<h3>StaticPlanner<a class="headerlink" href="#staticplanner" title="Link to this heading"></a></h3>
+<p>Always returns the same action based on keyword matching:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">StaticPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">StaticPlanner</span><span class="p">(</span><span class="n">keywords</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">,</span> <span class="s2">&quot;find&quot;</span><span class="p">])</span>
+<span class="c1"># If task contains &quot;search&quot; or &quot;find&quot; → Action(tool_name=&quot;mock_search&quot;)</span>
+<span class="c1"># Otherwise → FinalResponse</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Testing, deterministic workflows.</p>
+</section>
+<section id="singleactionplanner">
+<h3>SingleActionPlanner<a class="headerlink" href="#singleactionplanner" title="Link to this heading"></a></h3>
+<p>Always returns a specific configured action:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">SingleActionPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">SingleActionPlanner</span><span class="p">(</span>
+    <span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;list_tables&quot;</span><span class="p">,</span>
+    <span class="n">tool_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;public&quot;</span><span class="p">},</span>
+    <span class="n">terminal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Stop after execution</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Single-tool agents, terminal actions.</p>
+</section>
+<section id="llmrouterplanner">
+<h3>LLMRouterPlanner<a class="headerlink" href="#llmrouterplanner" title="Link to this heading"></a></h3>
+<p>Routes tasks to tools using LLM:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMRouterPlanner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIGateway</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">LLMRouterPlanner</span><span class="p">(</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">),</span>
+    <span class="n">tool_specs</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;list_tables&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;schema&quot;</span><span class="p">]},</span>
+        <span class="p">{</span><span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="s2">&quot;add_column&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="s2">&quot;column&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">]},</span>
+    <span class="p">],</span>
+    <span class="n">system_prompt</span><span class="o">=</span><span class="s2">&quot;Route the task to the appropriate tool.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Simple tool selection without ReAct loop.</p>
+</section>
+<section id="reactplanner">
+<h3>ReActPlanner<a class="headerlink" href="#reactplanner" title="Link to this heading"></a></h3>
+<p>Full Reasoning + Acting loop with LLM:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReActPlanner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIGateway</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculator</span><span class="p">(</span><span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">expression</span><span class="p">))</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">ReActPlanner</span><span class="p">(</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">),</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">calculator</span><span class="p">],</span>
+    <span class="n">system_prompt</span><span class="o">=</span><span class="s2">&quot;You are a helpful assistant with access to tools.&quot;</span><span class="p">,</span>
+    <span class="n">include_history</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">max_history_messages</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Features</strong>:</p>
+<ul class="simple">
+<li><p>OpenAI function calling format</p></li>
+<li><p>History filtering for context</p></li>
+<li><p>Automatic schema generation from tools</p></li>
+<li><p>Supports parallel tool calls</p></li>
+</ul>
+<p><strong>Use case</strong>: Worker agents that need reasoning.</p>
+</section>
+<section id="chatplanner">
+<h3>ChatPlanner<a class="headerlink" href="#chatplanner" title="Link to this heading"></a></h3>
+<p>Conversational responses without tools:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">ChatPlanner</span><span class="p">(</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">),</span>
+    <span class="n">system_prompt</span><span class="o">=</span><span class="s2">&quot;You are a helpful chat assistant.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Always returns FinalResponse with chat message</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Chat-only agents, off-topic handling.</p>
+</section>
+<section id="strategicplanner">
+<h3>StrategicPlanner<a class="headerlink" href="#strategicplanner" title="Link to this heading"></a></h3>
+<p>Creates multi-phase strategic plans for orchestrators:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrategicPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">StrategicPlanner</span><span class="p">(</span>
+    <span class="n">worker_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;analysis_manager&quot;</span><span class="p">,</span> <span class="s2">&quot;design_manager&quot;</span><span class="p">],</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">),</span>
+    <span class="n">planning_prompt</span><span class="o">=</span><span class="s2">&quot;Create a strategic plan for the task.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output format</strong>:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;plan&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;phases&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Analyze&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;worker&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;analysis_manager&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;goals&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Design&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;worker&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;design_manager&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;goals&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;primary_worker&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;analysis_manager&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;rationale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Top-level orchestrators.</p>
+</section>
+<section id="strategicdecomposerplanner">
+<h3>StrategicDecomposerPlanner<a class="headerlink" href="#strategicdecomposerplanner" title="Link to this heading"></a></h3>
+<p>Breaks orchestrator phases into actionable steps:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrategicDecomposerPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">StrategicDecomposerPlanner</span><span class="p">(</span>
+    <span class="n">worker_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;reader&quot;</span><span class="p">,</span> <span class="s2">&quot;analyzer&quot;</span><span class="p">,</span> <span class="s2">&quot;validator&quot;</span><span class="p">],</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">),</span>
+    <span class="n">manager_worker_key</span><span class="o">=</span><span class="s2">&quot;analysis_manager&quot;</span><span class="p">,</span>  <span class="c1"># Identifies this manager</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Domain managers.</p>
+</section>
+<section id="workerrouterplanner">
+<h3>WorkerRouterPlanner<a class="headerlink" href="#workerrouterplanner" title="Link to this heading"></a></h3>
+<p>Routes to workers with explicit delegation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">WorkerRouterPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">WorkerRouterPlanner</span><span class="p">(</span>
+    <span class="n">worker_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;reader&quot;</span><span class="p">,</span> <span class="s2">&quot;writer&quot;</span><span class="p">],</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Simple manager delegation.</p>
+</section>
+<section id="managerscriptplanner">
+<h3>ManagerScriptPlanner<a class="headerlink" href="#managerscriptplanner" title="Link to this heading"></a></h3>
+<p>Creates detailed script plans for workers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">ManagerScriptPlanner</span>
+
+<span class="n">planner</span> <span class="o">=</span> <span class="n">ManagerScriptPlanner</span><span class="p">(</span>
+    <span class="n">inference_gateway</span><span class="o">=</span><span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">),</span>
+    <span class="n">worker_key</span><span class="o">=</span><span class="s2">&quot;data_processor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Script-based worker execution.</p>
+</section>
+</section>
+<section id="history-filtering">
+<h2>History Filtering<a class="headerlink" href="#history-filtering" title="Link to this heading"></a></h2>
+<p>Planners use history filters to select relevant context:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Planner</p></th>
+<th class="head"><p>Filter</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StrategicPlanner</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OrchestratorHistoryFilter</span></code></p></td>
+<td><p>Conversation only</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StrategicDecomposerPlanner</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ManagerHistoryFilter</span></code></p></td>
+<td><p>Previous phase synthesis</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ReActPlanner</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">WorkerHistoryFilter</span></code></p></td>
+<td><p>Current turn traces</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="inference-gateways">
+<h2>Inference Gateways<a class="headerlink" href="#inference-gateways" title="Link to this heading"></a></h2>
+<section id="baseinferencegateway">
+<h3>BaseInferenceGateway<a class="headerlink" href="#baseinferencegateway" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseInferenceGateway</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseInferenceGateway</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">invoke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send prompt to LLM and return response.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="openaigateway">
+<h3>OpenAIGateway<a class="headerlink" href="#openaigateway" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIGateway</span>
+
+<span class="n">gateway</span> <span class="o">=</span> <span class="n">OpenAIGateway</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+    <span class="n">max_tokens</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;sk-...&quot;</span><span class="p">,</span>  <span class="c1"># Or use OPENAI_API_KEY env var</span>
+<span class="p">)</span>
+
+<span class="c1"># Simple invocation</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">gateway</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="s2">&quot;What is 2+2?&quot;</span><span class="p">)</span>
+
+<span class="c1"># With messages list</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">gateway</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;You are helpful.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">},</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>Features</strong>:</p>
+<ul class="simple">
+<li><p>Automatic retry with backoff</p></li>
+<li><p>Cost tracking per call</p></li>
+<li><p>Token usage metrics</p></li>
+<li><p>OpenTelemetry tracing integration</p></li>
+</ul>
+</section>
+<section id="googleaigateway">
+<h3>GoogleAIGateway<a class="headerlink" href="#googleaigateway" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">GoogleAIGateway</span>
+
+<span class="n">gateway</span> <span class="o">=</span> <span class="n">GoogleAIGateway</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gemini-1.5-pro&quot;</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>  <span class="c1"># Or use GOOGLE_API_KEY env var</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mockgateway">
+<h3>MockGateway<a class="headerlink" href="#mockgateway" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockGateway</span>
+
+<span class="n">gateway</span> <span class="o">=</span> <span class="n">MockGateway</span><span class="p">(</span>
+    <span class="n">responses</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Response 1&quot;</span><span class="p">,</span> <span class="s2">&quot;Response 2&quot;</span><span class="p">],</span>
+    <span class="c1"># Cycles through responses</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use case</strong>: Testing without API calls.</p>
+</section>
+</section>
+<section id="yaml-configuration">
+<h2>YAML Configuration<a class="headerlink" href="#yaml-configuration" title="Link to this heading"></a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-main</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;You</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">helpful</span><span class="nv"> </span><span class="s">assistant.&quot;</span>
+<span class="w">      </span><span class="nt">include_history</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">max_history_messages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+
+<span class="c1"># Gateway defined in resources</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-main</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpt-4o</span>
+<span class="w">        </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.7</span>
+</pre></div>
+</div>
+</section>
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code></p></td>
+<td><p>OpenAI API key</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENAI_MODEL</span></code></p></td>
+<td><p>Default model name</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GOOGLE_API_KEY</span></code></p></td>
+<td><p>Google AI API key</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">AGENT_REACT_INCLUDE_HISTORY</span></code></p></td>
+<td><p>Enable history in ReAct prompts</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AGENT_REACT_MAX_HISTORY_MESSAGES</span></code></p></td>
+<td><p>Max messages in ReAct history</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">AGENT_LOG_ROUTER_DETAILS</span></code></p></td>
+<td><p>Log router planner details</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="custom-planner-example">
+<h2>Custom Planner Example<a class="headerlink" href="#custom-planner-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePlanner</span><span class="p">,</span> <span class="n">Action</span><span class="p">,</span> <span class="n">FinalResponse</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PriorityPlanner</span><span class="p">(</span><span class="n">BasePlanner</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Routes to tools based on task priority keywords.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">high_priority_tool</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default_tool</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">high_priority_tool</span> <span class="o">=</span> <span class="n">high_priority_tool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_tool</span> <span class="o">=</span> <span class="n">default_tool</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">history</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Action</span><span class="p">:</span>
+        <span class="n">task_lower</span> <span class="o">=</span> <span class="n">task_description</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">kw</span> <span class="ow">in</span> <span class="n">task_lower</span> <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;urgent&quot;</span><span class="p">,</span> <span class="s2">&quot;critical&quot;</span><span class="p">,</span> <span class="s2">&quot;asap&quot;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">Action</span><span class="p">(</span>
+                <span class="n">tool_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">high_priority_tool</span><span class="p">,</span>
+                <span class="n">tool_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="n">task_description</span><span class="p">,</span> <span class="s2">&quot;priority&quot;</span><span class="p">:</span> <span class="s2">&quot;high&quot;</span><span class="p">}</span>
+            <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">Action</span><span class="p">(</span>
+            <span class="n">tool_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_tool</span><span class="p">,</span>
+            <span class="n">tool_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="n">task_description</span><span class="p">}</span>
+        <span class="p">)</span>
+
+<span class="c1"># Register for YAML use</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deployment.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_planner</span>
+<span class="n">register_planner</span><span class="p">(</span><span class="s2">&quot;PriorityPlanner&quot;</span><span class="p">,</span> <span class="n">PriorityPlanner</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Match planner to agent role</strong>:</p>
+<ul class="simple">
+<li><p>Orchestrator → <code class="docutils literal notranslate"><span class="pre">StrategicPlanner</span></code></p></li>
+<li><p>Manager → <code class="docutils literal notranslate"><span class="pre">StrategicDecomposerPlanner</span></code></p></li>
+<li><p>Worker → <code class="docutils literal notranslate"><span class="pre">ReActPlanner</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Configure appropriate models</strong>:</p>
+<ul class="simple">
+<li><p>Strategic planning → <code class="docutils literal notranslate"><span class="pre">gpt-4o</span></code> (powerful)</p></li>
+<li><p>Tactical execution → <code class="docutils literal notranslate"><span class="pre">gpt-4o-mini</span></code> (efficient)</p></li>
+</ul>
+</li>
+<li><p><strong>Use history filtering</strong> to keep prompts focused</p></li>
+<li><p><strong>Enable tracing</strong> for debugging with Phoenix</p></li>
+<li><p><strong>Test with MockGateway</strong> before using real LLMs</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tools.html" class="btn btn-neutral float-left" title="Tools &amp; Decorators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="policies.html" class="btn btn-neutral float-right" title="Policies &amp; Presets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

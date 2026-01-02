@@ -43,16 +43,6 @@ exclude_patterns: list[str] = []
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
-# Custom CSS for sticky sidebar
-html_css_files = ['custom.css']
-
-# Theme options
-html_theme_options = {
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'collapse_navigation': False,
-}
-
 # Autodoc settings
 autodoc_default_options = {
     'members': True,
