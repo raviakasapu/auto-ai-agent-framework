@@ -32,7 +32,7 @@ resources:
 
   subscribers:
     - name: logging
-      type: LoggingSubscriber
+      type: PhoenixSubscriber
       config:
         level: INFO
         include_data: true
@@ -74,10 +74,9 @@ spec:
         Be helpful and organized.
 
   memory:
-    type: SharedInMemoryMemory
-    config:
-      namespace: ${JOB_ID:-default}
-      agent_key: task_worker
+    $preset: worker
+    # namespace auto-derived from JOB_ID
+    # agent_key auto-derived from metadata.name
 
   tools: [create_task, list_tasks, complete_task, weather_lookup]
 

@@ -1559,6 +1559,13 @@
         <span class="n">_shared_state_store</span><span class="o">.</span><span class="n">append_global_update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_namespace</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">update</span><span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="SharedInMemoryMemory.get_global_updates">
+<a class="viewcode-back" href="../../../api/index.html#agent_framework.components.memory.SharedInMemoryMemory.get_global_updates">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_global_updates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all global updates in this namespace.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_shared_state_store</span><span class="o">.</span><span class="n">list_global_updates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_namespace</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="SharedInMemoryMemory.get_history">
 <a class="viewcode-back" href="../../../api/index.html#agent_framework.components.memory.SharedInMemoryMemory.get_history">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_history</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
@@ -1616,7 +1623,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Project Authors.</p>
+    <p>&#169; Copyright 2026, Project Authors.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

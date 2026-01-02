@@ -29,7 +29,7 @@ resources:
 
   subscribers:
     - name: logging
-      type: LoggingSubscriber
+      type: PhoenixSubscriber
       config:
         level: INFO
         include_data: true
@@ -67,10 +67,9 @@ spec:
         Be concise and focused on the task.
 
   memory:
-    type: SharedInMemoryMemory
-    config:
-      namespace: ${JOB_ID:-default}
-      agent_key: research_worker
+    $preset: worker
+    # namespace auto-derived from JOB_ID
+    # agent_key auto-derived from metadata.name
 
   tools: [web_search, note_taker, calculator]
 

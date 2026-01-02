@@ -1,0 +1,693 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search &mdash; AI Agent Framework 0.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=938c9ccc"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="#" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#from-source">From Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#development-installation">Development Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#your-first-agent">Your First Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#create-an-agent-configuration">1. Create an Agent Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#create-the-entry-point">2. Create the Entry Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#run-your-agent">3. Run Your Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#single-agent-examples">Single Agent Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#calculator-agent">Calculator Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#research-agent">Research Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#multi-agent-system">Multi-Agent System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#manager-worker-architecture">Manager-Worker Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#manager-orchestrator">Manager (Orchestrator)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#research-worker">Research Worker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#task-worker">Task Worker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-agents">Running Agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#single-agent">Single Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#manager-with-workers">Manager with Workers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#testing-your-agents">Testing Your Agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#e2e-tests-with-real-api">E2E Tests (with real API)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#common-patterns">Common Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#environment-variable-substitution">Environment Variable Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#custom-tool-registration">Custom Tool Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#adding-observability">Adding Observability</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Configuration Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/yaml-configuration.html">YAML Configuration Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/yaml-configuration.html#configuration-schema-overview">Configuration Schema Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/yaml-configuration.html#top-level-fields">Top-Level Fields</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#apiversion-required"><code class="docutils literal notranslate"><span class="pre">apiVersion</span></code> (required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#kind-required"><code class="docutils literal notranslate"><span class="pre">kind</span></code> (required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#metadata-required"><code class="docutils literal notranslate"><span class="pre">metadata</span></code> (required)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/yaml-configuration.html#resources-section">Resources Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#inference-gateways"><code class="docutils literal notranslate"><span class="pre">inference_gateways</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#available-gateway-types">Available Gateway Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#openaigateway-config-options">OpenAIGateway Config Options</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#tools"><code class="docutils literal notranslate"><span class="pre">tools</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#built-in-tool-types">Built-in Tool Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#subscribers"><code class="docutils literal notranslate"><span class="pre">subscribers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#available-subscriber-types">Available Subscriber Types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/yaml-configuration.html#spec-section">Spec Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#policies"><code class="docutils literal notranslate"><span class="pre">policies</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#using-presets-recommended">Using Presets (Recommended)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#overriding-preset-values">Overriding Preset Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#full-custom-policy-configuration">Full Custom Policy Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#planner"><code class="docutils literal notranslate"><span class="pre">planner</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#reactplanner-tool-using-agents">ReActPlanner (Tool-using agents)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#workerrouterplanner-for-manageragents">WorkerRouterPlanner (For ManagerAgents)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#memory"><code class="docutils literal notranslate"><span class="pre">memory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#id1">Using Presets (Recommended)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#override-preset-defaults">Override Preset Defaults</a></li>
+<li class="toctree-l4"><a class="reference internal" href="guides/yaml-configuration.html#legacy-explicit-configuration">Legacy Explicit Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#id2"><code class="docutils literal notranslate"><span class="pre">tools</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#id3"><code class="docutils literal notranslate"><span class="pre">subscribers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#workers-manageragent-only"><code class="docutils literal notranslate"><span class="pre">workers</span></code> (ManagerAgent only)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/yaml-configuration.html#environment-variable-substitution">Environment Variable Substitution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/yaml-configuration.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#simple-worker-agent">Simple Worker Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/yaml-configuration.html#manager-with-workers">Manager with Workers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/yaml-configuration.html#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/agent-types.html">Agent Types Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/agent-types.html#agent-types-overview">Agent Types Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/agent-types.html#agent-single-worker">Agent (Single Worker)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#key-components">Key Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#execution-flow">Execution Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/agent-types.html#manageragent-orchestrator">ManagerAgent (Orchestrator)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#id1">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#id2">Key Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#id3">Execution Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/agent-types.html#comparison">Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/agent-types.html#when-to-use-each-type">When to Use Each Type</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#use-agent-when">Use Agent when:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#use-manageragent-when">Use ManagerAgent when:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/agent-types.html#architecture-patterns">Architecture Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#pattern-1-single-agent">Pattern 1: Single Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#pattern-2-manager-with-workers">Pattern 2: Manager with Workers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#pattern-3-shared-memory-team">Pattern 3: Shared Memory Team</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/agent-types.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#standalone-calculator-agent">Standalone Calculator Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/agent-types.html#multi-worker-system">Multi-Worker System</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/agent-types.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/memory-presets.html">Memory Presets Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#available-presets">Available Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#standalone-preset">Standalone Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#worker-preset">Worker Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#manager-preset">Manager Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#auto-derivation-rules">Auto-Derivation Rules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#namespace">Namespace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#agent-key">Agent Key</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#subordinates-manager-only">Subordinates (Manager only)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#override-preset-defaults">Override Preset Defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#memory-type-reference">Memory Type Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#inmemorymemory-standalone">InMemoryMemory (standalone)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#sharedinmemorymemory-worker">SharedInMemoryMemory (worker)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#hierarchicalsharedmemory-manager">HierarchicalSharedMemory (manager)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#standalone-agent">Standalone Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#worker-in-team">Worker in Team</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/memory-presets.html#manager-with-workers">Manager with Workers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#programmatic-usage">Programmatic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/memory-presets.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/policy-presets.html">Policy Presets Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#available-presets">Available Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#simple-preset">Simple Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#manager-with-followups-preset">Manager with Followups Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#with-hitl-preset">With HITL Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#with-checkpoints-preset">With Checkpoints Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#overriding-preset-values">Overriding Preset Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#policy-types-reference">Policy Types Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#defaultcompletiondetector">DefaultCompletionDetector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#defaultterminationpolicy">DefaultTerminationPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#defaultlooppreventionpolicy">DefaultLoopPreventionPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#defaulthitlpolicy">DefaultHITLPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#defaultcheckpointpolicy">DefaultCheckpointPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#defaultfollowuppolicy">DefaultFollowUpPolicy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#worker-with-custom-termination">Worker with Custom Termination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#manager-with-follow-ups">Manager with Follow-ups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/policy-presets.html#agent-with-human-approval">Agent with Human Approval</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#programmatic-usage">Programmatic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/policy-presets.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/tools.html">Tools Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/tools.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/tools.html#built-in-tools">Built-in Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#calculatortool">CalculatorTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#mocksearchtool">MockSearchTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#notetakertool">NoteTakerTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#taskmanagertool">TaskManagerTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#listtaskstool">ListTasksTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#completetasktool">CompleteTaskTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#weatherlookuptool">WeatherLookupTool</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/tools.html#creating-custom-tools">Creating Custom Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#basic-tool-structure">Basic Tool Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#registering-custom-tools">Registering Custom Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#using-in-yaml">Using in YAML</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/tools.html#tool-configuration">Tool Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#config-options">Config Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#environment-variables">Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/tools.html#tool-patterns">Tool Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#read-only-tools">Read-Only Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#write-tools">Write Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#composite-tools">Composite Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/tools.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#tool-errors">Tool Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/tools.html#complete-example">Complete Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#custom-api-tool">Custom API Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#registry-entry">Registry Entry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/tools.html#yaml-configuration">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/tools.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/planners.html">Planners Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#available-planners">Available Planners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#reactplanner">ReActPlanner</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#config-options">Config Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#function-calling-mode">Function Calling Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#workerrouterplanner">WorkerRouterPlanner</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#id1">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#id2">Config Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#id3">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#routing-response-format">Routing Response Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#id4">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#inference-gateways">Inference Gateways</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#openaigateway">OpenAIGateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#anthropicgateway">AnthropicGateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#mockgateway">MockGateway</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#system-prompts">System Prompts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#best-practices">Best Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#reactplanner-prompt-template">ReActPlanner Prompt Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#workerrouterplanner-prompt-template">WorkerRouterPlanner Prompt Template</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#advanced-patterns">Advanced Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#chain-of-thought">Chain of Thought</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#few-shot-examples">Few-Shot Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#safety-guardrails">Safety Guardrails</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#research-agent-with-reactplanner">Research Agent with ReActPlanner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guides/planners.html#multi-domain-manager">Multi-Domain Manager</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guides/planners.html#id5">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/single-agent.html">Single Agent Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/single-agent.html#calculator-agent">Calculator Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/single-agent.html#research-agent">Research Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#id1">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#id2">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/single-agent.html#task-management-agent">Task Management Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#id3">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#id4">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/single-agent.html#weather-agent">Weather Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#id5">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/single-agent.html#agent-with-observability">Agent with Observability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#id6">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/single-agent.html#agent-with-custom-termination">Agent with Custom Termination</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#id7">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/single-agent.html#testing-single-agents">Testing Single Agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#unit-test-example">Unit Test Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/single-agent.html#e2e-test-example">E2E Test Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/multi-agent.html">Multi-Agent Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/multi-agent.html#basic-manager-worker-system">Basic Manager-Worker System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#orchestrator-configuration">Orchestrator Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#research-worker-configuration">Research Worker Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#task-worker-configuration">Task Worker Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/multi-agent.html#three-worker-system">Three-Worker System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#orchestrator">Orchestrator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#calculator-worker">Calculator Worker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/multi-agent.html#shared-memory-example">Shared Memory Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#orchestrator-with-shared-state">Orchestrator with Shared State</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#python-usage-with-shared-state">Python Usage with Shared State</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/multi-agent.html#follow-up-phases-example">Follow-Up Phases Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/multi-agent.html#testing-multi-agent-systems">Testing Multi-Agent Systems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#unit-test">Unit Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#integration-test">Integration Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/multi-agent.html#e2e-test">E2E Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/multi-agent.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/custom-tools.html">Custom Tools Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/custom-tools.html#basic-custom-tool">Basic Custom Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#tool-implementation">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#registry-registration">Registry Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#yaml-configuration">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/custom-tools.html#configurable-tool">Configurable Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id1">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id2">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/custom-tools.html#database-tool">Database Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id3">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id4">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/custom-tools.html#file-system-tool">File System Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id5">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id6">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/custom-tools.html#external-service-tool">External Service Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id7">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id8">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/custom-tools.html#composite-tool">Composite Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#id9">Tool Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/custom-tools.html#testing-custom-tools">Testing Custom Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#unit-test">Unit Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/custom-tools.html#integration-test-with-agent">Integration Test with Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/custom-tools.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/core.html">Core API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/core.html#agent">Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/core.html#agent_framework.core.agent.Agent"><code class="docutils literal notranslate"><span class="pre">Agent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/core.html#agent_framework.core.agent.Agent.__init__"><code class="docutils literal notranslate"><span class="pre">Agent.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/core.html#agent_framework.core.agent.Agent.run"><code class="docutils literal notranslate"><span class="pre">Agent.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/core.html#manageragent">ManagerAgent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/core.html#agent_framework.core.manager_v2.ManagerAgent"><code class="docutils literal notranslate"><span class="pre">ManagerAgent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/core.html#agent_framework.core.manager_v2.ManagerAgent.__init__"><code class="docutils literal notranslate"><span class="pre">ManagerAgent.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/core.html#agent_framework.core.manager_v2.ManagerAgent.run"><code class="docutils literal notranslate"><span class="pre">ManagerAgent.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/core.html#eventbus">EventBus</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/core.html#agent_framework.core.events.EventBus"><code class="docutils literal notranslate"><span class="pre">EventBus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/core.html#agent_framework.core.events.EventBus.__init__"><code class="docutils literal notranslate"><span class="pre">EventBus.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/core.html#agent_framework.core.events.EventBus.subscribe"><code class="docutils literal notranslate"><span class="pre">EventBus.subscribe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/core.html#agent_framework.core.events.EventBus.publish"><code class="docutils literal notranslate"><span class="pre">EventBus.publish()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/core.html#tool-base-class">Tool Base Class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/components.html">Components API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/components.html#memory">Memory</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#inmemorymemory">InMemoryMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/components.html#agent_framework.components.memory.InMemoryMemory"><code class="docutils literal notranslate"><span class="pre">InMemoryMemory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#sharedinmemorymemory">SharedInMemoryMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/components.html#agent_framework.components.memory.SharedInMemoryMemory"><code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#hierarchicalsharedmemory">HierarchicalSharedMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/components.html#agent_framework.components.memory.HierarchicalSharedMemory"><code class="docutils literal notranslate"><span class="pre">HierarchicalSharedMemory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#module-agent_framework.components.memory_presets">Memory Presets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/components.html#agent_framework.components.memory_presets.get_memory_preset"><code class="docutils literal notranslate"><span class="pre">get_memory_preset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/components.html#agent_framework.components.memory_presets.list_memory_presets"><code class="docutils literal notranslate"><span class="pre">list_memory_presets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/components.html#agent_framework.components.memory_presets.describe_preset"><code class="docutils literal notranslate"><span class="pre">describe_preset()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/components.html#planners">Planners</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#reactplanner">ReActPlanner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#workerrouterplanner">WorkerRouterPlanner</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/components.html#inference-gateways">Inference Gateways</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#openaigateway">OpenAIGateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#anthropicgateway">AnthropicGateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/components.html#mockgateway">MockGateway</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/policies.html">Policies API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/policies.html#module-agent_framework.policies.presets">Policy Presets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/policies.html#agent_framework.policies.presets.get_preset"><code class="docutils literal notranslate"><span class="pre">get_preset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/policies.html#agent_framework.policies.presets.list_presets"><code class="docutils literal notranslate"><span class="pre">list_presets()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/policies.html#default-policies">Default Policies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/policies.html#defaultcompletiondetector">DefaultCompletionDetector</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/policies.html#agent_framework.policies.default.DefaultCompletionDetector"><code class="docutils literal notranslate"><span class="pre">DefaultCompletionDetector</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/policies.html#defaultterminationpolicy">DefaultTerminationPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/policies.html#agent_framework.policies.default.DefaultTerminationPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultTerminationPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/policies.html#defaultlooppreventionpolicy">DefaultLoopPreventionPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/policies.html#agent_framework.policies.default.DefaultLoopPreventionPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultLoopPreventionPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/policies.html#defaulthitlpolicy">DefaultHITLPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/policies.html#agent_framework.policies.default.DefaultHITLPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultHITLPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/policies.html#defaultcheckpointpolicy">DefaultCheckpointPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/policies.html#agent_framework.policies.default.DefaultCheckpointPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultCheckpointPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/policies.html#defaultfollowuppolicy">DefaultFollowUpPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/policies.html#agent_framework.policies.default.DefaultFollowUpPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultFollowUpPolicy</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#test-structure">Test Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#running-tests">Running Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#all-tests">All Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#by-category">By Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#with-coverage">With Coverage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#unit-tests">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#example-testing-a-tool">Example: Testing a Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#example-testing-an-agent-with-mocks">Example: Testing an Agent with Mocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#example-testing-memory-presets">Example: Testing Memory Presets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#integration-tests">Integration Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#example-agent-loop-test">Example: Agent Loop Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#example-manager-worker-integration">Example: Manager-Worker Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#e2e-tests">E2E Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#skip-decorator">Skip Decorator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#example-real-agent-test">Example: Real Agent Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#fixtures">Fixtures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="testing.html#common-fixtures">Common Fixtures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#test-coverage">Test Coverage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#development-setup">Development Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#environment-variables">Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#python-style">Python Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#formatting">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#linting">Linting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#testing">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#running-tests">Running Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#writing-tests">Writing Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#documentation">Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#building-docs">Building Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#writing-docs">Writing Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#pull-request-process">Pull Request Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#commit-messages">Commit Messages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#adding-new-components">Adding New Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#new-tool">New Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#new-policy">New Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#new-gateway">New Gateway</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#questions">Questions?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Search</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <noscript>
+  <div id="fallback" class="admonition warning">
+    <p class="last">
+      Please activate JavaScript to enable the search functionality.
+    </p>
+  </div>
+  </noscript>
+
+  
+  <div id="search-results">
+  
+  </div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Agent Framework Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  <script>
+    jQuery(function() { Search.loadIndex("searchindex.js"); });
+  </script>
+  
+  <script id="searchindexloader"></script>
+   
+
+
+</body>
+</html>

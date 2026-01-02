@@ -18,6 +18,7 @@ from agent_framework.core.agent import Agent
 from agent_framework.core.manager_v2 import ManagerAgent
 from agent_framework.core.events import EventBus
 from agent_framework.policies.presets import get_preset
+from agent_framework.components.memory_presets import get_memory_preset
 
 from .registry import (
     PLANNER_REGISTRY,
@@ -156,6 +157,53 @@ def _load_policies(spec: Dict[str, Any], resources_by_name: Dict[str, Any]) -> D
     return policies
 
 
+def _load_memory(
+    spec: Dict[str, Any],
+    metadata: Dict[str, Any],
+    kind: str,
+    workers_spec: Optional[List[Dict[str, Any]]] = None
+) -> Any:
+    """
+    Load memory from spec, supporting presets.
+
+    Args:
+        spec: The agent spec section
+        metadata: The agent metadata section
+        kind: Agent kind (Agent or ManagerAgent)
+        workers_spec: List of worker specs (for manager agents)
+
+    Returns:
+        Memory instance
+    """
+    memory_spec = spec.get("memory", {})
+
+    # Handle preset-based configuration
+    if "$preset" in memory_spec:
+        preset_name = memory_spec["$preset"]
+
+        # Build context for preset
+        context = {
+            "agent_name": metadata.get("name", "agent"),
+        }
+
+        # Add subordinates for manager preset
+        if preset_name == "manager" and workers_spec:
+            context["subordinates"] = [w["name"] for w in workers_spec]
+
+        # Allow override of specific fields
+        if "namespace" in memory_spec:
+            context["namespace"] = memory_spec["namespace"]
+        if "agent_key" in memory_spec:
+            context["agent_key"] = memory_spec["agent_key"]
+
+        return get_memory_preset(preset_name, context)
+
+    # Handle explicit type-based configuration (legacy)
+    memory_type = memory_spec.get("type", "SharedInMemoryMemory")
+    memory_config = memory_spec.get("config", {})
+    return _instantiate_from_registry(memory_type, memory_config)
+
+
 class AgentFactory:
     """Factory for creating agents from YAML configurations."""
 
@@ -234,7 +282,9 @@ class AgentFactory:
                     desc["parameters"] = schema.model_json_schema()
             tool_descriptions.append(desc)
 
-        planner_config["tool_descriptions"] = tool_descriptions
+        # Only add tool_descriptions for planners that need it (not router planners)
+        if planner_type not in ("WorkerRouterPlanner",):
+            planner_config["tool_descriptions"] = tool_descriptions
 
         # Handle worker_keys for router planners
         if "worker_keys" in planner_config:
@@ -245,11 +295,9 @@ class AgentFactory:
 
         planner = _instantiate_from_registry(planner_type, planner_config)
 
-        # Build memory
-        memory_spec = spec.get("memory", {})
-        memory_type = memory_spec.get("type", "SharedInMemoryMemory")
-        memory_config = memory_spec.get("config", {})
-        memory = _instantiate_from_registry(memory_type, memory_config)
+        # Build memory (with preset support)
+        workers_spec = spec.get("workers", []) if kind == "ManagerAgent" else None
+        memory = _load_memory(spec, metadata, kind, workers_spec)
 
         # Build event bus and subscribers
         event_bus = EventBus()

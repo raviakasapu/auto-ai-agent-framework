@@ -113,6 +113,10 @@ class SharedInMemoryMemory(BaseMemory):
         """
         _shared_state_store.append_global_update(self._namespace, dict(update))
 
+    def get_global_updates(self) -> List[Dict[str, Any]]:
+        """Get all global updates in this namespace."""
+        return _shared_state_store.list_global_updates(self._namespace)
+
     def get_history(self) -> List[Dict[str, Any]]:
         # Include conversation history at the start for context
         conversation = _shared_state_store.list_conversation(self._namespace)

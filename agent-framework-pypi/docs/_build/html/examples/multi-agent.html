@@ -1,0 +1,1235 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Agent Examples &mdash; AI Agent Framework 0.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=938c9ccc"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Custom Tools Examples" href="custom-tools.html" />
+    <link rel="prev" title="Single Agent Examples" href="single-agent.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#from-source">From Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#development-installation">Development Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#your-first-agent">Your First Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#create-an-agent-configuration">1. Create an Agent Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#create-the-entry-point">2. Create the Entry Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#run-your-agent">3. Run Your Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#single-agent-examples">Single Agent Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#calculator-agent">Calculator Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#research-agent">Research Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#multi-agent-system">Multi-Agent System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#manager-worker-architecture">Manager-Worker Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../quickstart.html#manager-orchestrator">Manager (Orchestrator)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../quickstart.html#research-worker">Research Worker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../quickstart.html#task-worker">Task Worker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#running-agents">Running Agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#single-agent">Single Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#manager-with-workers">Manager with Workers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#testing-your-agents">Testing Your Agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#e2e-tests-with-real-api">E2E Tests (with real API)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-patterns">Common Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#environment-variable-substitution">Environment Variable Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#custom-tool-registration">Custom Tool Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#adding-observability">Adding Observability</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Configuration Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/yaml-configuration.html">YAML Configuration Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/yaml-configuration.html#configuration-schema-overview">Configuration Schema Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/yaml-configuration.html#top-level-fields">Top-Level Fields</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#apiversion-required"><code class="docutils literal notranslate"><span class="pre">apiVersion</span></code> (required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#kind-required"><code class="docutils literal notranslate"><span class="pre">kind</span></code> (required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#metadata-required"><code class="docutils literal notranslate"><span class="pre">metadata</span></code> (required)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/yaml-configuration.html#resources-section">Resources Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#inference-gateways"><code class="docutils literal notranslate"><span class="pre">inference_gateways</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#available-gateway-types">Available Gateway Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#openaigateway-config-options">OpenAIGateway Config Options</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#tools"><code class="docutils literal notranslate"><span class="pre">tools</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#built-in-tool-types">Built-in Tool Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#subscribers"><code class="docutils literal notranslate"><span class="pre">subscribers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#available-subscriber-types">Available Subscriber Types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/yaml-configuration.html#spec-section">Spec Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#policies"><code class="docutils literal notranslate"><span class="pre">policies</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#using-presets-recommended">Using Presets (Recommended)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#overriding-preset-values">Overriding Preset Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#full-custom-policy-configuration">Full Custom Policy Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#planner"><code class="docutils literal notranslate"><span class="pre">planner</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#reactplanner-tool-using-agents">ReActPlanner (Tool-using agents)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#workerrouterplanner-for-manageragents">WorkerRouterPlanner (For ManagerAgents)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#memory"><code class="docutils literal notranslate"><span class="pre">memory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#id1">Using Presets (Recommended)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#override-preset-defaults">Override Preset Defaults</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/yaml-configuration.html#legacy-explicit-configuration">Legacy Explicit Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#id2"><code class="docutils literal notranslate"><span class="pre">tools</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#id3"><code class="docutils literal notranslate"><span class="pre">subscribers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#workers-manageragent-only"><code class="docutils literal notranslate"><span class="pre">workers</span></code> (ManagerAgent only)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/yaml-configuration.html#environment-variable-substitution">Environment Variable Substitution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/yaml-configuration.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#simple-worker-agent">Simple Worker Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/yaml-configuration.html#manager-with-workers">Manager with Workers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/yaml-configuration.html#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/agent-types.html">Agent Types Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/agent-types.html#agent-types-overview">Agent Types Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/agent-types.html#agent-single-worker">Agent (Single Worker)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#key-components">Key Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#execution-flow">Execution Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/agent-types.html#manageragent-orchestrator">ManagerAgent (Orchestrator)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#id1">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#id2">Key Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#id3">Execution Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/agent-types.html#comparison">Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/agent-types.html#when-to-use-each-type">When to Use Each Type</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#use-agent-when">Use Agent when:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#use-manageragent-when">Use ManagerAgent when:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/agent-types.html#architecture-patterns">Architecture Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#pattern-1-single-agent">Pattern 1: Single Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#pattern-2-manager-with-workers">Pattern 2: Manager with Workers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#pattern-3-shared-memory-team">Pattern 3: Shared Memory Team</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/agent-types.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#standalone-calculator-agent">Standalone Calculator Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/agent-types.html#multi-worker-system">Multi-Worker System</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/agent-types.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/memory-presets.html">Memory Presets Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#available-presets">Available Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#standalone-preset">Standalone Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#worker-preset">Worker Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#manager-preset">Manager Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#auto-derivation-rules">Auto-Derivation Rules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#namespace">Namespace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#agent-key">Agent Key</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#subordinates-manager-only">Subordinates (Manager only)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#override-preset-defaults">Override Preset Defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#memory-type-reference">Memory Type Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#inmemorymemory-standalone">InMemoryMemory (standalone)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#sharedinmemorymemory-worker">SharedInMemoryMemory (worker)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#hierarchicalsharedmemory-manager">HierarchicalSharedMemory (manager)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#standalone-agent">Standalone Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#worker-in-team">Worker in Team</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/memory-presets.html#manager-with-workers">Manager with Workers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#programmatic-usage">Programmatic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/memory-presets.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/policy-presets.html">Policy Presets Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#available-presets">Available Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#simple-preset">Simple Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#manager-with-followups-preset">Manager with Followups Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#with-hitl-preset">With HITL Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#with-checkpoints-preset">With Checkpoints Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#overriding-preset-values">Overriding Preset Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#policy-types-reference">Policy Types Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#defaultcompletiondetector">DefaultCompletionDetector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#defaultterminationpolicy">DefaultTerminationPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#defaultlooppreventionpolicy">DefaultLoopPreventionPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#defaulthitlpolicy">DefaultHITLPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#defaultcheckpointpolicy">DefaultCheckpointPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#defaultfollowuppolicy">DefaultFollowUpPolicy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#worker-with-custom-termination">Worker with Custom Termination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#manager-with-follow-ups">Manager with Follow-ups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/policy-presets.html#agent-with-human-approval">Agent with Human Approval</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#programmatic-usage">Programmatic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/policy-presets.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/tools.html">Tools Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/tools.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/tools.html#built-in-tools">Built-in Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#calculatortool">CalculatorTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#mocksearchtool">MockSearchTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#notetakertool">NoteTakerTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#taskmanagertool">TaskManagerTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#listtaskstool">ListTasksTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#completetasktool">CompleteTaskTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#weatherlookuptool">WeatherLookupTool</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/tools.html#creating-custom-tools">Creating Custom Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#basic-tool-structure">Basic Tool Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#registering-custom-tools">Registering Custom Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#using-in-yaml">Using in YAML</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/tools.html#tool-configuration">Tool Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#config-options">Config Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#environment-variables">Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/tools.html#tool-patterns">Tool Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#read-only-tools">Read-Only Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#write-tools">Write Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#composite-tools">Composite Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/tools.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#tool-errors">Tool Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/tools.html#complete-example">Complete Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#custom-api-tool">Custom API Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#registry-entry">Registry Entry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/tools.html#yaml-configuration">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/tools.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/planners.html">Planners Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#available-planners">Available Planners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#reactplanner">ReActPlanner</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#config-options">Config Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#function-calling-mode">Function Calling Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#workerrouterplanner">WorkerRouterPlanner</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#id1">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#id2">Config Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#id3">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#routing-response-format">Routing Response Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#id4">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#inference-gateways">Inference Gateways</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#openaigateway">OpenAIGateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#anthropicgateway">AnthropicGateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#mockgateway">MockGateway</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#system-prompts">System Prompts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#best-practices">Best Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#reactplanner-prompt-template">ReActPlanner Prompt Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#workerrouterplanner-prompt-template">WorkerRouterPlanner Prompt Template</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#advanced-patterns">Advanced Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#chain-of-thought">Chain of Thought</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#few-shot-examples">Few-Shot Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#safety-guardrails">Safety Guardrails</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#research-agent-with-reactplanner">Research Agent with ReActPlanner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/planners.html#multi-domain-manager">Multi-Domain Manager</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/planners.html#id5">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="single-agent.html">Single Agent Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="single-agent.html#calculator-agent">Calculator Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="single-agent.html#research-agent">Research Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#id1">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#id2">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="single-agent.html#task-management-agent">Task Management Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#id3">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#id4">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="single-agent.html#weather-agent">Weather Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#id5">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="single-agent.html#agent-with-observability">Agent with Observability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#id6">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="single-agent.html#agent-with-custom-termination">Agent with Custom Termination</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#id7">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="single-agent.html#testing-single-agents">Testing Single Agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#unit-test-example">Unit Test Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="single-agent.html#e2e-test-example">E2E Test Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multi-Agent Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-manager-worker-system">Basic Manager-Worker System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#directory-structure">Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#orchestrator-configuration">Orchestrator Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#research-worker-configuration">Research Worker Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#task-worker-configuration">Task Worker Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#three-worker-system">Three-Worker System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#orchestrator">Orchestrator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calculator-worker">Calculator Worker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#shared-memory-example">Shared Memory Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#orchestrator-with-shared-state">Orchestrator with Shared State</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-usage-with-shared-state">Python Usage with Shared State</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#follow-up-phases-example">Follow-Up Phases Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-multi-agent-systems">Testing Multi-Agent Systems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unit-test">Unit Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-test">Integration Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e2e-test">E2E Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom-tools.html">Custom Tools Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="custom-tools.html#basic-custom-tool">Basic Custom Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#tool-implementation">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#registry-registration">Registry Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#yaml-configuration">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom-tools.html#configurable-tool">Configurable Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id1">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id2">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom-tools.html#database-tool">Database Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id3">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id4">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom-tools.html#file-system-tool">File System Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id5">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id6">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom-tools.html#external-service-tool">External Service Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id7">Tool Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id8">YAML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom-tools.html#composite-tool">Composite Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#id9">Tool Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom-tools.html#testing-custom-tools">Testing Custom Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#unit-test">Unit Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom-tools.html#integration-test-with-agent">Integration Test with Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom-tools.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/core.html">Core API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/core.html#agent">Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/core.html#agent_framework.core.agent.Agent"><code class="docutils literal notranslate"><span class="pre">Agent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/core.html#agent_framework.core.agent.Agent.__init__"><code class="docutils literal notranslate"><span class="pre">Agent.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/core.html#agent_framework.core.agent.Agent.run"><code class="docutils literal notranslate"><span class="pre">Agent.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/core.html#manageragent">ManagerAgent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/core.html#agent_framework.core.manager_v2.ManagerAgent"><code class="docutils literal notranslate"><span class="pre">ManagerAgent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/core.html#agent_framework.core.manager_v2.ManagerAgent.__init__"><code class="docutils literal notranslate"><span class="pre">ManagerAgent.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/core.html#agent_framework.core.manager_v2.ManagerAgent.run"><code class="docutils literal notranslate"><span class="pre">ManagerAgent.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/core.html#eventbus">EventBus</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/core.html#agent_framework.core.events.EventBus"><code class="docutils literal notranslate"><span class="pre">EventBus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/core.html#agent_framework.core.events.EventBus.__init__"><code class="docutils literal notranslate"><span class="pre">EventBus.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/core.html#agent_framework.core.events.EventBus.subscribe"><code class="docutils literal notranslate"><span class="pre">EventBus.subscribe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/core.html#agent_framework.core.events.EventBus.publish"><code class="docutils literal notranslate"><span class="pre">EventBus.publish()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/core.html#tool-base-class">Tool Base Class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/components.html">Components API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/components.html#memory">Memory</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#inmemorymemory">InMemoryMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/components.html#agent_framework.components.memory.InMemoryMemory"><code class="docutils literal notranslate"><span class="pre">InMemoryMemory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#sharedinmemorymemory">SharedInMemoryMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/components.html#agent_framework.components.memory.SharedInMemoryMemory"><code class="docutils literal notranslate"><span class="pre">SharedInMemoryMemory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#hierarchicalsharedmemory">HierarchicalSharedMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/components.html#agent_framework.components.memory.HierarchicalSharedMemory"><code class="docutils literal notranslate"><span class="pre">HierarchicalSharedMemory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#module-agent_framework.components.memory_presets">Memory Presets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/components.html#agent_framework.components.memory_presets.get_memory_preset"><code class="docutils literal notranslate"><span class="pre">get_memory_preset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/components.html#agent_framework.components.memory_presets.list_memory_presets"><code class="docutils literal notranslate"><span class="pre">list_memory_presets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/components.html#agent_framework.components.memory_presets.describe_preset"><code class="docutils literal notranslate"><span class="pre">describe_preset()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/components.html#planners">Planners</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#reactplanner">ReActPlanner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#workerrouterplanner">WorkerRouterPlanner</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/components.html#inference-gateways">Inference Gateways</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#openaigateway">OpenAIGateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#anthropicgateway">AnthropicGateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/components.html#mockgateway">MockGateway</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/policies.html">Policies API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/policies.html#module-agent_framework.policies.presets">Policy Presets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/policies.html#agent_framework.policies.presets.get_preset"><code class="docutils literal notranslate"><span class="pre">get_preset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/policies.html#agent_framework.policies.presets.list_presets"><code class="docutils literal notranslate"><span class="pre">list_presets()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/policies.html#default-policies">Default Policies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/policies.html#defaultcompletiondetector">DefaultCompletionDetector</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/policies.html#agent_framework.policies.default.DefaultCompletionDetector"><code class="docutils literal notranslate"><span class="pre">DefaultCompletionDetector</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/policies.html#defaultterminationpolicy">DefaultTerminationPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/policies.html#agent_framework.policies.default.DefaultTerminationPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultTerminationPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/policies.html#defaultlooppreventionpolicy">DefaultLoopPreventionPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/policies.html#agent_framework.policies.default.DefaultLoopPreventionPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultLoopPreventionPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/policies.html#defaulthitlpolicy">DefaultHITLPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/policies.html#agent_framework.policies.default.DefaultHITLPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultHITLPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/policies.html#defaultcheckpointpolicy">DefaultCheckpointPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/policies.html#agent_framework.policies.default.DefaultCheckpointPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultCheckpointPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/policies.html#defaultfollowuppolicy">DefaultFollowUpPolicy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/policies.html#agent_framework.policies.default.DefaultFollowUpPolicy"><code class="docutils literal notranslate"><span class="pre">DefaultFollowUpPolicy</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#test-structure">Test Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#running-tests">Running Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#all-tests">All Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#by-category">By Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#with-coverage">With Coverage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#unit-tests">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#example-testing-a-tool">Example: Testing a Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#example-testing-an-agent-with-mocks">Example: Testing an Agent with Mocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#example-testing-memory-presets">Example: Testing Memory Presets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#integration-tests">Integration Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#example-agent-loop-test">Example: Agent Loop Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#example-manager-worker-integration">Example: Manager-Worker Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#e2e-tests">E2E Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#skip-decorator">Skip Decorator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#example-real-agent-test">Example: Real Agent Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#fixtures">Fixtures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#common-fixtures">Common Fixtures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#test-coverage">Test Coverage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-setup">Development Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#environment-variables">Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#python-style">Python Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#formatting">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#linting">Linting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#running-tests">Running Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#writing-tests">Writing Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#documentation">Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#building-docs">Building Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#writing-docs">Writing Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-process">Pull Request Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#commit-messages">Commit Messages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#adding-new-components">Adding New Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#new-tool">New Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#new-policy">New Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#new-gateway">New Gateway</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#questions">Questions?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multi-Agent Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/multi-agent.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multi-agent-examples">
+<h1>Multi-Agent Examples<a class="headerlink" href="#multi-agent-examples" title="Link to this heading"></a></h1>
+<p>This page provides complete examples of multi-agent systems with managers and workers.</p>
+<section id="basic-manager-worker-system">
+<h2>Basic Manager-Worker System<a class="headerlink" href="#basic-manager-worker-system" title="Link to this heading"></a></h2>
+<p>A simple orchestrator with two specialized workers.</p>
+<section id="directory-structure">
+<h3>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>configs/agents/
+├── orchestrator.yaml
+├── research_worker.yaml
+└── task_worker.yaml
+</pre></div>
+</div>
+</section>
+<section id="orchestrator-configuration">
+<h3>Orchestrator Configuration<a class="headerlink" href="#orchestrator-configuration" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/orchestrator.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Orchestrator</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Routes tasks to appropriate workers</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-orchestrator</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PhoenixSubscriber</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+<span class="w">        </span><span class="nt">include_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">max_payload_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WorkerRouterPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-orchestrator</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">research-worker</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">task-worker</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">default_worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research-worker</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a task router. Analyze requests and route them appropriately.</span>
+
+<span class="w">        </span><span class="no">Available workers:</span>
+<span class="w">        </span><span class="no">- research-worker: For searching, researching, and taking notes</span>
+<span class="w">        </span><span class="no">- task-worker: For creating tasks, listing tasks, and task management</span>
+
+<span class="w">        </span><span class="no">Route research/search/notes requests to research-worker.</span>
+<span class="w">        </span><span class="no">Route task/todo/schedule requests to task-worker.</span>
+
+<span class="w">        </span><span class="no">Return JSON: {&quot;worker&quot;: &quot;&lt;key&gt;&quot;, &quot;reason&quot;: &quot;...&quot;}</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research-worker</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/research_worker.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">task-worker</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/task_worker.yaml</span>
+
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">logging</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="research-worker-configuration">
+<h3>Research Worker Configuration<a class="headerlink" href="#research-worker-configuration" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/research_worker.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ResearchWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Research and note-taking specialist</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-worker</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web_search</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MockSearchTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">note_taker</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NoteTakerTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">storage_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tmp/research_notes.json</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-worker</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a research specialist. Your job is to:</span>
+<span class="w">        </span><span class="no">1. Search for information using web_search</span>
+<span class="w">        </span><span class="no">2. Take notes on important findings using note_taker</span>
+<span class="w">        </span><span class="no">3. Provide clear summaries</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">web_search</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">note_taker</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="task-worker-configuration">
+<h3>Task Worker Configuration<a class="headerlink" href="#task-worker-configuration" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/task_worker.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TaskWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Task management specialist</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-worker</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_task</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TaskManagerTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_tasks</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ListTasksTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">complete_task</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CompleteTaskTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-worker</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a task management specialist. Help users:</span>
+<span class="w">        </span><span class="no">1. Create new tasks with appropriate priorities</span>
+<span class="w">        </span><span class="no">2. List and filter existing tasks</span>
+<span class="w">        </span><span class="no">3. Mark tasks as completed</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">create_task</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">list_tasks</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">complete_task</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_agent_from_yaml</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Load the orchestrator (workers are loaded automatically)</span>
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">create_agent_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/orchestrator.yaml&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Research request -&gt; routes to research-worker</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Search for Python web frameworks and take notes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Research result:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># Task request -&gt; routes to task-worker</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Create a task to review the Python research&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Task result:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="three-worker-system">
+<h2>Three-Worker System<a class="headerlink" href="#three-worker-system" title="Link to this heading"></a></h2>
+<p>An extended example with three specialized workers.</p>
+<section id="orchestrator">
+<h3>Orchestrator<a class="headerlink" href="#orchestrator" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/universal_orchestrator.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UniversalOrchestrator</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Routes to research, task, and calculator workers</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpt-4o</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WorkerRouterPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">research</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">tasks</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">calculator</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">default_worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a universal assistant router.</span>
+
+<span class="w">        </span><span class="no">Available workers:</span>
+<span class="w">        </span><span class="no">- research: Web search, information gathering, note-taking</span>
+<span class="w">          </span><span class="no">Keywords: search, find, research, look up, information</span>
+<span class="w">        </span><span class="no">- tasks: Task creation, listing, completion</span>
+<span class="w">          </span><span class="no">Keywords: task, todo, create, list, complete, done</span>
+<span class="w">        </span><span class="no">- calculator: Mathematical calculations</span>
+<span class="w">          </span><span class="no">Keywords: calculate, math, numbers, percentage, sum</span>
+
+<span class="w">        </span><span class="no">Analyze the request and route to the appropriate worker.</span>
+
+<span class="w">        </span><span class="no">Response: {&quot;worker&quot;: &quot;&lt;key&gt;&quot;, &quot;reason&quot;: &quot;...&quot;}</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/research_worker.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tasks</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/task_worker.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">calculator</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/calculator_worker.yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="calculator-worker">
+<h3>Calculator Worker<a class="headerlink" href="#calculator-worker" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/calculator_worker.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CalculatorWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Mathematical calculation specialist</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">calculator</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CalculatorTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a calculator specialist.</span>
+<span class="w">        </span><span class="no">Use the calculator tool for all mathematical operations.</span>
+<span class="w">        </span><span class="no">Show your work and explain the calculation.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">calculator</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="shared-memory-example">
+<h2>Shared Memory Example<a class="headerlink" href="#shared-memory-example" title="Link to this heading"></a></h2>
+<p>Demonstrating state sharing between workers.</p>
+<section id="orchestrator-with-shared-state">
+<h3>Orchestrator with Shared State<a class="headerlink" href="#orchestrator-with-shared-state" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/stateful_orchestrator.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">StatefulOrchestrator</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpt-4o</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WorkerRouterPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">researcher</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">analyzer</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">default_worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">researcher</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">Route between workers:</span>
+<span class="w">        </span><span class="no">- researcher: Gathers information and stores in shared state</span>
+<span class="w">        </span><span class="no">- analyzer: Reads shared state and provides analysis</span>
+
+<span class="w">        </span><span class="no">For research requests, use researcher.</span>
+<span class="w">        </span><span class="no">For analysis of existing research, use analyzer.</span>
+
+<span class="w">        </span><span class="no">Response: {&quot;worker&quot;: &quot;&lt;key&gt;&quot;, &quot;reason&quot;: &quot;...&quot;}</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">researcher</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/stateful_researcher.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">analyzer</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/stateful_analyzer.yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="python-usage-with-shared-state">
+<h3>Python Usage with Shared State<a class="headerlink" href="#python-usage-with-shared-state" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_agent_from_yaml</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Set JOB_ID for consistent namespace across workers</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;shared-job-123&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">create_agent_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/stateful_orchestrator.yaml&quot;</span><span class="p">)</span>
+
+    <span class="c1"># First request: research and store in shared state</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Research machine learning frameworks&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Research:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># Second request: analyze the stored research</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Analyze the research we just gathered&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analysis:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="follow-up-phases-example">
+<h2>Follow-Up Phases Example<a class="headerlink" href="#follow-up-phases-example" title="Link to this heading"></a></h2>
+<p>Manager that coordinates multiple follow-up phases.</p>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/iterative_manager.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IterativeManager</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Coordinates multi-phase work</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpt-4o</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+<span class="w">    </span><span class="nt">follow_up</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultFollowUpPolicy</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">max_phases</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">        </span><span class="nt">check_completion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">stop_on_completion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WorkerRouterPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">research</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">synthesis</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">default_worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You manage a two-phase process:</span>
+<span class="w">        </span><span class="no">1. Research phase: Gather information</span>
+<span class="w">        </span><span class="no">2. Synthesis phase: Combine and summarize</span>
+
+<span class="w">        </span><span class="no">Route initial research requests to &quot;research&quot;.</span>
+<span class="w">        </span><span class="no">Route synthesis requests to &quot;synthesis&quot;.</span>
+
+<span class="w">        </span><span class="no">The system will automatically follow up after each phase.</span>
+
+<span class="w">        </span><span class="no">Response: {&quot;worker&quot;: &quot;&lt;key&gt;&quot;, &quot;reason&quot;: &quot;...&quot;}</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">research</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/research_worker.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">synthesis</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/synthesis_worker.yaml</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="testing-multi-agent-systems">
+<h2>Testing Multi-Agent Systems<a class="headerlink" href="#testing-multi-agent-systems" title="Link to this heading"></a></h2>
+<section id="unit-test">
+<h3>Unit Test<a class="headerlink" href="#unit-test" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncMock</span><span class="p">,</span> <span class="n">MagicMock</span><span class="p">,</span> <span class="n">patch</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_orchestrator_routing</span><span class="p">():</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_agent_from_yaml</span>
+
+    <span class="k">with</span> <span class="n">patch</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="s1">&#39;os.environ&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;JOB_ID&#39;</span><span class="p">:</span> <span class="s1">&#39;test-job&#39;</span><span class="p">}):</span>
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">create_agent_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/orchestrator.yaml&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Mock the router planner</span>
+    <span class="n">manager</span><span class="o">.</span><span class="n">planner</span><span class="o">.</span><span class="n">route</span> <span class="o">=</span> <span class="n">AsyncMock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="s2">&quot;research-worker&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Mock the worker</span>
+    <span class="n">mock_worker</span> <span class="o">=</span> <span class="n">MagicMock</span><span class="p">()</span>
+    <span class="n">mock_worker</span><span class="o">.</span><span class="n">run</span> <span class="o">=</span> <span class="n">AsyncMock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="s2">&quot;Research complete&quot;</span><span class="p">)</span>
+    <span class="n">manager</span><span class="o">.</span><span class="n">workers</span><span class="p">[</span><span class="s2">&quot;research-worker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mock_worker</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Search for Python frameworks&quot;</span><span class="p">)</span>
+
+    <span class="n">manager</span><span class="o">.</span><span class="n">planner</span><span class="o">.</span><span class="n">route</span><span class="o">.</span><span class="n">assert_called</span><span class="p">()</span>
+    <span class="n">mock_worker</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">assert_called</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-test">
+<h3>Integration Test<a class="headerlink" href="#integration-test" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">skipif</span><span class="p">(</span>
+    <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">),</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Requires OPENAI_API_KEY&quot;</span>
+<span class="p">)</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_manager_worker_integration</span><span class="p">():</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;integration-test&quot;</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_agent_from_yaml</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">create_agent_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/orchestrator.yaml&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Test routing to research worker</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Search for AI frameworks&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="c1"># Test routing to task worker</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Create a task to review AI frameworks&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="e2e-test">
+<h3>E2E Test<a class="headerlink" href="#e2e-test" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">skipif</span><span class="p">(</span>
+    <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">),</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Requires OPENAI_API_KEY&quot;</span>
+<span class="p">)</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_full_workflow</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test a complete research-to-task workflow.&quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;e2e-test&quot;</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_agent_from_yaml</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">create_agent_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/orchestrator.yaml&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 1: Research</span>
+    <span class="n">research_result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="s2">&quot;Research Python testing frameworks&quot;</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="s2">&quot;pytest&quot;</span> <span class="ow">in</span> <span class="n">research_result</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;test&quot;</span> <span class="ow">in</span> <span class="n">research_result</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="c1"># Step 2: Create task based on research</span>
+    <span class="n">task_result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="s2">&quot;Create a task to evaluate the testing frameworks&quot;</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="s2">&quot;task&quot;</span> <span class="ow">in</span> <span class="n">task_result</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;created&quot;</span> <span class="ow">in</span> <span class="n">task_result</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Clear routing rules</strong> - Make worker responsibilities explicit in the router prompt</p></li>
+<li><p><strong>Consistent memory presets</strong> - Use <code class="docutils literal notranslate"><span class="pre">worker</span></code> for workers, <code class="docutils literal notranslate"><span class="pre">manager</span></code> for managers</p></li>
+<li><p><strong>Shared JOB_ID</strong> - Set JOB_ID environment variable for memory namespace isolation</p></li>
+<li><p><strong>Independent workers</strong> - Each worker should be testable in isolation</p></li>
+<li><p><strong>Appropriate iteration limits</strong> - Workers may need fewer iterations than standalone agents</p></li>
+<li><p><strong>Logging</strong> - Enable subscribers for debugging multi-agent interactions</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="single-agent.html" class="btn btn-neutral float-left" title="Single Agent Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom-tools.html" class="btn btn-neutral float-right" title="Custom Tools Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Agent Framework Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

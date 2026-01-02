@@ -126,7 +126,7 @@ resources:
 
   subscribers:
     - name: logging
-      type: LoggingSubscriber
+      type: PhoenixSubscriber
 
 spec:
   policies:

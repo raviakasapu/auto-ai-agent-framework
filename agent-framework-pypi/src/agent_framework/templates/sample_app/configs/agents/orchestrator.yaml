@@ -17,7 +17,7 @@ resources:
 
   subscribers:
     - name: logging
-      type: LoggingSubscriber
+      type: PhoenixSubscriber
       config:
         level: INFO
         include_data: true
@@ -25,7 +25,7 @@ resources:
 
 spec:
   policies:
-    $preset: simple
+    $preset: manager_with_followups
     termination:
       type: DefaultTerminationPolicy
       config:
@@ -58,10 +58,10 @@ spec:
         - "Calculate 25 * 4" -> research-worker
 
   memory:
-    type: SharedInMemoryMemory
-    config:
-      namespace: ${JOB_ID:-default}
-      agent_key: orchestrator
+    $preset: manager
+    # Subordinates auto-derived from workers list
+    # namespace auto-derived from JOB_ID
+    # agent_key auto-derived from metadata.name
 
   workers:
     - name: research-worker
