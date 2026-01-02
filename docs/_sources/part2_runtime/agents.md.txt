@@ -1,39 +1,114 @@
-# Agents & Manager Stack
+# Agent Types Guide
 
-This chapter covers the two agent types: `Agent` (worker) and `ManagerAgent` (orchestrator/manager).
+The AI Agent Framework supports two types of agents: single worker agents and manager agents that orchestrate workers.
 
-## Agent (Worker Agent)
+## Agent Types Overview
 
-The `Agent` class is the core execution engine for tool-based operations.
+| Type | Kind | Use Case |
+|------|------|----------|
+| Agent | `Agent` | Single worker with tools and planner |
+| ManagerAgent | `ManagerAgent` | Orchestrator that routes to worker agents |
 
-### Constructor
+---
+
+## Agent (Single Worker)
+
+A single agent with direct access to tools and a planner for reasoning.
+
+### Configuration
+
+```yaml
+apiVersion: agent.framework/v2
+kind: Agent
+
+metadata:
+  name: ResearchWorker
+  description: Research assistant with search and note capabilities
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: ${OPENAI_MODEL:-gpt-4o-mini}
+        api_key: ${OPENAI_API_KEY}
+        use_function_calling: true
+
+  tools:
+    - name: web_search
+      type: MockSearchTool
+      config: {}
+    - name: note_taker
+      type: NoteTakerTool
+      config:
+        storage_path: /tmp/notes.json
+
+spec:
+  policies:
+    $preset: simple
+
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai
+      use_function_calling: true
+      system_prompt: |
+        You are a research assistant.
+        Use tools to find and save information.
+
+  memory:
+    $preset: worker
+
+  tools: [web_search, note_taker]
+```
+
+### Key Components
+
+| Component | Description |
+|-----------|-------------|
+| `planner` | ReActPlanner for reasoning and tool selection |
+| `tools` | List of tools the agent can use |
+| `memory` | Agent's memory (standalone or shared) |
+| `policies` | Behavior control (termination, completion, etc.) |
+
+### Execution Flow
+
+1. **Receive task** — The task is added to memory so it becomes part of history
+2. **Collect history** — Memory provides a filtered view of relevant conversation/tool traces
+3. **Plan** — The planner chooses the next action(s) to take
+4. **Execute** — Selected tools run with validated arguments
+5. **Observe** — Tool results are appended to memory
+6. **Evaluate policies** — Completion, termination, and loop prevention policies run
+7. **Repeat or return** — Continue looping until policies decide to return a `FinalResponse`
+
+### Python API
+
+#### Constructor
 
 ```python
 from agent_framework import Agent
 
 agent = Agent(
-    planner=planner,           # Required: BasePlanner instance
-    memory=memory,             # Required: BaseMemory instance
-    tools=tools,               # Required: List[BaseTool] or Dict[str, BaseTool]
-    policies=policies,         # Required: Dict with completion, termination, loop_prevention
-    event_bus=event_bus,       # Optional: EventBus instance
-    name="my_agent",           # Optional: Agent name
-    description="...",         # Optional: Description
-    version="1.0.0",           # Optional: Version
+    planner=planner,           # BasePlanner instance
+    memory=memory,             # BaseMemory instance
+    tools=tools,               # Sequence or dict of BaseTool
+    policies=policies,         # Completion/termination/loop prevention policies
+    event_bus=event_bus,       # Optional EventBus
+    name="my_agent",
+    description="Optional description",
+    version="1.0.0",
 )
 ```
 
-### Required Policies
+#### Required Policies
 
-Policies are **required** and must be provided explicitly:
+Policies are always required. Use presets for convenience or wire explicit classes:
 
 ```python
 from agent_framework import get_preset
-
-# Option 1: Use a preset
 policies = get_preset("simple")
 
-# Option 2: Define explicitly
+# or configure manually
 from agent_framework.policies.default import (
     DefaultCompletionDetector,
     DefaultTerminationPolicy,
@@ -47,31 +122,16 @@ policies = {
 }
 ```
 
-### Running an Agent
+#### Running an Agent
 
 ```python
-# Async execution
 result = await agent.run(
-    task="Your task description",
-    progress_handler=handler,  # Optional: BaseProgressHandler
+    task="Summarize the latest company update",
+    progress_handler=handler,  # Optional BaseProgressHandler
 )
 ```
 
-### Execution Loop
-
-The agent follows this loop:
-
-1. **Receive Task** — Add task to memory
-2. **Get History** — Retrieve from memory
-3. **Plan** — Planner decides next action(s)
-4. **Execute** — Run tool(s)
-5. **Observe** — Add result to memory
-6. **Check Policies** — Completion, termination, loop prevention
-7. **Repeat or Return** — Continue or return result
-
-### Event Emission
-
-The agent emits these events through the EventBus:
+#### Event Emission
 
 | Event | When |
 |-------|------|
@@ -84,66 +144,127 @@ The agent emits these events through the EventBus:
 | `error` | Exception occurred |
 | `policy_denied` | HITL policy denied action |
 
-## ManagerAgent (Orchestrator/Manager)
+---
 
-The `ManagerAgent` class coordinates subordinate agents through delegation.
+## ManagerAgent (Orchestrator)
 
-### Constructor
+A manager agent that routes tasks to specialized worker agents.
+
+### Configuration
+
+```yaml
+apiVersion: agent.framework/v2
+kind: ManagerAgent
+
+metadata:
+  name: Orchestrator
+  description: Routes tasks to appropriate workers
+
+resources:
+  inference_gateways:
+    - name: openai-orchestrator
+      type: OpenAIGateway
+      config:
+        model: ${OPENAI_MODEL:-gpt-4o-mini}
+        api_key: ${OPENAI_API_KEY}
+
+spec:
+  policies:
+    $preset: manager_with_followups
+
+  planner:
+    type: WorkerRouterPlanner
+    config:
+      inference_gateway: openai-orchestrator
+      worker_keys: [research-worker, task-worker]
+      default_worker: research-worker
+      system_prompt: |
+        You are a task router. Analyze requests and route to the appropriate worker:
+        - research-worker: For search, research, and information gathering
+        - task-worker: For task management and scheduling
+
+        Return JSON: {"worker": "<key>", "reason": "..."}
+
+  memory:
+    $preset: manager
+
+  workers:
+    - name: research-worker
+      config_path: configs/agents/research_worker.yaml
+    - name: task-worker
+      config_path: configs/agents/task_worker.yaml
+```
+
+### Key Components
+
+| Component | Description |
+|-----------|-------------|
+| `planner` | WorkerRouterPlanner for routing decisions |
+| `workers` | List of worker agent configurations |
+| `memory` | HierarchicalSharedMemory (sees worker state) |
+| `policies` | Typically includes follow-up policy |
+
+### Execution Flow
+
+1. Manager receives a task
+2. Router planner analyzes the task
+3. Router selects appropriate worker
+4. Worker executes the task
+5. Manager may initiate follow-up phases
+6. Manager aggregates results
+
+### Python API
+
+#### Constructor
 
 ```python
 from agent_framework import ManagerAgent
 
 manager = ManagerAgent(
-    planner=planner,           # Required: BasePlanner
-    memory=memory,             # Required: BaseMemory
-    workers=workers,           # Required: Dict[str, Agent or ManagerAgent]
-    event_bus=event_bus,       # Optional: EventBus
-    name="orchestrator",       # Optional: Name
-    synthesis_gateway=gateway, # Optional: For result synthesis
-    job_store=job_store,       # Optional: BaseJobStore for persistence
-    policies=policies,         # Optional: Policy overrides
+    planner=planner,
+    memory=memory,
+    workers=workers,               # Dict[str, Agent or ManagerAgent]
+    event_bus=event_bus,
+    name="orchestrator",
+    synthesis_gateway=gateway,     # Optional for result synthesis
+    job_store=job_store,           # Optional persistence
+    policies=policies,             # Optional overrides
 )
 ```
 
-### Workers Dictionary
-
-Workers are keyed by their identifier:
+#### Workers Dictionary
 
 ```python
 workers = {
-    "analyzer": analyzer_agent,    # Agent instance
-    "designer": designer_agent,    # Agent instance
-    "validator": validator_agent,  # Agent instance
+    "analyzer": analyzer_agent,
+    "designer": designer_agent,
+    "validator": validator_agent,
 }
 ```
 
-### Delegation Flow
+#### Delegation Flow
 
-1. **Receive Task** — Manager receives task
-2. **Strategic Plan** — Planner creates multi-phase plan
-3. **Delegate** — Execute phases by calling worker agents
-4. **Collect Results** — Gather worker outputs
-5. **Synthesize** — Optionally combine results
-6. **Return** — Return aggregated result
+1. **Receive task** — Manager captures the initial request
+2. **Strategic plan** — Planner generates phases or steps
+3. **Delegate** — Executes each phase by calling the selected worker
+4. **Collect results** — Aggregates worker outputs
+5. **Synthesize** — Optional summarization before returning to the caller
 
-### Parallel Execution
-
-ManagerAgent supports parallel delegation:
+#### Parallel Execution
 
 ```python
-# In strategic plan
 {
     "phases": [
         {"name": "Analysis", "worker": "analyzer", "goals": "..."},
         {"name": "Validation", "worker": "validator", "goals": "..."}
     ],
-    "parallel_workers": ["analyzer", "validator"]  # Execute in parallel
+    "parallel_workers": ["analyzer", "validator"]
 }
 ```
 
-### Synthesis
+#### Synthesis
 
-With a `synthesis_gateway`, the manager can summarize worker results:
+Provide a `synthesis_gateway` to re-write worker output for end users:
 
 ```python
 manager = ManagerAgent(
@@ -154,7 +275,7 @@ manager = ManagerAgent(
 )
 ```
 
-### Event Emission
+#### Event Emission
 
 | Event | When |
 |-------|------|
@@ -169,17 +290,94 @@ manager = ManagerAgent(
 | `orchestrator_phase_start` | Orchestrator phase begins |
 | `orchestrator_phase_end` | Orchestrator phase completes |
 
+---
+
+## Comparison
+
+| Feature | Agent | ManagerAgent |
+|---------|-------|--------------|
+| Direct tool access | Yes | No |
+| Routes to workers | No | Yes |
+| Planner type | ReActPlanner | WorkerRouterPlanner |
+| Memory preset | `standalone` or `worker` | `manager` |
+| Policy preset | `simple` | `manager_with_followups` |
+| Complexity | Lower | Higher |
+
+---
+
+## When to Use Each Type
+
+### Use Agent when:
+
+- Task requires direct tool usage
+- Single-purpose functionality
+- No need for task delegation
+- Simpler execution flow preferred
+
+**Examples:**
+- Calculator agent
+- Weather lookup agent
+- Note-taking agent
+- Single-domain research agent
+
+### Use ManagerAgent when:
+
+- Task requires multiple skill domains
+- Parallel execution of subtasks
+- Complex multi-step workflows
+- Need for task routing/delegation
+
+**Examples:**
+- Research + task management system
+- Multi-domain assistant
+- Parallel data processing
+- Workflow orchestration
+
+---
+
+## Architecture Patterns
+
+### Pattern 1: Single Agent
+
+```
+[User] -> [Agent] -> [Tools]
+```
+
+Simple, direct execution.
+
+### Pattern 2: Manager with Workers
+
+```
+[User] -> [Manager] -> [Router] -> [Worker A] -> [Tools A]
+                               -> [Worker B] -> [Tools B]
+```
+
+Hierarchical delegation.
+
+### Pattern 3: Shared Memory Team
+
+```
+[User] -> [Manager] -> [Worker A] -> [Shared Memory]
+                   -> [Worker B] -> [Shared Memory]
+                                      ^
+                   [Manager sees all] <-+
+```
+
+Workers share state, manager has visibility.
+
+---
+
 ## Orchestrator vs Manager
 
-Both use `ManagerAgent`, but at different hierarchy levels:
+Both are `ManagerAgent` instances but typically operate at different layers of the hierarchy:
 
 | Aspect | Orchestrator | Manager |
 |--------|--------------|---------|
 | **Level** | Top (user-facing) | Middle (domain-specific) |
-| **Planner** | `StrategicPlanner` | `StrategicDecomposerPlanner` |
+| **Planner** | `StrategicPlanner` | `StrategicDecomposerPlanner` or scripted planner |
 | **Workers** | Domain managers | Worker agents |
-| **Planning** | Creates phases | Creates steps |
-| **Model** | Powerful (gpt-4o) | Efficient (gpt-4o-mini) |
+| **Planning** | Creates phases | Creates executable steps |
+| **Model choice** | Larger models (e.g., `gpt-4o`) | Efficient models (e.g., `gpt-4o-mini`) |
 
 ### Hierarchy Example
 
@@ -201,7 +399,143 @@ Schema Reader (Agent + ReActPlanner)
     └── Returns results
 ```
 
-## Complete Example
+---
+
+## Complete Examples
+
+### Standalone Calculator Agent
+
+```yaml
+apiVersion: agent.framework/v2
+kind: Agent
+
+metadata:
+  name: Calculator
+  description: Math calculation agent
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: gpt-4o-mini
+        api_key: ${OPENAI_API_KEY}
+        use_function_calling: true
+
+  tools:
+    - name: calculator
+      type: CalculatorTool
+      config: {}
+
+spec:
+  policies:
+    $preset: simple
+
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai
+      use_function_calling: true
+      system_prompt: |
+        You are a calculator. Use the calculator tool
+        to solve mathematical problems.
+
+  memory:
+    $preset: standalone
+
+  tools: [calculator]
+```
+
+### Multi-Worker System
+
+**Manager (orchestrator.yaml):**
+
+```yaml
+apiVersion: agent.framework/v2
+kind: ManagerAgent
+
+metadata:
+  name: AssistantOrchestrator
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: gpt-4o
+        api_key: ${OPENAI_API_KEY}
+
+spec:
+  policies:
+    $preset: manager_with_followups
+
+  planner:
+    type: WorkerRouterPlanner
+    config:
+      inference_gateway: openai
+      worker_keys: [research, tasks, weather]
+      default_worker: research
+      system_prompt: |
+        Route requests to the appropriate specialist:
+        - research: Information lookup and research
+        - tasks: Task creation and management
+        - weather: Weather queries
+
+  memory:
+    $preset: manager
+
+  workers:
+    - name: research
+      config_path: configs/agents/research_worker.yaml
+    - name: tasks
+      config_path: configs/agents/task_worker.yaml
+    - name: weather
+      config_path: configs/agents/weather_worker.yaml
+```
+
+**Worker (research_worker.yaml):**
+
+```yaml
+apiVersion: agent.framework/v2
+kind: Agent
+
+metadata:
+  name: ResearchWorker
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: gpt-4o-mini
+        api_key: ${OPENAI_API_KEY}
+        use_function_calling: true
+
+  tools:
+    - name: web_search
+      type: MockSearchTool
+      config: {}
+
+spec:
+  policies:
+    $preset: simple
+
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai
+      use_function_calling: true
+      system_prompt: |
+        You are a research specialist.
+        Search for information and provide summaries.
+
+  memory:
+    $preset: worker
+
+  tools: [web_search]
+```
+
+### Programmatic Stack Example
 
 ```python
 import asyncio
@@ -211,7 +545,6 @@ from agent_framework.components.memory import SharedInMemoryMemory
 from agent_framework.gateways.inference import OpenAIGateway
 from agent_framework.decorators import tool
 
-# Define tools
 @tool(name="list_items", description="List items in a category")
 def list_items(category: str) -> list:
     return ["item1", "item2", "item3"]
@@ -220,9 +553,9 @@ def list_items(category: str) -> list:
 def analyze_item(item: str) -> dict:
     return {"item": item, "status": "analyzed"}
 
-# Create worker agents
 event_bus = EventBus()
 policies = get_preset("simple")
+shared_namespace = "job_123"
 
 reader = Agent(
     name="reader",
@@ -230,7 +563,7 @@ reader = Agent(
         inference_gateway=OpenAIGateway(),
         tools=[list_items],
     ),
-    memory=SharedInMemoryMemory(namespace="job_123", agent_key="reader"),
+    memory=SharedInMemoryMemory(namespace=shared_namespace, agent_key="reader"),
     tools=[list_items],
     policies=policies,
     event_bus=event_bus,
@@ -242,25 +575,23 @@ analyzer = Agent(
         inference_gateway=OpenAIGateway(),
         tools=[analyze_item],
     ),
-    memory=SharedInMemoryMemory(namespace="job_123", agent_key="analyzer"),
+    memory=SharedInMemoryMemory(namespace=shared_namespace, agent_key="analyzer"),
     tools=[analyze_item],
     policies=policies,
     event_bus=event_bus,
 )
 
-# Create manager
 manager = ManagerAgent(
     name="analysis_manager",
     planner=StrategicPlanner(
         worker_keys=["reader", "analyzer"],
         inference_gateway=OpenAIGateway(model="gpt-4o"),
     ),
-    memory=SharedInMemoryMemory(namespace="job_123", agent_key="manager"),
+    memory=SharedInMemoryMemory(namespace=shared_namespace, agent_key="manager"),
     workers={"reader": reader, "analyzer": analyzer},
     event_bus=event_bus,
 )
 
-# Run
 async def main():
     result = await manager.run("Analyze all items in the 'products' category")
     print(result)
@@ -268,11 +599,15 @@ async def main():
 asyncio.run(main())
 ```
 
+---
+
 ## Best Practices
 
-1. **Use presets** for policies instead of defining from scratch
-2. **Share EventBus** across the hierarchy for unified tracing
-3. **Use SharedInMemoryMemory** with same namespace for context sharing
-4. **Configure synthesis** for user-friendly manager responses
-5. **Log events** during development for debugging
-
+1. **Start simple** — Build a single Agent before introducing orchestration
+2. **One responsibility per worker** — Keep workers narrowly focused for predictable routing
+3. **Use memory presets** — `worker` for workers, `manager` for orchestrators so state is derived consistently
+4. **Match policy presets** — `simple` for workers, `manager_with_followups` or custom presets for managers
+5. **Share the EventBus** — Route all agents through the same `EventBus` for unified tracing and observability
+6. **Coordinate namespaces** — Use the same `JOB_ID` when workers need to collaborate via shared memory
+7. **Configure synthesis** — Provide a `synthesis_gateway` so managers can rewrite worker output for end users
+8. **Test workers independently** — Validate each worker agent before composing the team, then log emitted events while debugging

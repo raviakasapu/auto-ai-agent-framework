@@ -1,75 +1,524 @@
-# Declarative Configuration & AgentFactory
+# YAML Configuration Guide
 
-This chapter covers YAML-based agent configuration and the factory pattern.
+This guide covers all configuration options available in the AI Agent Framework's YAML-based agent definitions.
 
-## Overview
+## Configuration Schema Overview
 
-The framework supports two configuration approaches:
-
-1. **Programmatic** — Create agents in Python code
-2. **Declarative** — Define agents in YAML files, load via factory
-
-## YAML Configuration Structure
+Every agent configuration follows this structure:
 
 ```yaml
-# configs/agents/my_agent.yaml
-name: my_agent
-type: Agent  # or ManagerAgent
+apiVersion: agent.framework/v2
+kind: Agent | ManagerAgent
 
-# Resources: tools, gateways, etc.
+metadata:
+  name: string
+  description: string (optional)
+  version: string (optional)
+
 resources:
-  tools:
-    - name: calculator
-      type: CalculatorTool
-      config: {}
-  gateways:
+  inference_gateways: [...]
+  tools: [...]
+  subscribers: [...]
+
+spec:
+  policies: {...}
+  planner: {...}
+  memory: {...}
+  tools: [...]
+  subscribers: [...]
+  workers: [...]  # ManagerAgent only
+```
+
+---
+
+## Top-Level Fields
+
+### `apiVersion` (required)
+
+Specifies the configuration schema version.
+
+```yaml
+apiVersion: agent.framework/v2
+```
+
+**Valid values:** `agent.framework/v2`
+
+---
+
+### `kind` (required)
+
+Specifies the type of agent to create.
+
+```yaml
+kind: Agent
+# or
+kind: ManagerAgent
+```
+
+| Value | Description |
+|-------|-------------|
+| `Agent` | Single worker agent with tools and planner |
+| `ManagerAgent` | Orchestrator that delegates to worker agents |
+
+---
+
+### `metadata` (required)
+
+Agent identification and documentation.
+
+```yaml
+metadata:
+  name: ResearchWorker
+  description: Research assistant that searches and takes notes
+  version: 1.0.0
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Unique identifier for the agent |
+| `description` | string | No | Human-readable description |
+| `version` | string | No | Semantic version (e.g., "1.0.0") |
+
+---
+
+## Resources Section
+
+Define reusable components that can be referenced in the spec.
+
+### `inference_gateways`
+
+LLM provider configurations.
+
+```yaml
+resources:
+  inference_gateways:
     - name: openai-main
       type: OpenAIGateway
       config:
-        model: gpt-4o
-        temperature: 0.7
+        model: ${OPENAI_MODEL:-gpt-4o-mini}
+        api_key: ${OPENAI_API_KEY}
+        temperature: 0.1
+        use_function_calling: true
+```
 
-# Agent specification
+#### Available Gateway Types
+
+| Type | Description | Required Config |
+|------|-------------|-----------------|
+| `OpenAIGateway` | OpenAI API | `api_key`, `model` |
+| `AnthropicGateway` | Anthropic Claude | `api_key`, `model` |
+| `MockGateway` | For testing | None |
+
+#### OpenAIGateway Config Options
+
+```yaml
+config:
+  api_key: ${OPENAI_API_KEY}           # Required
+  model: gpt-4o-mini                    # Required
+  temperature: 0.1                      # Optional (0.0-2.0)
+  max_tokens: 4096                      # Optional
+  use_function_calling: true            # Optional (default: false)
+  timeout: 30                           # Optional (seconds)
+```
+
+---
+
+### `tools`
+
+Tool definitions for the agent.
+
+```yaml
+resources:
+  tools:
+    - name: web_search
+      type: MockSearchTool
+      config: {}
+
+    - name: note_taker
+      type: NoteTakerTool
+      config:
+        storage_path: /tmp/notes.json
+```
+
+#### Built-in Tool Types
+
+| Type | Description | Config Options |
+|------|-------------|----------------|
+| `MockSearchTool` | Simulated web search | None |
+| `NoteTakerTool` | Create and store notes | `storage_path` |
+| `TaskManagerTool` | Create tasks | None |
+| `ListTasksTool` | List existing tasks | None |
+| `CompleteTaskTool` | Mark tasks complete | None |
+| `WeatherLookupTool` | Get weather data | None |
+| `CalculatorTool` | Math calculations | None |
+
+---
+
+### `subscribers`
+
+Event subscribers for logging and monitoring.
+
+```yaml
+resources:
+  subscribers:
+    - name: logging
+      type: PhoenixSubscriber
+      config:
+        level: INFO
+        include_data: true
+        max_payload_chars: 2000
+```
+
+#### Available Subscriber Types
+
+| Type | Description | Config Options |
+|------|-------------|----------------|
+| `PhoenixSubscriber` | Arize Phoenix integration | `level`, `include_data`, `max_payload_chars` |
+| `ConsoleSubscriber` | Console logging | `level` |
+
+---
+
+## Spec Section
+
+The main agent behavior configuration.
+
+### `policies`
+
+Control agent behavior with presets or custom policies.
+
+#### Using Presets (Recommended)
+
+```yaml
+spec:
+  policies:
+    $preset: simple
+```
+
+**Available Presets:**
+
+| Preset | Best For | Features |
+|--------|----------|----------|
+| `simple` | Basic workers | Completion detection, loop prevention, 10 max iterations |
+| `manager_with_followups` | Orchestrators | Follow-up phases, completion tracking |
+| `with_hitl` | Human oversight | Human-in-the-loop approval for writes |
+| `with_checkpoints` | Long tasks | Periodic state checkpointing |
+
+#### Overriding Preset Values
+
+```yaml
+spec:
+  policies:
+    $preset: simple
+    termination:
+      type: DefaultTerminationPolicy
+      config:
+        max_iterations: 20  # Override default
+        on_max_iterations: error
+```
+
+#### Full Custom Policy Configuration
+
+```yaml
+spec:
+  policies:
+    completion:
+      type: DefaultCompletionDetector
+      config:
+        indicators: [completed, success, done, finished]
+        check_response_validation: true
+        check_history_depth: 10
+
+    termination:
+      type: DefaultTerminationPolicy
+      config:
+        max_iterations: 10
+        check_completion: true
+        terminal_tools: []
+        on_max_iterations: error  # or "warn"
+
+    loop_prevention:
+      type: DefaultLoopPreventionPolicy
+      config:
+        enabled: true
+        action_window: 5
+        observation_window: 5
+        repetition_threshold: 3
+
+    hitl:
+      type: DefaultHITLPolicy
+      config:
+        enabled: false
+        scope: writes  # or "all"
+
+    checkpoint:
+      type: DefaultCheckpointPolicy
+      config:
+        enabled: false
+        checkpoint_after_iterations: 5
+```
+
+---
+
+### `planner`
+
+Configures the planning/reasoning component.
+
+#### ReActPlanner (Tool-using agents)
+
+```yaml
 spec:
   planner:
     type: ReActPlanner
     config:
       inference_gateway: openai-main
-      include_history: true
+      use_function_calling: true
+      max_iterations: 10
+      system_prompt: |
+        You are a helpful assistant.
+        Use tools to accomplish tasks.
+```
+
+| Config Option | Type | Default | Description |
+|---------------|------|---------|-------------|
+| `inference_gateway` | string | Required | Reference to gateway in resources |
+| `use_function_calling` | bool | false | Use OpenAI function calling |
+| `max_iterations` | int | 10 | Max planning iterations |
+| `system_prompt` | string | Required | System instructions |
+
+#### WorkerRouterPlanner (For ManagerAgents)
+
+```yaml
+spec:
+  planner:
+    type: WorkerRouterPlanner
+    config:
+      inference_gateway: openai-orchestrator
+      worker_keys: [research-worker, task-worker]
+      default_worker: research-worker
+      system_prompt: |
+        Route requests to the appropriate worker.
+        Return JSON: {"worker": "<key>", "reason": "..."}
+```
+
+| Config Option | Type | Default | Description |
+|---------------|------|---------|-------------|
+| `inference_gateway` | string | Required | Reference to gateway |
+| `worker_keys` | list | Required | Available worker names |
+| `default_worker` | string | Required | Fallback worker |
+| `system_prompt` | string | Required | Routing instructions |
+
+---
+
+### `memory`
+
+Configure agent memory and state sharing.
+
+#### Using Presets (Recommended)
+
+```yaml
+spec:
+  memory:
+    $preset: worker
+```
+
+**Available Memory Presets:**
+
+| Preset | Creates | Use For |
+|--------|---------|---------|
+| `standalone` | `InMemoryMemory` | Single isolated agents |
+| `worker` | `SharedInMemoryMemory` | Worker agents in a team |
+| `manager` | `HierarchicalSharedMemory` | Orchestrator agents |
+
+Presets auto-derive:
+- `namespace` from `JOB_ID` environment variable
+- `agent_key` from `metadata.name`
+- `subordinates` from `workers` list (manager preset)
+
+#### Override Preset Defaults
+
+```yaml
+spec:
+  memory:
+    $preset: worker
+    namespace: custom-namespace  # Override auto-derived value
+```
+
+#### Legacy Explicit Configuration
+
+```yaml
+spec:
   memory:
     type: SharedInMemoryMemory
     config:
-      namespace: ${JOB_ID}
+      namespace: ${JOB_ID:-default}
       agent_key: my_agent
-  tools: [calculator]
-  policies:
-    preset: simple
 ```
 
-## AgentFactory
+---
 
-The factory loads YAML and creates agent instances:
+### `tools`
+
+Reference tools from resources section.
+
+```yaml
+spec:
+  tools: [web_search, note_taker, calculator]
+```
+
+---
+
+### `subscribers`
+
+Reference subscribers from resources section.
+
+```yaml
+spec:
+  subscribers: [logging]
+```
+
+---
+
+### `workers` (ManagerAgent only)
+
+Define worker agents for orchestration.
+
+```yaml
+spec:
+  workers:
+    - name: research-worker
+      config_path: configs/agents/research_worker.yaml
+
+    - name: task-worker
+      config_path: configs/agents/task_worker.yaml
+```
+
+---
+
+## Environment Variable Substitution
+
+Use `${VAR}` or `${VAR:-default}` syntax for environment variables.
+
+```yaml
+config:
+  api_key: ${OPENAI_API_KEY}           # Required env var
+  model: ${OPENAI_MODEL:-gpt-4o-mini}  # With default value
+  namespace: ${JOB_ID:-default}        # With default
+```
+
+---
+
+## Complete Examples
+
+### Simple Worker Agent
+
+```yaml
+apiVersion: agent.framework/v2
+kind: Agent
+
+metadata:
+  name: SimpleWorker
+  description: Basic worker agent
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: ${OPENAI_MODEL:-gpt-4o-mini}
+        api_key: ${OPENAI_API_KEY}
+
+  tools:
+    - name: calculator
+      type: CalculatorTool
+
+spec:
+  policies:
+    $preset: simple
+
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai
+      system_prompt: You are a helpful calculator assistant.
+
+  memory:
+    $preset: worker
+
+  tools: [calculator]
+```
+
+### Manager with Workers
+
+```yaml
+apiVersion: agent.framework/v2
+kind: ManagerAgent
+
+metadata:
+  name: Orchestrator
+
+resources:
+  inference_gateways:
+    - name: openai
+      type: OpenAIGateway
+      config:
+        model: gpt-4o
+        api_key: ${OPENAI_API_KEY}
+
+spec:
+  policies:
+    $preset: manager_with_followups
+
+  planner:
+    type: WorkerRouterPlanner
+    config:
+      inference_gateway: openai
+      worker_keys: [research, tasks]
+      default_worker: research
+      system_prompt: Route requests appropriately.
+
+  memory:
+    $preset: manager
+
+  workers:
+    - name: research
+      config_path: configs/agents/research.yaml
+    - name: tasks
+      config_path: configs/agents/tasks.yaml
+```
+
+---
+
+## AgentFactory & Programmatic Loading
+
+The YAML schema complements conventional Python construction. Two approaches work together:
+
+- **Programmatic** — Build agents in Python for dynamic wiring or experimentation
+- **Declarative** — Store production-grade agents as YAML and load them through the deployment factory
+
+### AgentFactory
+
+`deployment/factory.py` exposes the `AgentFactory` helper that handles schema validation, variable expansion, and object construction:
 
 ```python
 from deployment.factory import AgentFactory
 
-# Load from YAML file
-agent = AgentFactory.create_from_yaml("configs/agents/my_agent.yaml")
+# Load a worker agent from YAML
+agent = AgentFactory.create_from_yaml("configs/agents/research_worker.yaml")
 
-# Run the agent
-result = await agent.run("Calculate 2 + 2")
+result = await agent.run("Summarize the latest AI trends")
 ```
 
 ### Factory Features
 
-- **Component resolution** — Resolves `type` to registered classes
-- **Variable expansion** — Expands `${VAR}` from environment/context
-- **Preset loading** — Loads policy presets by name
-- **Resource wiring** — Connects tools, gateways, memory
+- **Component resolution** — Maps `type` strings to classes registered in the deployment registry
+- **Environment & context expansion** — Resolves `${VAR}` and `${VAR:-default}` using both environment variables and the per-request context
+- **Preset loading** — Applies `$preset` shortcuts for policies and memory, then merges any inline overrides
+- **Resource wiring** — Instantiates gateways, tools, and subscribers once and passes references into the agent graph
+- **Validation** — Checks for required sections (`apiVersion`, `metadata`, `spec`) before objects are created
 
-## Component Registration
+### Component Registration
 
-Register custom components for YAML use:
+Register your custom classes before loading YAML so the factory can resolve them:
 
 ```python
 from deployment.registry import (
@@ -80,232 +529,68 @@ from deployment.registry import (
     register_policy,
 )
 
-# Register a tool
-from my_tools import MyCustomTool
 register_tool("MyCustomTool", MyCustomTool)
-
-# Register a planner
-from my_planners import MyPlanner
 register_planner("MyPlanner", MyPlanner)
+register_memory("MyMemory", MyMemory)
+register_gateway("MyGateway", MyGateway)
+register_policy("MyPolicy", MyPolicy)
 ```
 
-## Configuration Sections
+Component registries can also be extended declaratively by calling
+`register_config_root(Path("custom_configs"))` so additional directories of YAML component definitions are scanned at startup.
 
-### Resources
+### Variable Expansion & Request Context
 
-Define reusable components:
+All `config` sections support `${VAR}` and `${VAR:-default}`:
 
 ```yaml
 resources:
-  tools:
-    - name: calculator
-      type: CalculatorTool
-      config: {}
-    - name: search
-      type: SearchTool
-      config:
-        api_key: ${SEARCH_API_KEY}
-  
-  gateways:
-    - name: openai-strategic
+  inference_gateways:
+    - name: openai
       type: OpenAIGateway
       config:
-        model: gpt-4o
-    - name: openai-worker
-      type: OpenAIGateway
-      config:
-        model: gpt-4o-mini
-```
+        api_key: ${OPENAI_API_KEY}
+        model: ${OPENAI_MODEL:-gpt-4o-mini}
 
-### Planner
-
-Configure the planner type and settings:
-
-```yaml
-spec:
-  planner:
-    type: ReActPlanner
-    config:
-      inference_gateway: openai-worker
-      include_history: true
-      max_history_messages: 20
-      system_prompt: |
-        You are a helpful assistant with access to tools.
-        Always explain your reasoning.
-```
-
-### Memory
-
-Configure memory storage:
-
-```yaml
 spec:
   memory:
-    type: SharedInMemoryMemory
-    config:
-      namespace: ${JOB_ID}
-      agent_key: my_agent
-
-# Or use MessageStoreMemory
-spec:
-  memory:
-    type: MessageStoreMemory
-    config:
-      location: ${JOB_ID}
-      agent_key: my_agent
+    $preset: worker
+    namespace: ${JOB_ID:-default}
 ```
 
-### Policies
-
-Use presets or configure individually:
-
-```yaml
-# Using a preset
-spec:
-  policies:
-    preset: simple
-
-# Or configure each policy
-spec:
-  policies:
-    completion:
-      type: DefaultCompletionDetector
-      config:
-        indicators: ["done", "complete"]
-    termination:
-      type: DefaultTerminationPolicy
-      config:
-        max_iterations: 15
-    loop_prevention:
-      type: DefaultLoopPreventionPolicy
-      config:
-        repetition_threshold: 3
-```
-
-### Tools List
-
-Reference tools from resources:
-
-```yaml
-spec:
-  tools: [calculator, search, analyzer]
-```
-
-## Manager Agent Configuration
-
-```yaml
-name: orchestrator
-type: ManagerAgent
-
-resources:
-  gateways:
-    - name: openai-strategic
-      type: OpenAIGateway
-      config:
-        model: gpt-4o
-
-spec:
-  planner:
-    type: StrategicPlanner
-    config:
-      inference_gateway: openai-strategic
-      planning_prompt: |
-        Create a strategic plan for the task.
-  
-  memory:
-    type: SharedInMemoryMemory
-    config:
-      namespace: ${JOB_ID}
-      agent_key: orchestrator
-  
-  # Workers are other agents
-  workers:
-    - analysis_manager
-    - design_manager
-  
-  # Optional synthesis
-  synthesis_gateway: openai-strategic
-```
-
-## Variable Expansion
-
-YAML supports environment and context variables:
-
-```yaml
-config:
-  api_key: ${OPENAI_API_KEY}        # From environment
-  namespace: ${JOB_ID}              # From request context
-  model_dir: ${MODEL_DIR:/default}  # With default value
-```
-
-### Setting Context Variables
+Set request-scoped context variables before invoking the factory so each run can inject dynamic values like `JOB_ID` or `USER_ID`:
 
 ```python
 from agent_framework.services.request_context import set_request_context
 
-# Before loading agent
 set_request_context({
     "JOB_ID": "job_12345",
     "USER_ID": "user_abc",
 })
 
-agent = AgentFactory.create_from_yaml("my_agent.yaml")
+agent = AgentFactory.create_from_yaml("configs/agents/research_worker.yaml")
 ```
 
-## Configuration Inheritance
+---
 
-Agents can reference shared configurations:
+## Validation
 
-```yaml
-# configs/shared/base_worker.yaml
-type: Agent
-spec:
-  policies:
-    preset: simple
-  memory:
-    type: SharedInMemoryMemory
-    config:
-      namespace: ${JOB_ID}
+The framework validates configurations at load time. Common errors:
 
-# configs/agents/specific_worker.yaml
-extends: shared/base_worker.yaml
-name: specific_worker
-resources:
-  tools:
-    - name: my_tool
-      type: MyTool
-spec:
-  tools: [my_tool]
-```
+| Error | Cause | Fix |
+|-------|-------|-----|
+| "Unknown component type" | Invalid type in registry | Check spelling of type names |
+| "Missing required field" | Required config missing | Add the required field |
+| "Policies are required" | No policies section | Add `policies: $preset: simple` |
+| "Config file not found" | Invalid config_path | Check relative paths |
 
-## Agent Config Schema
-
-Reference for all configuration options:
-
-| Section | Key | Type | Description |
-|---------|-----|------|-------------|
-| `name` | — | string | Agent identifier |
-| `type` | — | string | `Agent` or `ManagerAgent` |
-| `resources.tools` | `name` | string | Tool identifier |
-| `resources.tools` | `type` | string | Registered tool class |
-| `resources.tools` | `config` | object | Tool constructor args |
-| `resources.gateways` | `name` | string | Gateway identifier |
-| `resources.gateways` | `type` | string | Gateway class |
-| `resources.gateways` | `config` | object | Gateway constructor args |
-| `spec.planner` | `type` | string | Planner class |
-| `spec.planner` | `config` | object | Planner constructor args |
-| `spec.memory` | `type` | string | Memory class |
-| `spec.memory` | `config` | object | Memory constructor args |
-| `spec.tools` | — | list | Tool names to include |
-| `spec.policies` | `preset` | string | Preset name |
-| `spec.workers` | — | list | Worker agent names (ManagerAgent) |
+---
 
 ## Best Practices
 
-1. **Use environment variables** for secrets
-2. **Use `${JOB_ID}`** for request-scoped namespaces
-3. **Define gateways in resources** for reuse
-4. **Use presets** for standard policy configurations
-5. **Keep configs in version control** for reproducibility
-6. **Validate configs** before deployment
-
+1. **Check configs into version control** so production agents are reproducible
+2. **Use presets** (`$preset`) for policies and memory instead of duplicating boilerplate
+3. **Share gateways and tools through `resources`** and reference them by name inside `spec`
+4. **Adopt `${JOB_ID}` namespaces** for shared memory to isolate concurrent jobs
+5. **Register custom components during startup** before any YAML gets loaded
+6. **Validate locally** by calling `AgentFactory.create_from_yaml` whenever a config changes

@@ -1,8 +1,0 @@
----
-title: Model Optimization Strategy
----
-
-```{include} ../../../MODEL_OPTIMIZATION_STRATEGY.md
-:relative-images:
-```
-

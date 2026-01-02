@@ -231,10 +231,10 @@ agent-framework --version
 
 ## Documentation
 
-- [Full Documentation](https://raviakasapu.github.io/agent_framework/)
-- [API Reference](https://raviakasapu.github.io/agent_framework/api)
-- [Examples](https://github.com/raviakasapu/agent_framework/tree/main/examples)
-- [Environment Variables](https://raviakasapu.github.io/agent_framework/guides/environment_variables)
+- [Full Documentation](https://auto-ai-agent-framework.vercel.app/)
+- [API Reference](https://auto-ai-agent-framework.vercel.app/api)
+- [Examples](https://github.com/akasa-ai/agentic-framework/tree/main/examples)
+- [Environment Variables](https://auto-ai-agent-framework.vercel.app/guides/environment_variables)
 
 ## License
 
@@ -243,4 +243,3 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
-

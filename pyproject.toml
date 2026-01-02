@@ -69,7 +69,7 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/akasa-ai/agentic-framework"
-Documentation = "https://auto-ai-agent-framework.vercel.app"
+Documentation = "https://auto-ai-agent-framework.vercel.app/"
 Repository = "https://github.com/akasa-ai/agentic-framework"
 Changelog = "https://github.com/akasa-ai/agentic-framework/blob/main/CHANGELOG.md"
 
@@ -94,4 +94,3 @@ python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
-

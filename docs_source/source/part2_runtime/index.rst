@@ -8,9 +8,10 @@ This section provides deep dives into each core component of the framework.
 
    agents
    memory
+   memory-presets
    tools
    planners
    policies
+   policy-presets
    context_services
    observability
-

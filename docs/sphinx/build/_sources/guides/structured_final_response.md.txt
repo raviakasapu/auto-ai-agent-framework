@@ -1,8 +1,0 @@
----
-title: Structured Final Response
----
-
-```{include} ../../../STRUCTURED_FINAL_RESPONSE.md
-:relative-images:
-```
-

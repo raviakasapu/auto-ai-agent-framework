@@ -158,7 +158,7 @@ result = manager.run("Research AI trends and write a summary")
 
 ## Documentation
 
-- [Full Documentation](https://auto-ai-agent-framework.vercel.app)
+- [Full Documentation](https://auto-ai-agent-framework.vercel.app/)
 - [API Reference](https://auto-ai-agent-framework.vercel.app/api)
 - [Examples](https://github.com/akasa-ai/agentic-framework/tree/main/examples)
 
@@ -169,4 +169,3 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
-

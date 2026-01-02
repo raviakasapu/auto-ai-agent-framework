@@ -34,7 +34,7 @@ configs/            # YAML configurations
 
 ```bash
 # Install the framework
-pip install agentic-framework
+pip install auto-ai-agent-framework
 
 # Create a sample project with CLI
 agent-framework init my_agent_project

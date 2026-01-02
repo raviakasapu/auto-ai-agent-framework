@@ -87,7 +87,7 @@ from agent_framework import (
 
 ```bash
 # From PyPI (production)
-pip install agentic-framework
+pip install auto-ai-agent-framework
 
 # From source (development)
 pip install -e ./agent-framework-pypi

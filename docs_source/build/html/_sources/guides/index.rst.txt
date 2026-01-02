@@ -23,7 +23,9 @@ Content Mapping
    - :doc:`../part2_runtime/planners` — All planner types
    - :doc:`../part2_runtime/tools` — Tool development
    - :doc:`../part2_runtime/memory` — Memory implementations
+   - :doc:`../part2_runtime/memory-presets` — Memory presets quick reference
    - :doc:`../part2_runtime/policies` — Behavioral policies
+   - :doc:`../part2_runtime/policy-presets` — Policy presets guide
 
 **Configuration & Deployment**
    Configuration topics are in **Part 3: Building Solutions**:

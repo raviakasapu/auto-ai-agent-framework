@@ -20,7 +20,7 @@ Create and activate a virtual environment::
 Install the framework::
 
    # From PyPI
-   pip install agentic-framework
+   pip install auto-ai-agent-framework
 
    # Or from source
    pip install -e ./agent-framework-pypi

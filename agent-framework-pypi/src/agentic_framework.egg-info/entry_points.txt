@@ -1,2 +1,0 @@
-[console_scripts]
-agent-framework = agent_framework.cli:main
