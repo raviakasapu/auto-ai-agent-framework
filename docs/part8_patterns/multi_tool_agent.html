@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pattern: Multi-Tool Agent &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pattern: Manager + Workers" href="manager_workers.html" />
+    <link rel="prev" title="Pattern: Minimal Agent" href="minimal_agent.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 8: Common Patterns</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 8: Common Patterns</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#how-to-use-these-patterns">How to Use These Patterns</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#pattern-index">Pattern Index</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="minimal_agent.html">Pattern: Minimal Agent</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Pattern: Multi-Tool Agent</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#when-to-use">When to Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml">Complete YAML</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-equivalent">Python Equivalent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#system-prompt-template">System Prompt Template</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#customization-tips">Customization Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-tool-combinations">Common Tool Combinations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="manager_workers.html">Pattern: Manager + Workers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shared_memory_team.html">Pattern: Shared Memory Team</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hitl_approval.html">Pattern: Human-in-the-Loop Approval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="three_tier_hierarchy.html">Pattern: Three-Tier Hierarchy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 8: Common Patterns</a></li>
+      <li class="breadcrumb-item active">Pattern: Multi-Tool Agent</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part8_patterns/multi_tool_agent.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pattern-multi-tool-agent">
+<h1>Pattern: Multi-Tool Agent<a class="headerlink" href="#pattern-multi-tool-agent" title="Link to this heading"></a></h1>
+<p>An agent with multiple tools and ReAct (Reasoning + Acting) planning for complex tasks.</p>
+<section id="when-to-use">
+<h2>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Tasks requiring multiple capabilities</p></li>
+<li><p>Research agents (search + notes)</p></li>
+<li><p>Data processing (read + transform + write)</p></li>
+<li><p>Any agent that needs to “think” about which tool to use</p></li>
+</ul>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">--&gt;</span> <span class="p">[</span><span class="n">Agent</span><span class="p">]</span> <span class="o">--&gt;</span> <span class="p">[</span><span class="n">Tool</span> <span class="n">A</span><span class="p">:</span> <span class="n">Search</span><span class="p">]</span>
+              <span class="o">|</span>    <span class="o">--&gt;</span> <span class="p">[</span><span class="n">Tool</span> <span class="n">B</span><span class="p">:</span> <span class="n">Notes</span><span class="p">]</span>
+              <span class="o">|</span>    <span class="o">--&gt;</span> <span class="p">[</span><span class="n">Tool</span> <span class="n">C</span><span class="p">:</span> <span class="n">Calculator</span><span class="p">]</span>
+              <span class="o">|</span>
+        <span class="p">[</span><span class="n">ReActPlanner</span><span class="p">]</span>
+              <span class="o">|</span>
+          <span class="p">[</span><span class="n">OpenAI</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml">
+<h2>Complete YAML<a class="headerlink" href="#complete-yaml" title="Link to this heading"></a></h2>
+<p>Copy this file to <code class="docutils literal notranslate"><span class="pre">configs/agents/research_agent.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># MULTI-TOOL AGENT PATTERN</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># An agent with multiple tools and ReAct planning.</span>
+<span class="c1"># The LLM decides which tool to use based on the task.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ResearchAgent</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Research assistant with search, notes, and calculation capabilities</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Inference Gateway</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Tools - Multiple capabilities</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web_search</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MockSearchTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">note_taker</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NoteTakerTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">storage_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tmp/research_notes.json</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">calculator</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CalculatorTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Observability (optional but recommended)</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PhoenixSubscriber</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Policies</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+<span class="w">    </span><span class="nt">termination</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultTerminationPolicy</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
+<span class="w">        </span><span class="nt">on_max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Planner - ReAct for multi-tool reasoning</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a research assistant with the following capabilities:</span>
+
+<span class="w">        </span><span class="no">TOOLS AVAILABLE:</span>
+<span class="w">        </span><span class="no">- web_search: Search the web for information on any topic</span>
+<span class="w">        </span><span class="no">- note_taker: Save important findings with title and content</span>
+<span class="w">        </span><span class="no">- calculator: Perform mathematical calculations</span>
+
+<span class="w">        </span><span class="no">WORKFLOW:</span>
+<span class="w">        </span><span class="no">1. Understand what information the user needs</span>
+<span class="w">        </span><span class="no">2. Search for relevant information using web_search</span>
+<span class="w">        </span><span class="no">3. Save key findings using note_taker</span>
+<span class="w">        </span><span class="no">4. Perform any necessary calculations</span>
+<span class="w">        </span><span class="no">5. Provide a clear summary of your research</span>
+
+<span class="w">        </span><span class="no">GUIDELINES:</span>
+<span class="w">        </span><span class="no">- Be thorough but concise</span>
+<span class="w">        </span><span class="no">- Always cite your sources</span>
+<span class="w">        </span><span class="no">- Take notes on important findings before summarizing</span>
+<span class="w">        </span><span class="no">- Use calculator for any numerical analysis</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Memory</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">standalone</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Tool References</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">web_search</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">note_taker</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">calculator</span><span class="p p-Indicator">]</span>
+
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">logging</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="python-equivalent">
+<h2>Python Equivalent<a class="headerlink" href="#python-equivalent" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">EventBus</span><span class="p">,</span> <span class="n">get_preset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.planners</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReActPlanner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.components.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemoryMemory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.gateways.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIGateway</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+
+<span class="nd">@tool</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;web_search&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Search the web for information&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">web_search</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search for information on the web.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Result for: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;human_readable_summary&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Found information about </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">}</span>
+
+<span class="nd">@tool</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;note_taker&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Save research notes&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">note_taker</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save a research note.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;saved&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+        <span class="s2">&quot;human_readable_summary&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Saved note: </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">}</span>
+
+<span class="nd">@tool</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;calculator&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Perform calculations&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculator</span><span class="p">(</span><span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate a math expression.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">expression</span><span class="p">))</span>
+
+<span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="n">web_search</span><span class="p">,</span> <span class="n">note_taker</span><span class="p">,</span> <span class="n">calculator</span><span class="p">]</span>
+<span class="n">gateway</span> <span class="o">=</span> <span class="n">OpenAIGateway</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">,</span> <span class="n">use_function_calling</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ResearchAgent&quot;</span><span class="p">,</span>
+    <span class="n">planner</span><span class="o">=</span><span class="n">ReActPlanner</span><span class="p">(</span>
+        <span class="n">inference_gateway</span><span class="o">=</span><span class="n">gateway</span><span class="p">,</span>
+        <span class="n">tools</span><span class="o">=</span><span class="n">tools</span><span class="p">,</span>
+        <span class="n">system_prompt</span><span class="o">=</span><span class="s2">&quot;You are a research assistant...&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">memory</span><span class="o">=</span><span class="n">InMemoryMemory</span><span class="p">(),</span>
+    <span class="n">tools</span><span class="o">=</span><span class="n">tools</span><span class="p">,</span>
+    <span class="n">policies</span><span class="o">=</span><span class="n">get_preset</span><span class="p">(</span><span class="s2">&quot;simple&quot;</span><span class="p">),</span>
+    <span class="n">event_bus</span><span class="o">=</span><span class="n">EventBus</span><span class="p">(),</span>
+<span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Research Python web frameworks and summarize the top 3&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="system-prompt-template">
+<h2>System Prompt Template<a class="headerlink" href="#system-prompt-template" title="Link to this heading"></a></h2>
+<p>Customize this template for your domain:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no">You are a [ROLE] assistant.</span>
+
+<span class="w">  </span><span class="no">TOOLS AVAILABLE:</span>
+<span class="w">  </span><span class="no">- [tool_1]: [Description and when to use]</span>
+<span class="w">  </span><span class="no">- [tool_2]: [Description and when to use]</span>
+<span class="w">  </span><span class="no">- [tool_3]: [Description and when to use]</span>
+
+<span class="w">  </span><span class="no">WORKFLOW:</span>
+<span class="w">  </span><span class="no">1. [First step]</span>
+<span class="w">  </span><span class="no">2. [Second step]</span>
+<span class="w">  </span><span class="no">3. [Continue as needed]</span>
+<span class="w">  </span><span class="no">4. Summarize findings</span>
+
+<span class="w">  </span><span class="no">GUIDELINES:</span>
+<span class="w">  </span><span class="no">- [Important rule 1]</span>
+<span class="w">  </span><span class="no">- [Important rule 2]</span>
+<span class="w">  </span><span class="no">- [Important rule 3]</span>
+</pre></div>
+</div>
+</section>
+<section id="customization-tips">
+<h2>Customization Tips<a class="headerlink" href="#customization-tips" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>What to Change</p></th>
+<th class="head"><p>How</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Add tools</p></td>
+<td><p>Add to <code class="docutils literal notranslate"><span class="pre">resources.tools</span></code> AND <code class="docutils literal notranslate"><span class="pre">spec.tools</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Change model</p></td>
+<td><p>Modify <code class="docutils literal notranslate"><span class="pre">config.model</span></code> in gateway</p></td>
+</tr>
+<tr class="row-even"><td><p>Increase iterations</p></td>
+<td><p>Change <code class="docutils literal notranslate"><span class="pre">max_iterations</span></code> in both planner and termination</p></td>
+</tr>
+<tr class="row-odd"><td><p>Enable logging</p></td>
+<td><p>Add Phoenix or Logging subscriber</p></td>
+</tr>
+<tr class="row-even"><td><p>Share memory</p></td>
+<td><p>Switch to <code class="docutils literal notranslate"><span class="pre">$preset:</span> <span class="pre">worker</span></code> with same <code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="common-tool-combinations">
+<h2>Common Tool Combinations<a class="headerlink" href="#common-tool-combinations" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Use Case</p></th>
+<th class="head"><p>Tools</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Research</p></td>
+<td><p>web_search, note_taker, calculator</p></td>
+</tr>
+<tr class="row-odd"><td><p>Task Management</p></td>
+<td><p>create_task, list_tasks, complete_task</p></td>
+</tr>
+<tr class="row-even"><td><p>Data Analysis</p></td>
+<td><p>query_database, calculate, visualize</p></td>
+</tr>
+<tr class="row-odd"><td><p>Customer Support</p></td>
+<td><p>search_kb, create_ticket, send_email</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Add orchestration: See <a class="reference internal" href="manager_workers.html"><span class="std std-doc">Manager + Workers</span></a></p></li>
+<li><p>Add human approval: See <a class="reference internal" href="hitl_approval.html"><span class="std std-doc">HITL Approval</span></a></p></li>
+<li><p>Share state: See <a class="reference internal" href="shared_memory_team.html"><span class="std std-doc">Shared Memory Team</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="minimal_agent.html" class="btn btn-neutral float-left" title="Pattern: Minimal Agent" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="manager_workers.html" class="btn btn-neutral float-right" title="Pattern: Manager + Workers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

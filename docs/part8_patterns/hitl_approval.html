@@ -1,0 +1,560 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pattern: Human-in-the-Loop Approval &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pattern: Three-Tier Hierarchy" href="three_tier_hierarchy.html" />
+    <link rel="prev" title="Pattern: Shared Memory Team" href="shared_memory_team.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 8: Common Patterns</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 8: Common Patterns</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#how-to-use-these-patterns">How to Use These Patterns</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#pattern-index">Pattern Index</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="minimal_agent.html">Pattern: Minimal Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multi_tool_agent.html">Pattern: Multi-Tool Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="manager_workers.html">Pattern: Manager + Workers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shared_memory_team.html">Pattern: Shared Memory Team</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Pattern: Human-in-the-Loop Approval</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#when-to-use">When to Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-agent-with-hitl">Complete YAML - Agent with HITL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#handling-approvals-in-code">Handling Approvals in Code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#websocket-approval-flow">WebSocket Approval Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hitl-scope-options">HITL Scope Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-hitl-policy">Custom HITL Policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#customization-tips">Customization Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="three_tier_hierarchy.html">Pattern: Three-Tier Hierarchy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 8: Common Patterns</a></li>
+      <li class="breadcrumb-item active">Pattern: Human-in-the-Loop Approval</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part8_patterns/hitl_approval.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pattern-human-in-the-loop-approval">
+<h1>Pattern: Human-in-the-Loop Approval<a class="headerlink" href="#pattern-human-in-the-loop-approval" title="Link to this heading"></a></h1>
+<p>Agents that require human approval before executing write/destructive operations.</p>
+<section id="when-to-use">
+<h2>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Production systems with data modification</p></li>
+<li><p>High-stakes operations (delete, update, send)</p></li>
+<li><p>Compliance requirements</p></li>
+<li><p>Building trust with new agent deployments</p></li>
+<li><p>Any operation that cannot be easily undone</p></li>
+</ul>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[User Request]
+      |
+      v
+  [Agent]
+      |
+      v
+[Plan: delete_record]
+      |
+      v
++------------------+
+| HITL Policy      |
+| Is write tool?   |-----&gt; YES -----&gt; [Pause &amp; Request Approval]
++------------------+                           |
+      |                                        v
+      NO                              [Human Reviews]
+      |                                   /        \
+      v                              APPROVE     DENY
+[Execute Immediately]                   |          |
+                                        v          v
+                                   [Execute]   [Abort]
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-agent-with-hitl">
+<h2>Complete YAML - Agent with HITL<a class="headerlink" href="#complete-yaml-agent-with-hitl" title="Link to this heading"></a></h2>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/safe_data_agent.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># HITL APPROVAL PATTERN</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Agent that requires human approval for write operations.</span>
+<span class="c1"># Read operations execute immediately; writes pause for approval.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SafeDataAgent</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Data agent with human approval for modifications</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Tools - Mix of read (safe) and write (needs approval)</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># READ OPERATIONS - Execute immediately</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_records</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ListRecordsTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get_record</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GetRecordTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">search_records</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SearchRecordsTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">    </span><span class="c1"># WRITE OPERATIONS - Require approval</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_record</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CreateRecordTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update_record</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UpdateRecordTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_record</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DeleteRecordTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PhoenixSubscriber</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Policies - Enable HITL for write operations</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">with_hitl</span>
+<span class="w">    </span><span class="c1"># The with_hitl preset includes:</span>
+<span class="w">    </span><span class="c1"># - hitl.enabled: true</span>
+<span class="w">    </span><span class="c1"># - hitl.scope: &quot;writes&quot;</span>
+
+<span class="w">    </span><span class="c1"># Override HITL configuration if needed:</span>
+<span class="w">    </span><span class="nt">hitl</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultHITLPolicy</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">writes</span>
+<span class="w">        </span><span class="c1"># Specify which tools require approval</span>
+<span class="w">        </span><span class="nt">write_tools</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_record</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update_record</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_record</span>
+
+<span class="w">    </span><span class="nt">termination</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultTerminationPolicy</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a data management assistant.</span>
+
+<span class="w">        </span><span class="no">READ OPERATIONS (immediate):</span>
+<span class="w">        </span><span class="no">- list_records: List all records</span>
+<span class="w">        </span><span class="no">- get_record: Get a specific record by ID</span>
+<span class="w">        </span><span class="no">- search_records: Search records by criteria</span>
+
+<span class="w">        </span><span class="no">WRITE OPERATIONS (require approval):</span>
+<span class="w">        </span><span class="no">- create_record: Create a new record</span>
+<span class="w">        </span><span class="no">- update_record: Update an existing record</span>
+<span class="w">        </span><span class="no">- delete_record: Delete a record</span>
+
+<span class="w">        </span><span class="no">Always confirm the user&#39;s intent before suggesting write operations.</span>
+<span class="w">        </span><span class="no">Provide clear explanations of what changes will be made.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">standalone</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list_records</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get_record</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">search_records</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_record</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update_record</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_record</span>
+
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">logging</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="handling-approvals-in-code">
+<h2>Handling Approvals in Code<a class="headerlink" href="#handling-approvals-in-code" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">BaseProgressHandler</span><span class="p">,</span> <span class="n">get_preset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentFactory</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ApprovalHandler</span><span class="p">(</span><span class="n">BaseProgressHandler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle HITL approval requests.&quot;&quot;&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event_name</span> <span class="o">==</span> <span class="s2">&quot;policy_denied&quot;</span><span class="p">:</span>
+            <span class="c1"># HITL policy paused execution</span>
+            <span class="n">tool_name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_name&quot;</span><span class="p">)</span>
+            <span class="n">tool_args</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_args&quot;</span><span class="p">)</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reason&quot;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;APPROVAL REQUIRED&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tool: </span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Arguments: </span><span class="si">{</span><span class="n">tool_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reason: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># In a real app, this would be async user input</span>
+            <span class="c1"># or a webhook to a Slack/Teams approval flow</span>
+            <span class="n">approval</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Approve? (yes/no): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">approval</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+                <span class="c1"># Signal approval (implementation depends on your setup)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;approved&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;approved&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Operation denied by human.&quot;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">agent</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/safe_data_agent.yaml&quot;</span><span class="p">)</span>
+
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">ApprovalHandler</span><span class="p">()</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="s2">&quot;Delete record ID 12345&quot;</span><span class="p">,</span>
+        <span class="n">progress_handler</span><span class="o">=</span><span class="n">handler</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="websocket-approval-flow">
+<h2>WebSocket Approval Flow<a class="headerlink" href="#websocket-approval-flow" title="Link to this heading"></a></h2>
+<p>For web applications:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">WebSocket</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseProgressHandler</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">WebSocketApprovalHandler</span><span class="p">(</span><span class="n">BaseProgressHandler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ws</span> <span class="o">=</span> <span class="n">websocket</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pending_approval</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event_name</span> <span class="o">==</span> <span class="s2">&quot;policy_denied&quot;</span><span class="p">:</span>
+            <span class="c1"># Send approval request to frontend</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">send_json</span><span class="p">({</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;approval_required&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_name&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_args&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reason&quot;</span><span class="p">),</span>
+            <span class="p">})</span>
+
+            <span class="c1"># Wait for response</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">receive_json</span><span class="p">()</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;approved&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;approved&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;agent_start&quot;</span><span class="p">,</span> <span class="s2">&quot;agent_end&quot;</span><span class="p">,</span> <span class="s2">&quot;action_executed&quot;</span><span class="p">]:</span>
+            <span class="c1"># Forward progress events to frontend</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">send_json</span><span class="p">({</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;progress&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="n">event_name</span><span class="p">,</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data</span>
+            <span class="p">})</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">websocket</span><span class="p">(</span><span class="s2">&quot;/agent&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">agent_websocket</span><span class="p">(</span><span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+
+    <span class="n">agent</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/safe_data_agent.yaml&quot;</span><span class="p">)</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">WebSocketApprovalHandler</span><span class="p">(</span><span class="n">websocket</span><span class="p">)</span>
+
+    <span class="c1"># Receive task from frontend</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">receive_json</span><span class="p">()</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;task&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Run with approval handler</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">progress_handler</span><span class="o">=</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">({</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;complete&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">result</span>
+    <span class="p">})</span>
+</pre></div>
+</div>
+</section>
+<section id="hitl-scope-options">
+<h2>HITL Scope Options<a class="headerlink" href="#hitl-scope-options" title="Link to this heading"></a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">hitl</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultHITLPolicy</span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">writes</span><span class="w">      </span><span class="c1"># Only write tools</span>
+<span class="w">    </span><span class="c1"># scope: all       # ALL tool calls require approval</span>
+<span class="w">    </span><span class="c1"># scope: none      # Disabled (same as enabled: false)</span>
+
+<span class="w">    </span><span class="c1"># Explicit tool list (overrides scope)</span>
+<span class="w">    </span><span class="nt">write_tools</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_record</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update_record</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">send_email</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">execute_query</span>
+</pre></div>
+</div>
+</section>
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Global HITL toggle</span>
+<span class="nv">REACT_HITL_ENABLE</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="c1"># Global scope</span>
+<span class="nv">REACT_HITL_SCOPE</span><span class="o">=</span>writes<span class="w">  </span><span class="c1"># or &quot;all&quot; or &quot;none&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-hitl-policy">
+<h2>Custom HITL Policy<a class="headerlink" href="#custom-hitl-policy" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.policies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITLPolicy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomHITLPolicy</span><span class="p">(</span><span class="n">HITLPolicy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom approval logic based on business rules.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">high_risk_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">high_risk_threshold</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">requires_approval</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="n">tool_name</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">tool_name</span>
+        <span class="n">tool_args</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">tool_args</span>
+
+        <span class="c1"># Always approve reads</span>
+        <span class="k">if</span> <span class="n">tool_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;get_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tool_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;list_&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="c1"># Approve low-value transactions</span>
+        <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;transfer_funds&quot;</span><span class="p">:</span>
+            <span class="n">amount</span> <span class="o">=</span> <span class="n">tool_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;amount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">amount</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Transfer of $</span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2"> exceeds $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="si">}</span><span class="s2"> threshold&quot;</span>
+
+        <span class="c1"># Require approval for all deletes</span>
+        <span class="k">if</span> <span class="n">tool_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;delete_&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;Delete operations require approval&quot;</span>
+
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
+
+<span class="c1"># Register for YAML use</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deployment.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_policy</span>
+<span class="n">register_policy</span><span class="p">(</span><span class="s2">&quot;CustomHITLPolicy&quot;</span><span class="p">,</span> <span class="n">CustomHITLPolicy</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="customization-tips">
+<h2>Customization Tips<a class="headerlink" href="#customization-tips" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>What to Change</p></th>
+<th class="head"><p>How</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Add more write tools</p></td>
+<td><p>Add to <code class="docutils literal notranslate"><span class="pre">write_tools</span></code> list</p></td>
+</tr>
+<tr class="row-odd"><td><p>Approve all calls</p></td>
+<td><p>Set <code class="docutils literal notranslate"><span class="pre">scope:</span> <span class="pre">all</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Disable HITL</p></td>
+<td><p>Set <code class="docutils literal notranslate"><span class="pre">enabled:</span> <span class="pre">false</span></code> or use <code class="docutils literal notranslate"><span class="pre">$preset:</span> <span class="pre">simple</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Custom logic</p></td>
+<td><p>Implement <code class="docutils literal notranslate"><span class="pre">HITLPolicy</span></code> subclass</p></td>
+</tr>
+<tr class="row-even"><td><p>Async approval</p></td>
+<td><p>Use progress handler with async wait</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Start strict</strong> - Enable HITL for all writes initially</p></li>
+<li><p><strong>Log approvals</strong> - Track who approved what and when</p></li>
+<li><p><strong>Timeout approvals</strong> - Don’t let pending approvals block forever</p></li>
+<li><p><strong>Provide context</strong> - Show tool args clearly in approval UI</p></li>
+<li><p><strong>Allow bulk approve</strong> - For repetitive safe operations</p></li>
+</ol>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Add hierarchy: See <a class="reference internal" href="three_tier_hierarchy.html"><span class="std std-doc">Three-Tier Hierarchy</span></a></p></li>
+<li><p>Share state: See <a class="reference internal" href="shared_memory_team.html"><span class="std std-doc">Shared Memory Team</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="shared_memory_team.html" class="btn btn-neutral float-left" title="Pattern: Shared Memory Team" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="three_tier_hierarchy.html" class="btn btn-neutral float-right" title="Pattern: Three-Tier Hierarchy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

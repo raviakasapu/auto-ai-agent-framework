@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pattern: Shared Memory Team &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pattern: Human-in-the-Loop Approval" href="hitl_approval.html" />
+    <link rel="prev" title="Pattern: Manager + Workers" href="manager_workers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 8: Common Patterns</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 8: Common Patterns</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#how-to-use-these-patterns">How to Use These Patterns</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#pattern-index">Pattern Index</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="minimal_agent.html">Pattern: Minimal Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multi_tool_agent.html">Pattern: Multi-Tool Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="manager_workers.html">Pattern: Manager + Workers</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Pattern: Shared Memory Team</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#when-to-use">When to Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-manager-with-shared-memory">Complete YAML - Manager with Shared Memory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-gatherer-worker">Complete YAML - Gatherer Worker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-analyzer-worker">Complete YAML - Analyzer Worker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-reporter-worker">Complete YAML - Reporter Worker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-team">Running the Team</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-memory-sharing-works">How Memory Sharing Works</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memory-visibility-matrix">Memory Visibility Matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#customization-tips">Customization Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hitl_approval.html">Pattern: Human-in-the-Loop Approval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="three_tier_hierarchy.html">Pattern: Three-Tier Hierarchy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 8: Common Patterns</a></li>
+      <li class="breadcrumb-item active">Pattern: Shared Memory Team</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part8_patterns/shared_memory_team.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pattern-shared-memory-team">
+<h1>Pattern: Shared Memory Team<a class="headerlink" href="#pattern-shared-memory-team" title="Link to this heading"></a></h1>
+<p>Workers that collaborate by sharing state through a common memory namespace. Each worker can see what others have done.</p>
+<section id="when-to-use">
+<h2>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Workers need to build on each other’s work</p></li>
+<li><p>Pipeline processing (analyze -&gt; transform -&gt; validate)</p></li>
+<li><p>Collaborative research (gather -&gt; synthesize -&gt; report)</p></li>
+<li><p>Any workflow where context accumulates across agents</p></li>
+</ul>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                    <span class="p">[</span><span class="n">Manager</span><span class="p">]</span>
+                   <span class="o">/</span>    <span class="o">|</span>    \
+                  <span class="n">v</span>     <span class="n">v</span>     <span class="n">v</span>
+            <span class="p">[</span><span class="n">Worker</span> <span class="n">A</span><span class="p">]</span> <span class="p">[</span><span class="n">Worker</span> <span class="n">B</span><span class="p">]</span> <span class="p">[</span><span class="n">Worker</span> <span class="n">C</span><span class="p">]</span>
+                  \     <span class="o">|</span>     <span class="o">/</span>
+                   <span class="n">v</span>    <span class="n">v</span>    <span class="n">v</span>
+              <span class="o">+------------------+</span>
+              <span class="o">|</span> <span class="n">Shared</span> <span class="n">Memory</span>    <span class="o">|</span>
+              <span class="o">|</span> <span class="n">namespace</span><span class="p">:</span> <span class="n">job_1</span> <span class="o">|</span>
+              <span class="o">+------------------+</span>
+              <span class="o">|</span> <span class="n">Worker</span> <span class="n">A</span> <span class="n">traces</span>  <span class="o">|</span>
+              <span class="o">|</span> <span class="n">Worker</span> <span class="n">B</span> <span class="n">traces</span>  <span class="o">|</span>
+              <span class="o">|</span> <span class="n">Worker</span> <span class="n">C</span> <span class="n">traces</span>  <span class="o">|</span>
+              <span class="o">|</span> <span class="n">Global</span> <span class="n">messages</span>  <span class="o">|</span>
+              <span class="o">+------------------+</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-manager-with-shared-memory">
+<h2>Complete YAML - Manager with Shared Memory<a class="headerlink" href="#complete-yaml-manager-with-shared-memory" title="Link to this heading"></a></h2>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/team_manager.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># SHARED MEMORY TEAM PATTERN - MANAGER</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Manager coordinates workers who share state via common namespace.</span>
+<span class="c1"># Workers can see each other&#39;s work through shared memory.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TeamManager</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Coordinates a team of workers with shared memory</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-manager</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WorkerRouterPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-manager</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">gatherer</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">analyzer</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">reporter</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">default_worker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gatherer</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You coordinate a research team with shared memory.</span>
+
+<span class="w">        </span><span class="no">TEAM MEMBERS:</span>
+<span class="w">        </span><span class="no">- gatherer: Collects raw data and information</span>
+<span class="w">        </span><span class="no">- analyzer: Analyzes gathered data, finds patterns</span>
+<span class="w">        </span><span class="no">- reporter: Creates summaries and reports</span>
+
+<span class="w">        </span><span class="no">WORKFLOW:</span>
+<span class="w">        </span><span class="no">1. First, use gatherer to collect information</span>
+<span class="w">        </span><span class="no">2. Then, use analyzer to find patterns (can see gatherer&#39;s work)</span>
+<span class="w">        </span><span class="no">3. Finally, use reporter to summarize (can see all previous work)</span>
+
+<span class="w">        </span><span class="no">Return: {&quot;worker&quot;: &quot;&lt;key&gt;&quot;, &quot;reason&quot;: &quot;...&quot;}</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Memory - Manager preset with subordinates visibility</span>
+<span class="w">  </span><span class="c1"># The manager sees ALL worker traces in the shared namespace</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+<span class="w">    </span><span class="c1"># subordinates auto-derived from workers list</span>
+<span class="w">    </span><span class="c1"># namespace from JOB_ID ensures isolation between jobs</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gatherer</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/gatherer_worker.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">analyzer</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/analyzer_worker.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reporter</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/reporter_worker.yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-gatherer-worker">
+<h2>Complete YAML - Gatherer Worker<a class="headerlink" href="#complete-yaml-gatherer-worker" title="Link to this heading"></a></h2>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/gatherer_worker.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># SHARED MEMORY TEAM - GATHERER WORKER</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Collects information. Other workers can see gathered data.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GathererWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gathers raw data and information</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web_search</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MockSearchTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">note_taker</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NoteTakerTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a data gatherer. Your job is to:</span>
+<span class="w">        </span><span class="no">1. Search for relevant information</span>
+<span class="w">        </span><span class="no">2. Save key findings as notes</span>
+
+<span class="w">        </span><span class="no">Be thorough. Other team members will use your gathered data.</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Memory - Worker preset with shared namespace</span>
+<span class="w">  </span><span class="c1"># All workers use $preset: worker to share the same namespace</span>
+<span class="w">  </span><span class="c1"># The JOB_ID environment variable creates isolation between jobs</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+<span class="w">    </span><span class="c1"># namespace: ${JOB_ID} - auto-derived</span>
+<span class="w">    </span><span class="c1"># agent_key: GathererWorker - auto-derived from metadata.name</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">web_search</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">note_taker</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-analyzer-worker">
+<h2>Complete YAML - Analyzer Worker<a class="headerlink" href="#complete-yaml-analyzer-worker" title="Link to this heading"></a></h2>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/analyzer_worker.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># SHARED MEMORY TEAM - ANALYZER WORKER</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Analyzes gathered data. Can see gatherer&#39;s work in shared memory.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AnalyzerWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Analyzes gathered data and finds patterns</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">calculator</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CalculatorTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">note_taker</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NoteTakerTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a data analyzer. Your job is to:</span>
+<span class="w">        </span><span class="no">1. Review the gathered information (available in context)</span>
+<span class="w">        </span><span class="no">2. Find patterns and insights</span>
+<span class="w">        </span><span class="no">3. Perform calculations if needed</span>
+<span class="w">        </span><span class="no">4. Save your analysis as notes</span>
+
+<span class="w">        </span><span class="no">Build on the gatherer&#39;s work. The reporter will use your analysis.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">calculator</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">note_taker</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-reporter-worker">
+<h2>Complete YAML - Reporter Worker<a class="headerlink" href="#complete-yaml-reporter-worker" title="Link to this heading"></a></h2>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/reporter_worker.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># SHARED MEMORY TEAM - REPORTER WORKER</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Creates reports from team&#39;s work. Can see all previous work.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReporterWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Creates summaries and reports from team findings</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">note_taker</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NoteTakerTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a report writer. Your job is to:</span>
+<span class="w">        </span><span class="no">1. Review all gathered data and analysis (available in context)</span>
+<span class="w">        </span><span class="no">2. Synthesize findings into a clear report</span>
+<span class="w">        </span><span class="no">3. Save the final report</span>
+
+<span class="w">        </span><span class="no">Create a comprehensive summary of the team&#39;s work.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">note_taker</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="running-the-team">
+<h2>Running the Team<a class="headerlink" href="#running-the-team" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.services.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_request_context</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Set job ID for memory namespace isolation</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="s2">&quot;research_job_001&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_id</span>
+    <span class="n">set_request_context</span><span class="p">({</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">})</span>
+
+    <span class="c1"># Load the team manager</span>
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/team_manager.yaml&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Run a multi-phase task</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="s2">&quot;Research AI trends, analyze the data, and create a summary report&quot;</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="how-memory-sharing-works">
+<h2>How Memory Sharing Works<a class="headerlink" href="#how-memory-sharing-works" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All workers share the same namespace</span>
+<span class="c1"># Worker memory:</span>
+<span class="n">memory1</span> <span class="o">=</span> <span class="n">SharedInMemoryMemory</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;job_001&quot;</span><span class="p">,</span> <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;GathererWorker&quot;</span><span class="p">)</span>
+<span class="n">memory2</span> <span class="o">=</span> <span class="n">SharedInMemoryMemory</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;job_001&quot;</span><span class="p">,</span> <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;AnalyzerWorker&quot;</span><span class="p">)</span>
+<span class="n">memory3</span> <span class="o">=</span> <span class="n">SharedInMemoryMemory</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;job_001&quot;</span><span class="p">,</span> <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;ReporterWorker&quot;</span><span class="p">)</span>
+
+<span class="c1"># Manager sees all subordinates:</span>
+<span class="n">manager_memory</span> <span class="o">=</span> <span class="n">HierarchicalSharedMemory</span><span class="p">(</span>
+    <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;job_001&quot;</span><span class="p">,</span>
+    <span class="n">agent_key</span><span class="o">=</span><span class="s2">&quot;TeamManager&quot;</span><span class="p">,</span>
+    <span class="n">subordinates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GathererWorker&quot;</span><span class="p">,</span> <span class="s2">&quot;AnalyzerWorker&quot;</span><span class="p">,</span> <span class="s2">&quot;ReporterWorker&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># When gatherer saves a note, analyzer can see it in history</span>
+<span class="c1"># When analyzer creates analysis, reporter can see both gatherer and analyzer work</span>
+</pre></div>
+</div>
+</section>
+<section id="memory-visibility-matrix">
+<h2>Memory Visibility Matrix<a class="headerlink" href="#memory-visibility-matrix" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Agent</p></th>
+<th class="head"><p>Sees Own</p></th>
+<th class="head"><p>Sees Gatherer</p></th>
+<th class="head"><p>Sees Analyzer</p></th>
+<th class="head"><p>Sees Reporter</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Gatherer</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Analyzer</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes (via shared)</p></td>
+<td><p>-</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Reporter</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes (via shared)</p></td>
+<td><p>Yes (via shared)</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p>Manager</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="customization-tips">
+<h2>Customization Tips<a class="headerlink" href="#customization-tips" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>What to Change</p></th>
+<th class="head"><p>How</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Isolate jobs</p></td>
+<td><p>Set different <code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code> for each request</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add global broadcast</p></td>
+<td><p>Use <code class="docutils literal notranslate"><span class="pre">memory.add_global()</span></code> for team-wide messages</p></td>
+</tr>
+<tr class="row-even"><td><p>Limit history</p></td>
+<td><p>Configure history filters in policies</p></td>
+</tr>
+<tr class="row-odd"><td><p>Persist memory</p></td>
+<td><p>Implement <code class="docutils literal notranslate"><span class="pre">BaseMessageStore</span></code> for database storage</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Add human approval: See <a class="reference internal" href="hitl_approval.html"><span class="std std-doc">HITL Approval</span></a></p></li>
+<li><p>Add more hierarchy: See <a class="reference internal" href="three_tier_hierarchy.html"><span class="std std-doc">Three-Tier Hierarchy</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="manager_workers.html" class="btn btn-neutral float-left" title="Pattern: Manager + Workers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hitl_approval.html" class="btn btn-neutral float-right" title="Pattern: Human-in-the-Loop Approval" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

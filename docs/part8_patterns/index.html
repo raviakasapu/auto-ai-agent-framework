@@ -1,0 +1,222 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 8: Common Patterns &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pattern: Minimal Agent" href="minimal_agent.html" />
+    <link rel="prev" title="API Reference" href="../api/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 8: Common Patterns</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Part 8: Common Patterns</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-use-these-patterns">How to Use These Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pattern-index">Pattern Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="minimal_agent.html">Pattern: Minimal Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multi_tool_agent.html">Pattern: Multi-Tool Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="manager_workers.html">Pattern: Manager + Workers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shared_memory_team.html">Pattern: Shared Memory Team</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hitl_approval.html">Pattern: Human-in-the-Loop Approval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="three_tier_hierarchy.html">Pattern: Three-Tier Hierarchy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Part 8: Common Patterns</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part8_patterns/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="part-8-common-patterns">
+<h1>Part 8: Common Patterns<a class="headerlink" href="#part-8-common-patterns" title="Link to this heading"></a></h1>
+<p>Copy-paste-ready YAML configurations for common agent architectures. Each pattern includes complete, working YAML that you can adopt directly into your project.</p>
+<section id="how-to-use-these-patterns">
+<h2>How to Use These Patterns<a class="headerlink" href="#how-to-use-these-patterns" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Copy</strong> the YAML configuration to your <code class="docutils literal notranslate"><span class="pre">configs/agents/</span></code> directory</p></li>
+<li><p><strong>Customize</strong> the metadata, system prompts, and tool references</p></li>
+<li><p><strong>Register</strong> any custom tools in your deployment registry</p></li>
+<li><p><strong>Run</strong> using the AgentFactory</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentFactory</span>
+
+<span class="n">agent</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span><span class="s2">&quot;configs/agents/my_agent.yaml&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Your task here&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="pattern-index">
+<h2>Pattern Index<a class="headerlink" href="#pattern-index" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 50.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Pattern</p></th>
+<th class="head"><p>Use Case</p></th>
+<th class="head"><p>Complexity</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="minimal_agent.html"><span class="doc">Pattern: Minimal Agent</span></a></p></td>
+<td><p>Simplest possible agent with one tool</p></td>
+<td><p>Beginner</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="multi_tool_agent.html"><span class="doc">Pattern: Multi-Tool Agent</span></a></p></td>
+<td><p>Agent with multiple tools and ReAct planning</p></td>
+<td><p>Beginner</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="manager_workers.html"><span class="doc">Pattern: Manager + Workers</span></a></p></td>
+<td><p>Manager routing tasks to 2 specialized workers</p></td>
+<td><p>Intermediate</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="shared_memory_team.html"><span class="doc">Pattern: Shared Memory Team</span></a></p></td>
+<td><p>Workers collaborating via shared memory</p></td>
+<td><p>Intermediate</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hitl_approval.html"><span class="doc">Pattern: Human-in-the-Loop Approval</span></a></p></td>
+<td><p>Human-in-the-loop approval for write operations</p></td>
+<td><p>Intermediate</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="three_tier_hierarchy.html"><span class="doc">Pattern: Three-Tier Hierarchy</span></a></p></td>
+<td><p>Orchestrator -&gt; Manager -&gt; Workers architecture</p></td>
+<td><p>Advanced</p></td>
+</tr>
+</tbody>
+</table>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../api/index.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="minimal_agent.html" class="btn btn-neutral float-right" title="Pattern: Minimal Agent" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

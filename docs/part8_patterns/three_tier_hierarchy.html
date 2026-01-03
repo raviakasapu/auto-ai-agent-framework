@@ -1,0 +1,800 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pattern: Three-Tier Hierarchy &mdash; AI Agent Framework 2.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b21de401"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Power BI Dashboard Editor Implementation" href="../powerbi_impl/index.html" />
+    <link rel="prev" title="Pattern: Human-in-the-Loop Approval" href="hitl_approval.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AI Agent Framework
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Part 1: Orientation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_orientation/index.html">Part 1: Orientation &amp; Quick Wins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 2: Runtime Building Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_runtime/index.html">Part 2: Runtime Building Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 3: Building Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_solutions/index.html">Part 3: Building Solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 4: Extensibility Cookbook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part4_cookbook/index.html">Part 4: Extensibility Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 5: Operating the Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part5_operations/index.html">Part 5: Operating the Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 6: Domain Playbooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part6_playbooks/index.html">Part 6 - Domain Playbooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 7: Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part7_reference/index.html">Part 7: Reference &amp; Appendices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Part 8: Common Patterns</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Part 8: Common Patterns</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#how-to-use-these-patterns">How to Use These Patterns</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#pattern-index">Pattern Index</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="minimal_agent.html">Pattern: Minimal Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multi_tool_agent.html">Pattern: Multi-Tool Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="manager_workers.html">Pattern: Manager + Workers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shared_memory_team.html">Pattern: Shared Memory Team</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hitl_approval.html">Pattern: Human-in-the-Loop Approval</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Pattern: Three-Tier Hierarchy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#when-to-use">When to Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-structure">File Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-orchestrator">Complete YAML - Orchestrator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-analysis-manager">Complete YAML - Analysis Manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-reporting-manager">Complete YAML - Reporting Manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-yaml-worker-examples">Complete YAML - Worker Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-three-tier-system">Running the Three-Tier System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tracing-the-hierarchy">Tracing the Hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#model-recommendations-by-tier">Model Recommendations by Tier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#customization-tips">Customization Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#when-not-to-use">When NOT to Use</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Power BI Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../powerbi_impl/index.html">Power BI Dashboard Editor Implementation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Legacy Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Legacy Guides</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AI Agent Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Part 8: Common Patterns</a></li>
+      <li class="breadcrumb-item active">Pattern: Three-Tier Hierarchy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/part8_patterns/three_tier_hierarchy.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pattern-three-tier-hierarchy">
+<h1>Pattern: Three-Tier Hierarchy<a class="headerlink" href="#pattern-three-tier-hierarchy" title="Link to this heading"></a></h1>
+<p>A complete orchestrator -&gt; manager -&gt; worker architecture for complex enterprise systems.</p>
+<section id="when-to-use">
+<h2>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Large-scale enterprise applications</p></li>
+<li><p>Multiple business domains with specialized teams</p></li>
+<li><p>Complex workflows requiring strategic planning</p></li>
+<li><p>Systems needing both high-level coordination and deep specialization</p></li>
+</ul>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                           <span class="p">[</span><span class="n">User</span> <span class="n">Request</span><span class="p">]</span>
+                                 <span class="o">|</span>
+                                 <span class="n">v</span>
+                    <span class="o">+------------------------+</span>
+                    <span class="o">|</span>     <span class="n">ORCHESTRATOR</span>       <span class="o">|</span>
+                    <span class="o">|</span>   <span class="p">(</span><span class="n">StrategicPlanner</span><span class="p">)</span>   <span class="o">|</span>
+                    <span class="o">|</span>                        <span class="o">|</span>
+                    <span class="o">|</span> <span class="n">Creates</span> <span class="n">phases</span><span class="p">:</span>        <span class="o">|</span>
+                    <span class="o">|</span> <span class="mf">1.</span> <span class="n">Analysis</span> <span class="n">Phase</span>      <span class="o">|</span>
+                    <span class="o">|</span> <span class="mf">2.</span> <span class="n">Processing</span> <span class="n">Phase</span>    <span class="o">|</span>
+                    <span class="o">|</span> <span class="mf">3.</span> <span class="n">Reporting</span> <span class="n">Phase</span>     <span class="o">|</span>
+                    <span class="o">+------------------------+</span>
+                         <span class="o">/</span>              \
+                        <span class="n">v</span>                <span class="n">v</span>
+         <span class="o">+------------------+</span>    <span class="o">+------------------+</span>
+         <span class="o">|</span> <span class="n">ANALYSIS</span> <span class="n">MANAGER</span> <span class="o">|</span>    <span class="o">|</span> <span class="n">REPORTING</span> <span class="n">MANAGER</span><span class="o">|</span>
+         <span class="o">|</span> <span class="p">(</span><span class="n">Decomposer</span><span class="p">)</span>     <span class="o">|</span>    <span class="o">|</span> <span class="p">(</span><span class="n">Decomposer</span><span class="p">)</span>     <span class="o">|</span>
+         <span class="o">|</span>                  <span class="o">|</span>    <span class="o">|</span>                  <span class="o">|</span>
+         <span class="o">|</span> <span class="n">Creates</span> <span class="n">steps</span><span class="p">:</span>   <span class="o">|</span>    <span class="o">|</span> <span class="n">Creates</span> <span class="n">steps</span><span class="p">:</span>   <span class="o">|</span>
+         <span class="o">|</span> <span class="mf">1.</span> <span class="n">Gather</span> <span class="n">data</span>   <span class="o">|</span>    <span class="o">|</span> <span class="mf">1.</span> <span class="n">Compile</span>       <span class="o">|</span>
+         <span class="o">|</span> <span class="mf">2.</span> <span class="n">Validate</span>      <span class="o">|</span>    <span class="o">|</span> <span class="mf">2.</span> <span class="n">Format</span>        <span class="o">|</span>
+         <span class="o">+------------------+</span>    <span class="o">+------------------+</span>
+              <span class="o">/</span>        \               <span class="o">/</span>        \
+             <span class="n">v</span>          <span class="n">v</span>             <span class="n">v</span>          <span class="n">v</span>
+      <span class="o">+---------+</span>  <span class="o">+---------+</span>  <span class="o">+---------+</span>  <span class="o">+---------+</span>
+      <span class="o">|</span> <span class="n">Gatherer</span><span class="o">|</span>  <span class="o">|</span><span class="n">Validator</span><span class="o">|</span>  <span class="o">|</span><span class="n">Compiler</span> <span class="o">|</span>  <span class="o">|</span><span class="n">Formatter</span><span class="o">|</span>
+      <span class="o">|</span> <span class="p">(</span><span class="n">ReAct</span><span class="p">)</span> <span class="o">|</span>  <span class="o">|</span> <span class="p">(</span><span class="n">ReAct</span><span class="p">)</span> <span class="o">|</span>  <span class="o">|</span> <span class="p">(</span><span class="n">ReAct</span><span class="p">)</span> <span class="o">|</span>  <span class="o">|</span> <span class="p">(</span><span class="n">ReAct</span><span class="p">)</span> <span class="o">|</span>
+      <span class="o">+---------+</span>  <span class="o">+---------+</span>  <span class="o">+---------+</span>  <span class="o">+---------+</span>
+</pre></div>
+</div>
+</section>
+<section id="file-structure">
+<h2>File Structure<a class="headerlink" href="#file-structure" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>configs/agents/
+├── orchestrator.yaml           # Top-level orchestrator
+├── managers/
+│   ├── analysis_manager.yaml   # Analysis domain manager
+│   └── reporting_manager.yaml  # Reporting domain manager
+└── workers/
+    ├── gatherer.yaml           # Data gathering worker
+    ├── validator.yaml          # Validation worker
+    ├── compiler.yaml           # Report compilation worker
+    └── formatter.yaml          # Report formatting worker
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-orchestrator">
+<h2>Complete YAML - Orchestrator<a class="headerlink" href="#complete-yaml-orchestrator" title="Link to this heading"></a></h2>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/orchestrator.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># THREE-TIER HIERARCHY - ORCHESTRATOR (TOP LEVEL)</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Strategic planner that creates high-level phases.</span>
+<span class="c1"># Delegates to domain managers who coordinate workers.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EnterpriseOrchestrator</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Top-level orchestrator for complex enterprise workflows</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-strategic</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_STRATEGIC_MODEL:-gpt-4o}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.3</span>
+
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">phoenix</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PhoenixSubscriber</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+<span class="w">        </span><span class="nt">include_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+<span class="w">    </span><span class="nt">termination</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultTerminationPolicy</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">        </span><span class="nt">on_max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Planner - Strategic planner for high-level phases</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">StrategicPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-strategic</span>
+<span class="w">      </span><span class="nt">manager_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">analysis-manager</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">reporting-manager</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">planning_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a strategic orchestrator for an enterprise system.</span>
+
+<span class="w">        </span><span class="no">AVAILABLE MANAGERS:</span>
+<span class="w">        </span><span class="no">- analysis-manager: Data gathering, validation, analysis tasks</span>
+<span class="w">        </span><span class="no">- reporting-manager: Report compilation, formatting, delivery</span>
+
+<span class="w">        </span><span class="no">PLANNING APPROACH:</span>
+<span class="w">        </span><span class="no">1. Analyze the user&#39;s request</span>
+<span class="w">        </span><span class="no">2. Create a strategic plan with phases</span>
+<span class="w">        </span><span class="no">3. Each phase delegates to the appropriate manager</span>
+<span class="w">        </span><span class="no">4. Synthesize results across phases</span>
+
+<span class="w">        </span><span class="no">OUTPUT FORMAT:</span>
+<span class="w">        </span><span class="no">{</span>
+<span class="w">          </span><span class="no">&quot;phases&quot;: [</span>
+<span class="w">            </span><span class="no">{</span>
+<span class="w">              </span><span class="no">&quot;name&quot;: &quot;Phase Name&quot;,</span>
+<span class="w">              </span><span class="no">&quot;manager&quot;: &quot;manager-key&quot;,</span>
+<span class="w">              </span><span class="no">&quot;goals&quot;: &quot;What this phase should accomplish&quot;,</span>
+<span class="w">              </span><span class="no">&quot;inputs&quot;: &quot;What the manager needs to know&quot;</span>
+<span class="w">            </span><span class="no">}</span>
+<span class="w">          </span><span class="no">],</span>
+<span class="w">          </span><span class="no">&quot;success_criteria&quot;: &quot;How to know the task is complete&quot;</span>
+<span class="w">        </span><span class="no">}</span>
+
+<span class="w">        </span><span class="no">EXAMPLE:</span>
+<span class="w">        </span><span class="no">User: &quot;Analyze Q4 sales data and create a summary report&quot;</span>
+<span class="w">        </span><span class="no">Plan:</span>
+<span class="w">        </span><span class="no">{</span>
+<span class="w">          </span><span class="no">&quot;phases&quot;: [</span>
+<span class="w">            </span><span class="no">{</span>
+<span class="w">              </span><span class="no">&quot;name&quot;: &quot;Data Analysis&quot;,</span>
+<span class="w">              </span><span class="no">&quot;manager&quot;: &quot;analysis-manager&quot;,</span>
+<span class="w">              </span><span class="no">&quot;goals&quot;: &quot;Gather and validate Q4 sales data, identify trends&quot;,</span>
+<span class="w">              </span><span class="no">&quot;inputs&quot;: &quot;Focus on Q4, include regional breakdowns&quot;</span>
+<span class="w">            </span><span class="no">},</span>
+<span class="w">            </span><span class="no">{</span>
+<span class="w">              </span><span class="no">&quot;name&quot;: &quot;Report Generation&quot;,</span>
+<span class="w">              </span><span class="no">&quot;manager&quot;: &quot;reporting-manager&quot;,</span>
+<span class="w">              </span><span class="no">&quot;goals&quot;: &quot;Create executive summary with visualizations&quot;,</span>
+<span class="w">              </span><span class="no">&quot;inputs&quot;: &quot;Use analysis results, format for executives&quot;</span>
+<span class="w">            </span><span class="no">}</span>
+<span class="w">          </span><span class="no">],</span>
+<span class="w">          </span><span class="no">&quot;success_criteria&quot;: &quot;Complete analysis and formatted report delivered&quot;</span>
+<span class="w">        </span><span class="no">}</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">analysis-manager</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/managers/analysis_manager.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reporting-manager</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/managers/reporting_manager.yaml</span>
+
+<span class="w">  </span><span class="nt">subscribers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">phoenix</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-analysis-manager">
+<h2>Complete YAML - Analysis Manager<a class="headerlink" href="#complete-yaml-analysis-manager" title="Link to this heading"></a></h2>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/managers/analysis_manager.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># THREE-TIER HIERARCHY - ANALYSIS MANAGER (MIDDLE TIER)</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Decomposes analysis phases into executable steps for workers.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AnalysisManager</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Manages data gathering and analysis workers</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-manager</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+<span class="w">    </span><span class="nt">termination</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultTerminationPolicy</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="c1"># Planner - Decomposes phases into steps</span>
+<span class="w">  </span><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">StrategicDecomposerPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-manager</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">gatherer</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">validator</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">manager_worker_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">analysis-manager</span>
+<span class="w">      </span><span class="nt">decomposition_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You manage a data analysis team.</span>
+
+<span class="w">        </span><span class="no">WORKERS:</span>
+<span class="w">        </span><span class="no">- gatherer: Collects raw data from sources</span>
+<span class="w">        </span><span class="no">- validator: Validates data quality and accuracy</span>
+
+<span class="w">        </span><span class="no">DECOMPOSITION:</span>
+<span class="w">        </span><span class="no">Break the phase goals into sequential steps.</span>
+<span class="w">        </span><span class="no">Each step should be assigned to one worker.</span>
+
+<span class="w">        </span><span class="no">OUTPUT FORMAT:</span>
+<span class="w">        </span><span class="no">{</span>
+<span class="w">          </span><span class="no">&quot;steps&quot;: [</span>
+<span class="w">            </span><span class="no">{</span>
+<span class="w">              </span><span class="no">&quot;name&quot;: &quot;Step Name&quot;,</span>
+<span class="w">              </span><span class="no">&quot;worker&quot;: &quot;worker-key&quot;,</span>
+<span class="w">              </span><span class="no">&quot;instruction&quot;: &quot;Specific task for the worker&quot;,</span>
+<span class="w">              </span><span class="no">&quot;depends_on&quot;: []</span>
+<span class="w">            </span><span class="no">}</span>
+<span class="w">          </span><span class="no">]</span>
+<span class="w">        </span><span class="no">}</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gatherer</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/workers/gatherer.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validator</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/workers/validator.yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-reporting-manager">
+<h2>Complete YAML - Reporting Manager<a class="headerlink" href="#complete-yaml-reporting-manager" title="Link to this heading"></a></h2>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/managers/reporting_manager.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># THREE-TIER HIERARCHY - REPORTING MANAGER (MIDDLE TIER)</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ManagerAgent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReportingManager</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Manages report compilation and formatting workers</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-manager</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager_with_followups</span>
+<span class="w">    </span><span class="nt">termination</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultTerminationPolicy</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">StrategicDecomposerPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-manager</span>
+<span class="w">      </span><span class="nt">worker_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">compiler</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">formatter</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">manager_worker_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reporting-manager</span>
+<span class="w">      </span><span class="nt">decomposition_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You manage a reporting team.</span>
+
+<span class="w">        </span><span class="no">WORKERS:</span>
+<span class="w">        </span><span class="no">- compiler: Compiles data into report structure</span>
+<span class="w">        </span><span class="no">- formatter: Formats reports for presentation</span>
+
+<span class="w">        </span><span class="no">Break the phase goals into steps for your workers.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manager</span>
+
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compiler</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/workers/compiler.yaml</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">formatter</span>
+<span class="w">      </span><span class="nt">config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/agents/workers/formatter.yaml</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-yaml-worker-examples">
+<h2>Complete YAML - Worker Examples<a class="headerlink" href="#complete-yaml-worker-examples" title="Link to this heading"></a></h2>
+<section id="gatherer-worker">
+<h3>Gatherer Worker<a class="headerlink" href="#gatherer-worker" title="Link to this heading"></a></h3>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/workers/gatherer.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># THREE-TIER HIERARCHY - GATHERER WORKER</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GathererWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gathers data from various sources</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">query_database</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DatabaseQueryTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fetch_api</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APIFetchTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read_file</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FileReadTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+<span class="w">    </span><span class="nt">termination</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DefaultTerminationPolicy</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">max_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a data gatherer. Use your tools to collect requested data.</span>
+<span class="w">        </span><span class="no">- query_database: Run SQL queries</span>
+<span class="w">        </span><span class="no">- fetch_api: Call external APIs</span>
+<span class="w">        </span><span class="no">- read_file: Read local files</span>
+
+<span class="w">        </span><span class="no">Be thorough and report all data found.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">query_database</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">fetch_api</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">read_file</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="validator-worker">
+<h3>Validator Worker<a class="headerlink" href="#validator-worker" title="Link to this heading"></a></h3>
+<p>Copy to <code class="docutils literal notranslate"><span class="pre">configs/agents/workers/validator.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ValidatorWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validates data quality</span>
+
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check_schema</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SchemaValidatorTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check_nulls</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NullCheckerTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_ranges</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RangeValidatorTool</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">You are a data validator. Check data quality:</span>
+<span class="w">        </span><span class="no">- check_schema: Validate against expected schema</span>
+<span class="w">        </span><span class="no">- check_nulls: Find missing/null values</span>
+<span class="w">        </span><span class="no">- validate_ranges: Verify values are within expected ranges</span>
+
+<span class="w">        </span><span class="no">Report all validation issues found.</span>
+
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">check_schema</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">check_nulls</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">validate_ranges</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+<section id="compiler-formatter-workers">
+<h3>Compiler &amp; Formatter Workers<a class="headerlink" href="#compiler-formatter-workers" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/workers/compiler.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CompilerWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Compiles data into report structure</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aggregate_data</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DataAggregatorTool</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_summary</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SummaryTool</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Compile data into structured report sections.</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">aggregate_data</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">create_summary</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/agents/workers/formatter.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent.framework/v2</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FormatterWorker</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Formats reports for presentation</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">inference_gateways</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OpenAIGateway</span>
+<span class="w">      </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_MODEL:-gpt-4o-mini}</span>
+<span class="w">        </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
+<span class="w">        </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">format_markdown</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MarkdownFormatterTool</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_chart</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ChartGeneratorTool</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simple</span>
+<span class="w">  </span><span class="nt">planner</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReActPlanner</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inference_gateway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai</span>
+<span class="w">      </span><span class="nt">use_function_calling</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Format compiled reports for presentation.</span>
+<span class="w">  </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">$preset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">format_markdown</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">create_chart</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="running-the-three-tier-system">
+<h2>Running the Three-Tier System<a class="headerlink" href="#running-the-three-tier-system" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deployment.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.services.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_request_context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">EventBus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agent_framework.observability.subscribers</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhoenixSubscriber</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Set job context</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="s2">&quot;enterprise_job_001&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_id</span>
+    <span class="n">set_request_context</span><span class="p">({</span><span class="s2">&quot;JOB_ID&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">})</span>
+
+    <span class="c1"># Load orchestrator (managers and workers load recursively)</span>
+    <span class="n">orchestrator</span> <span class="o">=</span> <span class="n">AgentFactory</span><span class="o">.</span><span class="n">create_from_yaml</span><span class="p">(</span>
+        <span class="s2">&quot;configs/agents/orchestrator.yaml&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Run complex task</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="s2">&quot;Analyze Q4 2024 sales data for all regions, &quot;</span>
+        <span class="s2">&quot;validate the numbers, and create an executive summary report&quot;</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FINAL RESULT&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="tracing-the-hierarchy">
+<h2>Tracing the Hierarchy<a class="headerlink" href="#tracing-the-hierarchy" title="Link to this heading"></a></h2>
+<p>With Phoenix enabled, you’ll see spans like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>root_request
+├── orchestrator:EnterpriseOrchestrator
+│   ├── phase:Data Analysis
+│   │   └── manager:AnalysisManager
+│   │       ├── step:Gather Data
+│   │       │   └── agent:GathererWorker
+│   │       │       ├── action:query_database
+│   │       │       └── action:fetch_api
+│   │       └── step:Validate
+│   │           └── agent:ValidatorWorker
+│   │               └── action:check_schema
+│   └── phase:Report Generation
+│       └── manager:ReportingManager
+│           ├── step:Compile
+│           │   └── agent:CompilerWorker
+│           └── step:Format
+│               └── agent:FormatterWorker
+</pre></div>
+</div>
+</section>
+<section id="model-recommendations-by-tier">
+<h2>Model Recommendations by Tier<a class="headerlink" href="#model-recommendations-by-tier" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tier</p></th>
+<th class="head"><p>Role</p></th>
+<th class="head"><p>Recommended Model</p></th>
+<th class="head"><p>Reasoning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Orchestrator</p></td>
+<td><p>Strategic planning</p></td>
+<td><p>gpt-4o</p></td>
+<td><p>Complex reasoning, fewer calls</p></td>
+</tr>
+<tr class="row-odd"><td><p>Manager</p></td>
+<td><p>Decomposition</p></td>
+<td><p>gpt-4o-mini</p></td>
+<td><p>Moderate complexity, more calls</p></td>
+</tr>
+<tr class="row-even"><td><p>Worker</p></td>
+<td><p>Tool execution</p></td>
+<td><p>gpt-4o-mini</p></td>
+<td><p>Simple tasks, many calls</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="customization-tips">
+<h2>Customization Tips<a class="headerlink" href="#customization-tips" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>What to Change</p></th>
+<th class="head"><p>How</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Add new domain</p></td>
+<td><p>Create new manager + workers, add to orchestrator</p></td>
+</tr>
+<tr class="row-odd"><td><p>Parallel phases</p></td>
+<td><p>Set <code class="docutils literal notranslate"><span class="pre">&quot;parallel_managers&quot;:</span> <span class="pre">[&quot;mgr1&quot;,</span> <span class="pre">&quot;mgr2&quot;]</span></code> in plan</p></td>
+</tr>
+<tr class="row-even"><td><p>Share state</p></td>
+<td><p>All agents use same <code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code> namespace</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add synthesis</p></td>
+<td><p>Set <code class="docutils literal notranslate"><span class="pre">synthesis_gateway</span></code> on managers/orchestrator</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Keep workers focused</strong> - One domain per worker</p></li>
+<li><p><strong>Managers decompose</strong> - Break phases into concrete steps</p></li>
+<li><p><strong>Orchestrator strategizes</strong> - High-level phases only</p></li>
+<li><p><strong>Share EventBus</strong> - Unified observability across all tiers</p></li>
+<li><p><strong>Use memory presets</strong> - <code class="docutils literal notranslate"><span class="pre">worker</span></code> for workers, <code class="docutils literal notranslate"><span class="pre">manager</span></code> for managers</p></li>
+<li><p><strong>Test each tier</strong> - Verify workers, then managers, then orchestrator</p></li>
+</ol>
+</section>
+<section id="when-not-to-use">
+<h2>When NOT to Use<a class="headerlink" href="#when-not-to-use" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Simple single-domain tasks (use <a class="reference internal" href="multi_tool_agent.html"><span class="std std-doc">Multi-Tool Agent</span></a>)</p></li>
+<li><p>Two domains only (use <a class="reference internal" href="manager_workers.html"><span class="std std-doc">Manager + Workers</span></a>)</p></li>
+<li><p>Cost-sensitive applications (more tiers = more LLM calls)</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hitl_approval.html" class="btn btn-neutral float-left" title="Pattern: Human-in-the-Loop Approval" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../powerbi_impl/index.html" class="btn btn-neutral float-right" title="Power BI Dashboard Editor Implementation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
