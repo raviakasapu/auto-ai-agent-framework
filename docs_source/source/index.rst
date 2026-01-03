@@ -19,6 +19,7 @@ Quick Links
 - :doc:`part1_orientation/conceptual_model` — Understand the mental model
 - :doc:`part2_runtime/agents` — Deep dive into Agent and ManagerAgent
 - :doc:`part4_cookbook/index` — "How do I...?" recipes
+- :doc:`part8_patterns/index` — Copy-paste YAML patterns for common architectures
 
 .. toctree::
    :maxdepth: 2
@@ -62,6 +63,12 @@ Quick Links
 
    part7_reference/index
    api/index
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Part 8: Common Patterns
+
+   part8_patterns/index
 
 .. toctree::
    :maxdepth: 2
