@@ -1,0 +1,2 @@
+name: MockInferenceGateway
+class: agent_framework.gateways.inference.MockInferenceGateway

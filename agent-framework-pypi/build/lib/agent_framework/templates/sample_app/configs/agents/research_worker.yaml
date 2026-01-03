@@ -1,0 +1,76 @@
+apiVersion: agent.framework/v2
+kind: Agent
+
+metadata:
+  name: ResearchWorker
+  description: Research assistant that can search the web and take notes.
+  version: 1.0.0
+
+resources:
+  inference_gateways:
+    - name: openai-worker
+      type: OpenAIGateway
+      config:
+        model: ${OPENAI_MODEL:-gpt-4o-mini}
+        api_key: ${OPENAI_API_KEY}
+        temperature: 0.1
+        use_function_calling: true
+
+  tools:
+    - name: web_search
+      type: MockSearchTool
+      config: {}
+    - name: note_taker
+      type: NoteTakerTool
+      config: {}
+    - name: calculator
+      type: CalculatorTool
+      config: {}
+
+  subscribers:
+    - name: logging
+      type: PhoenixSubscriber
+      config:
+        level: INFO
+        include_data: true
+        max_payload_chars: 2000
+
+spec:
+  policies:
+    $preset: simple
+    termination:
+      type: DefaultTerminationPolicy
+      config:
+        max_iterations: 10
+        check_completion: true
+        terminal_tools: []
+        on_max_iterations: error
+
+  planner:
+    type: ReActPlanner
+    config:
+      inference_gateway: openai-worker
+      use_function_calling: true
+      max_iterations: 10
+      system_prompt: |
+        You are a research assistant. Your job is to:
+        1. Search for information using the web_search tool
+        2. Take notes on important findings using the note_taker tool
+        3. Perform calculations when needed using the calculator tool
+
+        Always think step by step:
+        - First understand what information is needed
+        - Search for relevant information
+        - Take notes on key findings
+        - Summarize your research when complete
+
+        Be concise and focused on the task.
+
+  memory:
+    $preset: worker
+    # namespace auto-derived from JOB_ID
+    # agent_key auto-derived from metadata.name
+
+  tools: [web_search, note_taker, calculator]
+
+  subscribers: [logging]

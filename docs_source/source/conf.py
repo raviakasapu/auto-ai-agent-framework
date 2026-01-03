@@ -21,9 +21,9 @@ author = 'Project Authors'
 current_year = datetime.now().year
 copyright = f'{current_year}, {author}'
 
-# Version info
-version = '2.2'
-release = '2.2.0'
+# Version info - aligned with PyPI package version
+version = '0.3'
+release = '0.3.0'
 
 extensions = [
     'sphinx.ext.autodoc',

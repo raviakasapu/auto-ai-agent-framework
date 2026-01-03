@@ -1,0 +1,2 @@
+name: CalculatorTool
+class: agent_framework.tools.utility.CalculatorTool

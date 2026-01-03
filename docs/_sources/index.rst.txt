@@ -1,7 +1,7 @@
 AI Agent Framework Documentation
 ================================
 
-**Version 2.2** — A production-grade Python library for building hierarchical, policy-driven AI agent systems.
+**Version 0.3.0** — A production-grade Python library for building hierarchical, policy-driven AI agent systems.
 
 The framework ships as the ``agent_framework`` pip package and includes:
 

@@ -1,0 +1,2 @@
+name: CompleteTaskTool
+class: tools.task_manager.CompleteTaskTool
